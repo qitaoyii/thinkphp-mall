@@ -1,0 +1,146 @@
+{extend name="layout/base" /}
+
+{block name="seo"}
+    <title>{$title|default="品牌厂家直供平台"}</title>
+{/block}
+
+{block name="style"}
+    <style></style>
+{/block}
+
+{block name="title"}
+    <span>客户管理</span> /
+    <span class="colorTit">客户中心</span>
+{/block}
+{block name="content"}
+    <!-- 平台功能区 -->
+    <div class="ShopFrontPage-r-bot">
+        <div class="order-box cards">
+            <form action="/user/index" method="get">
+                <div class="order-search">
+                    <div class="form-group" style="justify-content: flex-start">
+                        <div class="form-item">
+                            <label>获取时间</label>
+                            <input type="text" autocomplete="off" placeholder="请选择日期" name="create_time" value="{$create_time}" id="date">
+                            <i></i>
+                        </div>
+                        <div class="form-item">
+                            <label>客户姓名</label>
+                            <input type="text" placeholder="请输入客户姓名" name="user_name" value="{$user_name}" id="user_name">
+                            <i></i>
+                        </div>
+                        <div class="form-item">
+                            <label>客户手机号</label>
+                            <input type="text" placeholder="请输入客户手机号" onkeyup="value=value.replace(/[^\d]/g,'')" maxlength=11 name="phone" value="{$phone}" id="user_phone">
+                            <i></i>
+                        </div>
+                        <div class="form-item">
+                            <label>获取方式</label>
+                            <select name="type" id="get_method">
+                                <option value="0" selected>全部</option>
+                                {foreach \app\index\model\ShopReceiveCustomerRecords::TYPES as $k => $v}
+                                <option value="{$k}" <?= $k == $type ? 'selected' : '' ?>>{$v}</option>
+                                {/foreach}
+                            </select>
+                            <i></i>
+                        </div>
+                        <!--<div class="form-item">-->
+                            <!--<label>活动名称</label>-->
+                            <!--<input type="text" placeholder="请输入活动名称" name="activity_name" value="{$activity_name}" id="activity_name">-->
+                            <!--<i></i>-->
+                        <!--</div>-->
+                        <!--<div class="form-item-btn"></div>&lt;!&ndash;占位元素，不可删&ndash;&gt;-->
+
+                    </div>
+                    <div class="form-group" style="padding-left: 10px;">
+                        <div>
+                            <input type="submit" value="查询" class="btn btn-fill">
+                            <i></i>
+                        </div>
+                    </div>
+                </div>
+            </form>
+
+            <div class="order-table">
+                <table class="order-tb">
+                    <thead>
+                        <tr class="tr-th">
+                            <th>序号</th>
+                            <th>客户手机号</th>
+                            <th>客户姓名</th>
+                            <th>获取方式</th>
+                            <!--<th>订单号</th>-->
+                            <!--<th>活动名称</th>-->
+                            <th>获取时间</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {foreach name='userList' item='value'}
+                            <tr class="tr-bd">
+                                <td>{$userList->num++}</td>
+                                <td>
+                                    <span class="userphone">{:optional($value->user, '————')->phone}</span>
+                                </td>
+                                <td>
+                                    {:optional($value->user, '————')->username}
+                                </td>
+                                <td>
+                                   {$value->type_text}
+                                </td>
+                                <!--<td>-->
+                                    <!--{if 1 == $value->type}-->
+                                        <!--{:optional($value->orders)->order_sn}-->
+                                    <!--{else /}-->
+                                    <!--————-->
+                                    <!--{/if}-->
+                                <!--</td>-->
+                                <!--<td>-->
+                                    <!--{if 2 == $value->type}-->
+                                    <!--{:optional($value->promotion, '————')->activity_name}-->
+                                    <!--{else /}-->
+                                    <!--————-->
+                                    <!--{/if}-->
+                                <!--</td>-->
+                                <td>
+                                    {$value->create_time}
+                                </td>
+                                <td>
+                                    <div class="operate">
+                                        <div class="operate-item">
+                                            {if $value->type == 1}
+                                            <a href="/user/consume-detail?order_id={:optional($value->orders)->order_id}&id={$value->id}&type={$value->type}"><i class="icon icon-yulan"></i>查看</a>
+                                            {elseif $value->type == 2}
+                                            <a href="/user/promotion-detail?promotion_id={$value->promotion_id}&id={$value->id}&type={$value->type}"><i class="icon icon-yulan"></i>查看</a>
+                                            {else/}
+                                            <a href="/user/trace-detail?trace_id={$value->trace_id}&user_id={$value->user_id}&id={$value->id}&type={$value->type}"><i class="icon icon-yulan"></i>查看</a>
+                                            {/if}
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        {/foreach}
+                    </tbody>
+                </table>
+            </div>
+
+            <!--分页-->
+            <div class="pragination-group" id="pageToolbar">
+                {$userList->render() | raw}
+            </div>
+
+        </div>
+    </div>
+{/block}
+
+{block name='js'}
+    <script>
+        /*手机号分割显示*/
+        (function userphone(obj) {
+            obj.each(function () {
+                var phoneNum = $(this).text();
+                $(this).html(phoneNum.replace(/(?=(\d{4})+$)/g, " "));
+            })
+        })($(".userphone"));
+    </script>
+{/block}

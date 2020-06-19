@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <link rel="stylesheet" href="__STATIC__/style/login.css?{:config('huaban.css_version.version')}">
+        <link rel="stylesheet" href="{:qiniu_domains()}/upload/46/525cb298d262696150996f8731fe08bd6727c7e33f2dc8222ae40f1543dfe6.css?origin=swiper-3.4.2.min.css">
+        <title>品牌厂家直供平台</title>
+        <style>
+        .input-error{
+            border:1px solid #FF3E3E !important;
+        }
+        .input-error .login-box-inp-img{
+            background: #FF3E3E !important;
+        }
+        .input-success{
+            border:1px solid #68bf7b !important;
+        }
+        .input-success .login-box-inp-img{
+            background: #68bf7b !important;
+        }
+
+        .shop-login{
+            cursor: pointer;
+        }
+        .moderator-login{
+            cursor: pointer;
+        }
+        </style>
+    </head>
+    <body>
+        <div class="login-wrap">
+            <!-- 头部 -->
+            <div class="login-top">
+                <div class="login-top-logo">
+                    <img src="{:qiniu_domains()}/upload/aa/f8b72d529506ff5ad4bbc900de978303590afe2e8592306bac42cd8e4f2edb.png?origin=logos.png" alt="">
+                </div>
+                <em>|</em>
+                <h2>品牌厂家直供平台</h2>
+            </div>
+            <!-- 登录主页内容 -->
+            <div class="login-center">
+                <div class="login-center-center">
+                    <!-- 轮播 -->
+                    <div class="swiper-container swiper-cont">
+                        <div class="swiper-wrapper swiper-wrap">
+                            {foreach $imgArr as $img}
+                            <div class="swiper-slide swiper-list">
+                                <img src="{:qiniu_domains().$img}" alt="">
+                            </div>
+                            {/foreach}
+                        </div>
+                        <!-- 如果需要分页器 -->
+                        <div class="swiper-pagination swiper-page" id="swiper-pagination1"></div>
+                    </div>
+                    <!--&lt;!&ndash; 登录框 &ndash;&gt;-->
+                    <!--<div class="login-box shopLogin">-->
+
+                        <!--<span class="login-box-tit shop-login" style="color: #fa774c;">品牌馆登录</span>-->
+                        <!--<span class="login-box-tit moderator-login" style="margin-left:150px;">版主登录</span>-->
+
+                        <!--<div class="login-box-inp">-->
+                            <!--<div class="login-box-inp-img">-->
+                                <!--<img class="login-box-inp-login_user" src="{:qiniu_domains()}/upload/4f/d9cca18f944d8e3570c2a49daf2fefb4f1d5d90b415258920e85a17d479c87.png?origin=Login_user.png" alt="">-->
+                                <!--<img class="login-box-inp-login_user_n" src="{:qiniu_domains()}/upload/b3/7411ca5a245c9ccdd603de835e6bda10660dc1c27defccca2b37b8030015ab.png?origin=login_user_n.png" alt="">-->
+                            <!--</div>-->
+                            <!--<input type="text" name="username" onkeyup="value=value.replace(/[^\d]/g,'')" maxlength=11 id="login-num"  placeholder="请输入登录手机号码">-->
+                            <!--<img class="clear-inp" src="{:qiniu_domains()}/upload/08/d9fa4417e0cade1de6f96ce717e1abcfb719b669b0f3bb1faf87eaab4b4294.png?origin=login_delete.png" alt="">-->
+                        <!--</div>-->
+
+                        <!--<div class="login-box-inp">-->
+                            <!--<div class="login-box-inp-img">-->
+                                <!--<img class="login-box-inp-login_pass" src="{:qiniu_domains()}/upload/15/27dc99c69e052115db471daa6b9c9ea98271730532babc2a12e132797bbb33.png?origin=login_password.png" alt="">-->
+                                <!--<img class="login-box-inp-login_pass_n" src="{:qiniu_domains()}/upload/51/954b692d0ef59c1733754b54dac00b415eb3ae05d2547b25ce8a323de61cd6.png?origin=login_password_n.png" alt="">-->
+                            <!--</div>-->
+                            <!--<input id="login-pass" type="password" name="password" placeholder="请输入登录密码">-->
+                        <!--</div>-->
+                        <!--<div class="login-box-prompt">-->
+                            <!--&lt;!&ndash;<p>密码输入错误请重新输入</p>&ndash;&gt;-->
+                        <!--</div>-->
+
+                        <!--<div class="login-box-yzm">-->
+                            <!--<div class="login-box-yzm-inp" style="width:192px;">-->
+                                <!--<div class="login-box-inp-img">-->
+                                    <!--<img class="login-box-inp-login_yzm" src="{:qiniu_domains()}/upload/05/38467b692752d96fd4f4f98851d908346518eab64c6bdf371fee2cf8a8caa9.png?origin=login_yzm.png" alt="">-->
+                                    <!--<img class="login-box-inp-login_yzm_n" src="{:qiniu_domains()}/upload/c8/dc6cd2f996764a0a4611d5c58cf63ffd859d6622d9903cdb0247a4fd473567.png?origin=login_yzm_n.png" alt="">-->
+                                <!--</div>-->
+                                <!--<input id="login-yzm" type="text" name="captcha" placeholder="请输入验证码">-->
+                            <!--</div>-->
+                            <!--<div class="login-box-yzm-img" style="width:100px;">-->
+                                <!--<img src="/login/captcha" id="captcha2">-->
+                            <!--</div>-->
+                        <!--</div>-->
+
+                        <!--<div class="login-box-btn">-->
+                            <!--<button type="button" id="login" class="login-box-button">登录</button>-->
+                        <!--</div>-->
+
+                        <!--<div class="login-box-forgot">-->
+                            <!--<div class="login-box-in">-->
+                                <!--<a href="javascript:;">-->
+                                    <!--品牌馆入驻-->
+                                <!--</a>-->
+                            <!--</div>-->
+                            <!--<div class="login-box-forgot-pass">-->
+                                <!--<a href="/forgot-pass">-->
+                                    <!--无法登录，找回密码-->
+                                <!--</a>-->
+                            <!--</div>-->
+                        <!--</div>-->
+                    <!--</div>-->
+
+                    <!--<div class="login-box moderatorLogin" style="display:none;">-->
+
+                        <!--<span class="login-box-tit shop-login">品牌馆登录</span>-->
+                        <!--<span class="login-box-tit moderator-login" style="margin-left:150px;">版主登录</span>-->
+
+
+                        <!--<div class="login-box-inp" style="margin-top:20px;">-->
+                            <!--<div class="login-box-inp-img">-->
+                                <!--<img class="login-box-inp-login_user" src="{:qiniu_domains()}/upload/4f/d9cca18f944d8e3570c2a49daf2fefb4f1d5d90b415258920e85a17d479c87.png?origin=Login_user.png" alt="">-->
+                                <!--<img class="login-box-inp-login_user_n" src="{:qiniu_domains()}/upload/b3/7411ca5a245c9ccdd603de835e6bda10660dc1c27defccca2b37b8030015ab.png?origin=login_user_n.png" alt="">-->
+                            <!--</div>-->
+                            <!--<input type="text" name="username" onkeyup="value=value.replace(/[^\d]/g,'')" maxlength=11 id="moderator-num"  placeholder="请输入登录手机号码">-->
+                            <!--<img class="clear-inp" src="{:qiniu_domains()}/upload/08/d9fa4417e0cade1de6f96ce717e1abcfb719b669b0f3bb1faf87eaab4b4294.png?origin=login_delete.png" alt="">-->
+                        <!--</div>-->
+
+                        <!--<div class="login-box-inp">-->
+                            <!--<div class="login-box-inp-img">-->
+                                <!--<img class="login-box-inp-login_pass" src="{:qiniu_domains()}/upload/15/27dc99c69e052115db471daa6b9c9ea98271730532babc2a12e132797bbb33.png?origin=login_password.png" alt="">-->
+                                <!--<img class="login-box-inp-login_pass_n" src="{:qiniu_domains()}/upload/51/954b692d0ef59c1733754b54dac00b415eb3ae05d2547b25ce8a323de61cd6.png?origin=login_password_n.png" alt="">-->
+                            <!--</div>-->
+                            <!--<input id="moderator-pass" type="password" maxlength="23" name="password" placeholder="请输入登录密码">-->
+                        <!--</div>-->
+                        <!--<div class="login-box-prompt">-->
+                            <!--&lt;!&ndash;<p>密码输入错误请重新输入</p>&ndash;&gt;-->
+                        <!--</div>-->
+
+                        <!--<div class="login-box-btn">-->
+                            <!--<button type="button" id="moderator" class="login-box-button" style="margin-top:20px;">登录</button>-->
+                        <!--</div>-->
+
+                        <!--<div class="login-box-forgot" style="margin-top:40px;">-->
+                            <!--<div class="login-box-in">-->
+                                <!--<a href="javascript:;">-->
+                                    <!--品牌馆入驻-->
+                                <!--</a>-->
+                            <!--</div>-->
+                        <!--</div>-->
+                    <!--</div>-->
+                    <!-- 入驻框 -->
+                    <div class="login-box">
+                        <!-- 轮播 -->
+                        <h3 class="login-box-tit">品牌馆入驻</h3>
+                        <div class="login-box-inp">
+                            <div class="login-box-inp-img">
+                                <img class="login-box-inp-login_user" src="{:qiniu_domains()}/upload/c8/8e29d03fbb41d0849c338d89ea2c3900d784916de7ee7d8b3be38d681495f5.png?origin=Login_phone.png" alt="">
+                                <img class="login-box-inp-login_user_n" src="{:qiniu_domains()}/upload/f4/dce8686ff9d08a08c5df97ec9554d457b250a4c1c52cf40d5d35c69f516375.png?origin=Login_phone_n.png" alt="">
+                            </div>
+                            <input type="text" id="login-num2" class="setted" onkeyup="value=value.replace(/[^\d]/g,'')" maxlength=11 placeholder="请输入手机号码">
+                            <img class="clear-inp" src="{:qiniu_domains()}/upload/08/d9fa4417e0cade1de6f96ce717e1abcfb719b669b0f3bb1faf87eaab4b4294.png?origin=login_delete.png" alt="">
+                        </div>
+
+                        <div class="login-box-prompt">
+                            <p style="top:-23px">将默认为品牌馆管理员手机号，请谨慎填写</p>
+                        </div>
+
+                        <div class="login-box-yzm" style="margin-top:28px;">
+                            <div class="login-box-yzm-inp" style="width:192px;">
+                                <div class="login-box-inp-img">
+                                    <img class="login-box-inp-login_yzm" src="{:qiniu_domains()}/upload/05/38467b692752d96fd4f4f98851d908346518eab64c6bdf371fee2cf8a8caa9.png?origin=login_yzm.png" alt="">
+                                    <img class="login-box-inp-login_yzm_n" src="{:qiniu_domains()}/upload/c8/dc6cd2f996764a0a4611d5c58cf63ffd859d6622d9903cdb0247a4fd473567.png?origin=login_yzm_n.png" alt="">
+                                </div>
+                                <input id="login-yzm2" type="text" placeholder="请输入右侧验证码">
+                            </div>
+                            <div class="login-box-yzm-img" style="width:100px;">
+                                <img src="/login/captcha?entry=merchant" id="captcha">
+                            </div>
+                        </div>
+
+                        <div class="login-box-yzm" style="margin-top:28px;">
+                            <div class="login-box-phoneyzm-inp">
+                                <input id="login-phoneyzm" type="text" onkeyup="value=value.replace(/[^\d]/g,'')" placeholder="请输入短信验证码">
+                            </div>
+                            <div class="login-box-phoneyzm">
+                                <button class="login-box-phoneyzm-btn" style="background-color: #DFDFDF;" disabled>
+                                    获取验证码
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="login-box-btn" style="margin-top: 42px;">
+                            <button type="button" id="settled" class="login-box-button">立即入驻</button>
+                        </div>
+                        <div class="login-box-forgot">
+                            <div class="login-box-in">
+                                <a href="javascript:;">
+
+                                </a>
+                            </div>
+                            <!--<div class="login-box-forgot-pass">-->
+                                <!--<a href="javascript:;" id="login-back">-->
+                                    <!--返回登录-->
+                                <!--</a>-->
+                            <!--</div>-->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- 首页底部 -->
+            <div class="login-bot">
+                <div class="login-bot-t">
+                    <a href="https://www.ac.vip/" target="_blank">关于我们</a>
+                    <em>|</em>
+                    <a href="#">联系我们</a>
+                    <img src="{:qiniu_domains()}/upload/98/3618189d069c8438842fd254f0b3d173b02281d8c0671457a04c65c9b3109e.png?origin=login_telephone.png" alt="">
+                    <span>客服电话：4000-168-163</span>
+                </div>
+                <div class="login-bot-b">
+                    深圳画版文化版权所有 ©️<span class="current-year"></span> <a href="http://beian.miit.gov.cn/">粤ICP备17139536号-1</a>
+                </div>
+            </div>
+        </div>
+        <script src="{:qiniu_domains()}/upload/4f/e68fa216176e6d1f4580e924bafecc9f519984ecc06b1a840a08b0d88c95de.js?origin=jquery-3.3.1.min.js"></script>
+        <script src="__STATIC__/lib/layer/layer.js?{:config('huaban.css_version.version')}"></script>
+        <script src="{:qiniu_domains()}/upload/53/0c613a62233b50693fb2e27ec3774deea8235fcea2b795333170e0d06b8e56.js?origin=swiper-3.4.2.jquery.min.js"></script>
+        <script>
+            $('.current-year').html((new Date()).getFullYear());
+            var mySwiper = new Swiper('.swiper-container', {
+                pagination: '#swiper-pagination1',
+                paginationClickable: true,
+                direction: 'horizontal', // 垂直切换选项
+                loop: true, // 循环模式选项
+                autoplay: 5000
+            });
+            //获取账号焦点
+            $('#login-num,#login-num2').on('focus', function() {
+                $(this).parent('.login-box-inp').addClass('login-box-inp-focus');
+                $('.login-box-inp-login_user').hide();
+                $('.login-box-inp-login_user_n').show();
+                $('.clear-inp').show();
+
+            });
+
+            //点击清空账号
+            $('.login-box-inp').on('click', '.clear-inp', function() {
+                $(this).prev().val('');
+            });
+
+            //失去账号焦点
+            $('#login-num,#login-num2').blur(function() {
+                $(this).parent('.login-box-inp').removeClass('login-box-inp-focus');
+                $('.login-box-inp-login_user').show();
+                $('.login-box-inp-login_user_n').hide();
+
+                setTimeout(function() {
+                    $('.clear-inp').hide();
+                }, 150);
+            });
+
+            //获取密码焦点
+            $('#login-pass').on('focus', function() {
+                $(this).parent('.login-box-inp').addClass('login-box-inp-focus');
+                $('.login-box-inp-login_pass').hide();
+                $('.login-box-inp-login_pass_n').show();
+
+            });
+
+            //失去密码焦点
+            $('#login-pass').on('blur', function() {
+
+                $(this).parent('.login-box-inp').removeClass('login-box-inp-focus');
+                $('.login-box-inp-login_pass').show();
+                $('.login-box-inp-login_pass_n').hide();
+
+            });
+
+            //获取验证码焦点
+            $('#login-yzm,#login-yzm2').on('focus', function() {
+                $(this).parent('.login-box-yzm-inp').addClass('login-box-yzm-inp-focus').removeClass('input-error');
+                $(this).parent('.login-box-yzm-inp').removeClass('input-success');
+                $('.login-box-inp-login_yzm').hide();
+                $('.login-box-inp-login_yzm_n').show();
+            });
+
+            //失去验证码焦点 用户登录
+            $('#login-yzm').on('change', function() {
+                if ($(this).val().length >= 3) {
+                    var _this=$(this);
+                    $(this).parent('.login-box-yzm-inp').removeClass('login-box-yzm-inp-focus');
+                    $('.login-box-inp-login_yzm').show();
+                    $('.login-box-inp-login_yzm_n').hide();
+                    var captchaValue = $(this).val();
+                    var phone = $("#login-num").val();
+                    $.ajax({
+                        url: "/check-captcha",
+                        type: 'POST',
+                        dataType: 'json',
+                        data: {'captcha':captchaValue, 'type':1, 'phone': phone},
+                        success: function (result) {
+                            $('.login-box-inp-login_yzm').hide();
+                            $('.login-box-inp-login_yzm_n').show();
+                            _this.parent('.login-box-yzm-inp').addClass('input-success');
+
+                        },error: function (data) {
+
+                            layer.msg("验证码不正确！", {
+                                icon: 2,
+                                time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                            }, function () {
+                                $("#captcha2").click();
+                                $('.login-box-inp-login_yzm').hide();
+                                $('.login-box-inp-login_yzm_n').show();
+                                _this.parent('.login-box-yzm-inp').addClass('input-error');
+                            });
+                            return false;
+                        }
+                    });
+                }
+            });
+
+            //失去验证码焦点 商家入驻
+            $('#login-yzm2').on('change', function() {
+                if ($(this).val().length >= 3) {
+                    var _this = $(this);
+                    $(this).parent('.login-box-yzm-inp').removeClass('login-box-yzm-inp-focus');
+                    $('.login-box-inp-login_yzm').show();
+                    $('.login-box-inp-login_yzm_n').hide();
+                    var captchaValue = $(this).val();
+                    var phone = $("#login-num2").val();
+                    if (false == check_phone(phone)) {
+                        $('#captcha').trigger('click');
+                        $(".login-box-phoneyzm-btn").css('background-color', '#DFDFDF');
+                        $(".login-box-phoneyzm-btn").attr("disabled", true);
+                        return false;
+                    }
+                    if (captchaValue == '') {
+                        layer.msg('请先输入验证码！', {icon: 2});
+                        $(".login-box-phoneyzm-btn").css('background-color', '#DFDFDF');
+                        $(".login-box-phoneyzm-btn").attr("disabled", true);
+                        return false;
+                    }
+                    $.ajax({
+                        url: "/check-captcha",
+                        type: 'POST',
+                        dataType: 'json',
+                        data: {'captcha': captchaValue, 'type': 2, 'phone': phone},
+                        success: function (result) {
+                            $('.login-box-inp-login_yzm').hide();
+                            $('.login-box-inp-login_yzm_n').show();
+                            _this.parent('.login-box-yzm-inp').addClass('input-success');
+
+                            $(".login-box-phoneyzm-btn").css('background-color', '#FF8544');
+                            $(".login-box-phoneyzm-btn").removeAttr("disabled");
+                        }, error: function (data) {
+                            $("#captcha").click();
+                            $('.login-box-inp-login_yzm').hide();
+                            $('.login-box-inp-login_yzm_n').show();
+                            _this.parent('.login-box-yzm-inp').addClass('input-error');
+
+                            $(".login-box-phoneyzm-btn").css('background-color', '#DFDFDF');
+                            $(".login-box-phoneyzm-btn").attr("disabled", true);
+                            layer.msg("验证码错误！", {
+                                icon: 2,
+                                time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                            });
+                            return false;
+                        }
+                    });
+                }
+            });
+
+            //获取手机验证码焦点
+            $('#login-phoneyzm').on('focus', function() {
+                $(this).parent('.login-box-phoneyzm-inp').addClass('login-box-phoneyzm-inp-focus');
+            });
+
+            //失去手机验证码焦点
+            $('#login-phoneyzm').on('blur', function() {
+                $(this).parent('.login-box-phoneyzm-inp').removeClass('login-box-phoneyzm-inp-focus');
+            });
+            //点击图片切换随机数
+            $('#captcha').on('click', function () {
+                $('#captcha').attr('src', '/login/captcha?entry=merchant&' + (new Date()).getTime());
+            });
+            $('#captcha2').on('click', function () {
+                $('#captcha2').attr('src', '/login/captcha?' + (new Date()).getTime());
+            });
+
+            //点击商家入驻
+            var login_type = 0;
+            $('.login-box-in').on('click', function() {
+                login_type = 1;
+                $('.login-box-registered').show().siblings('.login-box').hide();
+            });
+
+            //点击返回登录时
+            $("#login-back").on('click', function () {
+                login_type = 0;
+                $('.login-box-registered').hide().siblings('.login-box').show();
+            });
+            // 验证手机号是否存在
+            function check_phone(phone){
+                if (phone == '') {
+                    layer.msg("请填写手机号码！", {
+                        icon: 2,
+                        time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                    });
+                    return false;
+                }
+                if (!(/^1[2-9]\d{9}$/.test(phone))) {
+                    layer.msg("手机号码格式不正确，请重填", {
+                        icon: 2,
+                        time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                    });
+                    return false;
+                }
+                return true;
+            }
+
+            //防止多次点击获取验证码
+            var click = false;
+            var timer;
+
+            //点击倒计时
+            $('.login-box-phoneyzm-btn').on('click', function() {
+                var time = {:config('huaban.login.sms_seconds')};
+                var that = $(this);
+
+                var phone = $("#login-num2").val();
+                if (false == check_phone(phone)) {
+                    return false;
+                }
+
+                var captcha = $("#login-yzm2").val();
+                if (captcha == '') {
+                    layer.msg('请先输入验证码！', {icon: 2});
+                    return false;
+                }
+
+                that.attr('disabled', 'disabled');
+                that.text(time + 's');
+                that.css('background-color', '#DFDFDF');
+                click = true;
+                if (click) {
+                    timer = setInterval(function() {
+                        if (time <= 0) {
+                            click = true;
+                            clearInterval(timer);
+                            that.text('获取验证码');
+                            that.css('background-color', '#FF8544');
+                            that.removeAttr("disabled");
+                        } else {
+                            click = false;
+                            that.text(time + 's');
+                            that.css('background-color', '#DFDFDF');
+                        }
+                        time--;
+                    }, 1000);
+
+                    // 发送手机短信验证
+                    $.ajax({
+                        url: "/phone-code",
+                        type: 'post',
+                        dataType: 'json',
+                        data: {'phone':phone, 'type': 2, 'captcha': captcha},
+                        success: function (result) {
+                            layer.msg(result.msg, {
+                                icon: 6,
+                                time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                            }, function(){
+
+                            });
+                        },error: function (data) {
+                            time = 0;
+                            layer.msg(data.responseJSON.msg,{icon: 2}, function () {
+                                $('#captcha').trigger('click');
+                                click = true;
+                                clearInterval(timer);
+                                that.css('background-color', '#FF8544');
+                                that.removeAttr("disabled");
+                            });
+                        }
+                    });
+                }
+            });
+        </script>
+        <script>
+            function login() {
+                var username = $("#login-num").val();
+                var password = $("#login-pass").val();
+                var captcha = $("#login-yzm").val();
+
+                if (username == '') {
+                    layer.msg("登录手机号不能为空！", {
+                        icon: 2,
+                        time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                    });
+                    return false;
+                }
+                if (password == '') {
+                    layer.msg("密码不能为空！", {
+                        icon: 2,
+                        time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                    });
+                    return false;
+                }
+                if (captcha == '') {
+                    layer.msg("验证码不能为空！", {
+                        icon: 2,
+                        time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                    });
+                    return false;
+                }
+
+                $.ajax({
+                    url: "/login",
+                    type: 'POST',
+                    dataType: 'json',
+                    data: {'username':username, 'password':password, 'captcha':captcha},
+                    success: function (result) {
+                        layer.msg(result.msg, {
+                            icon: 6,
+                            time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                        }, function(){
+                            window.location.href="/select-shop";
+                        });
+                    },error: function (data) {
+                        // $("#captcha2").click();
+                        layer.msg(data.responseJSON.msg,{icon: 2});
+                    }
+                });
+            }
+
+            // 登录
+            $("#login").on('click', login);
+
+            // 回车键登录
+            $(document).keyup(function (event) {
+                if (13 === event.which) {
+                    if (login_type == 1) {
+                        settled();
+                    } else {
+                        login();
+                    }
+                }
+            });
+
+            // 立即入驻
+            $("#settled").on('click', settled);
+            function settled(){
+
+                var phone = $("#login-num2").val();
+                var captcha = $("#login-yzm2").val();
+                var phone_code = $("#login-phoneyzm").val();
+
+                if (true == check_phone(phone)) {
+                    if (captcha == '') {
+                        layer.msg("验证码不能为空！", {
+                            icon: 2,
+                            time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                        });
+                        return false;
+                    }
+                    if (phone_code == '') {
+                        layer.msg("短信验证码不能为空！", {
+                            icon: 2,
+                            time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                        });
+                        return false;
+                    }
+                    $.ajax({
+                        url: "/login/settled",
+                        type: 'POST',
+                        dataType: 'json',
+                        data: {'phone':phone, 'captcha':captcha, 'phone_code':phone_code},
+                        success: function (result) {
+                            layer.msg(result.msg, {
+                                icon: 6,
+                                time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                            }, function(){
+                                window.location.href="/shop-info/index";
+                            });
+                        },error: function (data) {
+                            $("#captcha").click();
+                            layer.msg(data.responseJSON.msg,{icon: 2});
+                        }
+                    });
+                }
+            }
+
+            // 验证手机号是否已经入驻过了，已经入驻的 引导提示去登录
+            $("#login-num2-xxxx").on('blur', function () {
+                var that = $(this);
+                var phone = $(this).val();
+                if (true == check_phone(phone)) {
+
+                    $.ajax({
+                        url: "phone",
+                        type: 'POST',
+                        dataType: 'json',
+                        data: {'phone':phone},
+                        success: function (result) {
+                            that.parents('.login-box-inp').addClass('input-success');
+                            $('.login-box-inp-login_user_n').show();
+                            $('.login-box-inp-login_user').hide();
+                        },error: function (data) {
+                            layer.confirm(data.responseJSON.msg, {
+                                btn: ['立即去登录','稍后去登录'] //按钮
+                            }, function(){
+                                layer.closeAll();
+                                login_type = 0;
+                                $('.login-box-registered').hide().siblings('.login-box').show();
+                                $("#login-num").val(phone);
+                            }, function(){
+
+                            });
+                        }
+                    });
+                }
+            });
+        </script>
+        <script>
+            // 品牌馆登录
+            $(".shop-login").click(function () {
+                $(".shopLogin").show();
+                $(".moderatorLogin").hide();
+                $('.moderator-login').css("color","#333");
+                $('.shop-login').css("color","#fa774c");
+            });
+
+            // 品牌馆登录
+            $(".moderator-login").click(function () {
+                $(".shopLogin").hide();
+                $(".moderatorLogin").show();
+                $('.shop-login').css("color","#333");
+                $('.moderator-login').css("color","#fa774c");
+            });
+
+            // 版主登录
+            $("#moderator").on('click', morderator_login);
+
+            function morderator_login() {
+                var username = $("#moderator-num").val();
+                var password = $("#moderator-pass").val();
+
+                if (username == '') {
+                    layer.msg("登录手机号不能为空！", {
+                        icon: 2,
+                        time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                    });
+                    return false;
+                }
+                if (password == '') {
+                    layer.msg("密码不能为空！", {
+                        icon: 2,
+                        time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                    });
+                    return false;
+                }
+                if (captcha == '') {
+                    layer.msg("验证码不能为空！", {
+                        icon: 2,
+                        time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                    });
+                    return false;
+                }
+
+                $.ajax({
+                    url: "/moderator-login",
+                    type: 'POST',
+                    dataType: 'json',
+                    data: {'username':username, 'password':password},
+                    success: function (result) {
+                        layer.msg(result.msg, {
+                            icon: 6,
+                            time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                        }, function(){
+                            window.location.href="/moderator-list";
+                        });
+                    },error: function (data) {
+                        // $("#captcha2").click();
+                        layer.msg(data.responseJSON.msg,{icon: 2});
+                    }
+                });
+            }
+        </script>
+    </body>
+</html>

@@ -1,0 +1,367 @@
+{extend name="layout/base" /}
+
+{block name="seo"}
+<title>{$title|default="品牌厂家直供平台"}</title>
+{/block}
+
+{block name="style"}
+<link rel="stylesheet" href="__STATIC__/gallery/css/index.css?{:config('huaban.css_version.version')}">
+<link rel="stylesheet" href="__STATIC__/style/ticket.css?{:config('huaban.css_version.version')}">
+<style>
+    
+</style>
+{/block}
+
+{block name="title"}
+<span>客户管理</span> /
+<span class="colorTit">自助积分审核</span>
+{/block}
+{block name="content"}
+<!-- 平台功能区 -->
+<div class="ShopFrontPage-r-bot">
+    <div class="order-box cards">
+        <form action="/score/ticket" method="get">
+            <div class="order-search">
+                <div class="form-group">
+                    <div class="form-item">
+                        <label>提交时间</label>
+                        <input type="text" autocomplete="off" placeholder="请选择提交时间" name="create_time" value="{$create_time}" id="date">
+                        <i></i>
+                    </div>
+                    <div class="form-item">
+                        <label>审核状态</label>
+                        <select name="status" id="status">
+                            <option value="0" selected>全部</option>
+                            {foreach $status_list as $k => $v}
+                            <option value="{$k}" <?= $k == $status ? 'selected' : '' ?>>{$v}</option>
+                            {/foreach}
+                        </select>
+                    </div>
+
+                    <div class="form-item">
+                        <label>客户手机号</label>
+                        <input type="text" placeholder="请输入客户手机号" onkeyup="value=value.replace(/[^\d]/g,'')" maxlength=11 name="phone" value="{$phone}" id="user_phone">
+                        <i></i>
+                    </div>
+
+                    <div class="form-item-btn">
+                        <input type="submit" value="查询" class="btn btn-fill">
+                        <i></i>
+                    </div>
+                </div>
+            </div>
+        </form>
+
+        <div class="order-table">
+            <table class="order-tb">
+                <thead>
+                    <tr class="tr-th">
+                        <th>序号</th>
+                        <th>提交时间</th>
+                        <th>客户手机号</th>
+                        <th>积分小票</th>
+                        <th>审核状态</th>
+                        <th>审核时间</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {foreach $ticketList as $key=>$val}
+                    <tr class="tr-bd">
+                        <td>{$ticketList->num++}</td>
+                        <td class="create_time">{$val->create_time}</td>
+                        <td>
+                            <span class="userphone">{:optional($val->user, '-')->phone}</span>
+                        </td>
+                        <td>
+                            <!--<img class="imgs" src="{:qiniu_domains().$val->ticket_url}" style="width:60px;height:60px;">-->
+                            <a class='url' href="javascript:void(0)" data-magnify="gallery" data-group="g1" data-src="{:qiniu_domains().$val->ticket_url}" data-caption="小票查看">
+                                <img class='img-url' src="{:qiniu_domains().$val->ticket_url}" style="width:60px;height:60px;">
+                            </a>
+                        </td>
+                        <td class="old-score">
+                            <span style="color:{if $val->status == 1}#FF8544;{elseif $val->status == 2}#0091FF;{else /}#FF3E3E;{/if}">
+                                {$val->status_text}
+                            </span>
+                        </td>
+                        <td class="examine-time">
+                            {$val->examine_time?$val->examine_time:'--'}
+                        </td>
+                        <td>
+                            {if 1 == $val->status}
+                                <button type="button" data-id="{$val->id}" data-score="{$val->score}" class="plus-score">审核</button>
+                            {else /}
+                                <button type="button" data-id="{$val->id}" data-score="{$val->score}" data-status="{$val->status}" data-refuse-describe="{$val->refuse_describe}" class="look-score">查看</button>
+                            {/if}
+                        </td>
+                    </tr>
+                    {/foreach}
+                </tbody>
+            </table>
+        </div>
+        <div class="add-layer" style="display:none">
+            <div class="layer-flexbox">
+                <div class="layer-flexbox-l">
+                    <img class='imgurl' src="" style="width:150px;height:150px;">
+                </div>
+                <input type="hidden" class="detail-id">
+                <div class="layer-flexbox-r">
+                    <div class="layer-flexbox-r-list">
+                        <label>客户手机号：</label>
+                        <input type="tel" id="oper_phone" disabled oninput = "value=value.replace(/[^\d]/g,'')" maxlength="11"  class="input-sm border-radius">
+                    </div>
+                    <div class="layer-flexbox-r-list">
+                        <label>提交时间：</label>
+                        <input type="text" maxlength="10" disabled id="oper_time" class="input-sm border-radius">
+                    </div>
+                    <div class="layer-flexbox-r-list" style="color:#54667A;">
+                        <label >审核状态<span style="color:red;"> * </span>：</label>
+                        <div class="inp-box">
+                            <input class="status-check" type="radio" name="status" value="1" checked>同意
+                            <input class="status-check" type="radio" name="status" value="2">  拒绝
+                        </div>
+                        
+                    </div>
+                    <div class="layer-flexbox-r-list score">
+                        <label class="labOne">赠送积分<span style="color:red;"> * </span>：</label>
+                        <input type="text" id="add_score" oninput = "value=value.replace(/[^\d]/g,'')" placeholder="请填写积分数量，限整数" class="input-sm">
+                    </div>
+
+                    <div class="layer-flexbox-r-list refuse" style="display: none;">
+                        <label>拒绝原因<span style="color:red;"> * </span>：</label>
+                        <textarea class="textarea" cols="22" rows="2" id="refuse_describe" name="refuse_describe"></textarea>
+                    </div>
+                    <!--<p class="title-text">该积分将在审核通过后，累计至客户的积分账户下</p>-->
+                </div>
+            </div>
+        </div>
+        <div class="detail-layer" style="display:none">
+            <div class="layer-flexbox">
+                <div class="layer-flexbox-l">
+                    <img class='imgurl-see' src="" style="width:150px;height:150px;">
+                </div>
+                <input type="hidden" class="detail-id">
+                <div class="layer-flexbox-r">
+                    <div class="layer-flexbox-r-list">
+                        <label>客户手机号：</label>
+                        <input type="tel" id="oper_phone_see" disabled oninput = "value=value.replace(/[^\d]/g,'')" maxlength="11"  class="input-sm border-radius">
+                    </div>
+                    <div class="layer-flexbox-r-list">
+                        <label>审核时间：</label>
+                        <input type="text" maxlength="10" disabled id="examine_time_see" class="input-sm border-radius">
+                    </div>
+                    <div class="layer-flexbox-r-list">
+                        <label>提交时间：</label>
+                        <input type="text" maxlength="10" disabled id="oper_time_see" class="input-sm border-radius">
+                    </div>
+                    <div class="state layer-flexbox-r-list" style="color:#54667A;">
+                        <label>审核状态：</label>
+                        <span class="status-check-see"></span>
+                    </div>
+                    <div class="layer-flexbox-r-list score-get">
+                        <label class="labOne">所获积分：</label>
+                        <span class="score-see"></span>
+                    </div> 
+                </div>
+            </div>
+            <div class="refuse-see">
+                <b>拒绝原因：</b>
+                <span class="refuse_describe_see"></span>
+            </div>
+        </div>
+        <!--分页-->
+        <div class="pragination-group" id="pageToolbar">
+            {$ticketList->render()|raw}
+        </div>
+    </div>
+</div>
+{/block}
+
+{block name='js'}
+<!--// 图片放大、缩小、旋转-->
+<script src="__STATIC__/gallery/js/index.js?{:config('huaban.css_version.version')}"></script>
+<script src="__STATIC__/gallery/js/jquery.rotate.min.js?{:config('huaban.css_version.version')}"></script>
+<script type="text/javascript">
+    $(function () {
+        $('[data-magnify]').Magnify({
+            Toolbar: [
+                'rotateLeft',
+                'rotateRight',
+                'zoomIn',
+                'actualSize',
+                'zoomOut'
+            ],
+            keyboard:true,
+            draggable:true,
+            movable:true,
+            modalSize:[600,600],
+            beforeOpen:function (obj,data) {
+                console.log('beforeOpen')
+            },
+            opened:function (obj,data) {
+                console.log('opened')
+            },
+            beforeClose:function (obj,data) {
+                console.log('beforeClose')
+            },
+            closed:function (obj,data) {
+                console.log('closed')
+            },
+            beforeChange:function (obj,data) {
+                console.log('beforeChange')
+            },
+            changed:function (obj,data) {
+                console.log('changed')
+            }
+        });
+    });
+</script>
+<script>
+    /*手机号分割显示*/
+    (function userphone(obj) {
+        obj.each(function () {
+            var phoneNum = $(this).text();
+            $(this).html(phoneNum.replace(/(?=(\d{4})+$)/g, " "));
+        })
+    })($(".userphone"));
+</script>
+
+<script>
+    // 审核
+    $(".plus-score").click(function () {
+        var score_detail_id = $(this).attr('data-id');
+        // var score = $(this).attr('data-score');// 积分
+        // var refuse_describe = $(this).attr('data-refuse-describe');  // 拒绝原因
+        // var status = $(this).attr('data-status'); // 状态  0 审核  1 通过  2 拒绝
+        var create_time = $(this).parents('tr').find('.create_time').text().trim();  // 提交时间
+        var phone = $(this).parents('tr').find('.userphone').text().trim();  // 手机号
+        var url =$(this).parents('tr').find('.img-url').attr('src'); // 图片路径
+        // 写入
+        $(".detail-id").val(score_detail_id);
+        $("#oper_phone").val(phone);
+        $("#oper_time").val(create_time);
+        $(".imgurl").attr('src', url);
+
+        layer.open({
+            type: 1,
+            btn: ['提交','取消'],
+            title: '审核',
+            content: $(".add-layer"),
+            closeBtn: 1,
+            shadowClose: true,
+            area: "500px",
+            btn1: function(index, layero) {
+                // 字段验证
+                var score_detail_id = $(".detail-id").val();
+                var add_score = $("#add_score").val();
+                var status = $(".status-check:checked").val();
+                var refuse_describe = $("#refuse_describe").val();  // 拒绝原因
+
+                if (status == 1 && add_score == '') {
+                    layer.msg('请填写赠送积分！', {icon: 2});
+                    return false;
+                }
+
+                if (status == 2 && refuse_describe == '') {
+                    layer.msg('请填写拒绝原因！', {icon: 2});
+                    return false;
+                }
+
+                if (status == 1) {
+                    $msg = '确定同意吗？';
+                    $btn = '同意';
+                } else {
+                    $msg = '确定拒绝吗？';
+                    $btn = '拒绝';
+                }
+
+                layer.confirm($msg, {
+                    btn: [$btn,'取消'] //按钮
+                }, function(){
+                    $.ajax({
+                        url: "/score/ticket-save",
+                        type: 'POST',
+                        dataType: 'json',
+                        data: {
+                            'score_detail_id': score_detail_id,
+                            'status': status,
+                            'score': add_score,
+                            'refuse_describe': refuse_describe
+                        },
+                        success: function(result) {
+                            layer.closeAll();
+                            layer.msg(result.msg, {
+                                icon: 6,
+                                time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                            }, function() {
+                                location.reload();
+                            });
+                        },
+                        error: function(data) {
+                            layer.msg(data.responseJSON.msg, {icon: 2});
+                        }
+                    });
+                });
+
+            }
+        });
+    });
+
+    // 拒绝原因进行切换
+    $(".status-check").change(function () {
+        if ($(this).val() == 1) {
+            $(".refuse").hide();
+            $(".score").show();
+        } else {
+            $(".refuse").show();
+            $(".score").hide();
+        }
+    });
+
+    // 查看
+    $(".look-score").on('click', function () {
+        var score = $(this).attr('data-score');// 积分
+        var refuse_describe = $(this).attr('data-refuse-describe');  // 拒绝原因
+        var status = $(this).attr('data-status'); // 状态  0 审核  1 通过  2 拒绝
+        var create_time = $(this).parents('tr').find('.create_time').text().trim();  // 提交时间
+        var examine_time = $(this).parents('tr').find('.examine-time').text().trim();  // 提交时间
+        var phone = $(this).parents('tr').find('.userphone').text().trim();  // 手机号
+        var url =$(this).parents('tr').find('.img-url').attr('src'); // 图片路径
+
+        if(status == 1){
+            $('.state').hide();
+        }else{
+            $('.state').show();
+        }
+        // 写入
+        $("#oper_phone_see").val(phone);
+        $("#oper_time_see").val(create_time);
+        $("#examine_time_see").val(examine_time);
+        $(".imgurl-see").attr('src', url);
+        $('.score-see').html(score);
+        $('.refuse_describe_see').html(refuse_describe);
+        if (status == 2) {
+            $('.status-check-see').html('同意');
+            $('.score-get').show();
+            $('.refuse-see').hide();
+        } else if (status == 3) {
+            $('.status-check-see').html('拒绝');
+            $('.score-get').hide();
+            $('.refuse-see').show();
+        }
+
+        layer.open({
+            type: 1,
+            btn: [],
+            title: '查看',
+            content: $(".detail-layer"),
+            closeBtn: 1,
+            shadowClose: true,
+            area: ["auto","auto"],
+            btn1: function(index, layero) {
+                layer.closeAll();
+            }
+        });
+    });
+</script>
+{/block}

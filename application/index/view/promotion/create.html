@@ -1,0 +1,701 @@
+{extend name="layout/base" /}
+
+{block name="seo"}
+    <title>{$title|default="画版商户后台管理系统"}</title>
+{/block}
+
+{block name="style"}
+
+<link rel="stylesheet" href="__STATIC__/style/newProduct.css?{:config('huaban.css_version.version')}">
+<link type="text/css" rel="stylesheet" href="__STATIC__/style/new-product.css?{:config('huaban.css_version.version')}" />
+
+<style>
+    #layer-more ol li{list-style-type: decimal;margin: 10px 0;max-width: 460px}
+    #layer-more ol{padding:0;}
+    #layer-more ol{padding-left: 20px}
+    .flex-layer{
+        display:flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top:10px;
+    }
+    .flex-layer p{
+        padding-left: 15px;
+        flex: 1;
+        display:flex;
+        flex-direction: column;
+        line-height: 1.5;
+    }
+</style>
+{/block}
+
+{block name="title"}
+    <span>活动管理</span> /
+    <span class="colorTit">创建新活动</span>
+{/block}
+
+<!-- 平台功能区 -->
+{block name="content"}
+    <div class="ShopFrontPage-r-bot">
+        <div class="cards">
+            <div class="new-product add-box" style="display: block;">
+                <form id="form">
+                    <div class="new-product-box" style="width:auto;margin: auto">
+                        <div class="new-product-info" style="min-height: 400px">
+                            <input type="hidden" name="promotion_id" value="0" id="promotion_id">
+                            <input type="hidden" name="status" value="0" id="promotion_status">
+                            <div class="product-type promotion-status" style="display:none;">
+                                <h2 class="product-type-tit">
+                                    活动状态：
+                                </h2>
+                                <div class="creat-title">
+                                    <p class="text-o"></p>
+                                </div>
+                            </div>
+                            <div class="product-type">
+                                <h2 class="product-type-tit">
+                                    活动名称：
+                                </h2>
+                                <div class="product-type-inp">
+                                    <input class="product-type-text" name="activity_name" id="activity_name" type="text" placeholder="请输入活动名称"
+                                        maxlength="32" style="margin: 0" value="正版艺术好礼免费领，享多重福利">
+                                </div>
+                            </div>
+                            <div class="product-type">
+                                <h2 class="product-type-tit">
+                                    活动推广描述：
+                                </h2>
+                                <div class="product-type-inp desc">
+                                    <textarea name="share_desc" id="share_desc" cols="30" rows="2" placeholder="活动推广描述"
+                                        value="领取版谷,享购物优惠">领取版谷,享购物优惠</textarea>
+                                    <p class="text-gray" style="font-size:12px;margin:10px 0">
+                                        注：用于微信分享活动时的简要描述，限55字以内，请避免使用“红包”、“现金”等推广字眼</p>
+                                </div>
+                            </div>
+                            <div class="product-type">
+                                <h2 class="product-type-tit">
+                                    活动时间：
+                                </h2>
+                                <div class="product-type-inp">
+                                    <input type="text" autocomplete="off" class="product-type-text" name="create_time" id="get_date" placeholder="请设置活动开始及结束时间" style="margin:0">
+                                    <input type="text" class="start-time" name="start_time" style="margin:0;display:none;" disabled>
+                                    <input type="text" autocomplete="off" class="end-time" name="set_time" id="end_date" placeholder="请设置活动结束时间" style="margin:0;display:none;">
+                                </div>
+                            </div>
+                            <div class="product-type">
+                                <h2 class="product-type-tit">
+                                    活动版谷：
+                                </h2>
+                                <div class="product-type-inp choose-works">
+                                    <input type="hidden" value="" id="worksId" name="works_id">
+                                    <div class="addimg">
+                                        <img src="{:qiniu_domains()}/upload/7f/1afb3c68fcbb0d68421b558c8fb28ba88e7e93f2837996e67f581dabe3b393.png?origin=add.png"
+                                            alt="">
+                                    </div>
+                                    <div class="works-box" style="display: none;">
+                                        <img src="">
+                                        <div>
+                                            <p></p>
+                                            <p></p>
+                                            <a href="javascript:;" class="text-o">修改</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="product-type copyright" style="display:none">
+                                <h2 class="product-type-tit" style="width:120px;">
+                                    活动版谷总量：
+                                </h2>
+                                <div class="product-type-inp">
+                                    <div class="form-radio">
+                                        <label>
+                                            <input type="radio" class="num-type" value="1" data-val="不限数量" name="num_type" checked>
+                                            <span></span>
+                                            不限数量
+                                        </label>
+                                    </div>
+                                    <div class="form-radio">
+                                        <label>
+                                            <input type="radio" class="num-type" value="2" data-val="限定数量" name="num_type">
+                                            <span></span>
+                                            限定数量
+                                        </label>
+                                    </div>
+                                    <input type="text" placeholder="请输入数量" id="total_num"  name="total_num" class="input-s"
+                                        style="display:none;">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="new-product-btn-box" style="width:600px;margin: auto">
+                        <input type="button" value="取消" onclick="window.history.back(-1);" class="btn btn-o btn-lg">
+                        <input type="button" class="btn btn-fill btn-lg"
+                            style="background-image: linear-gradient(-152deg, rgba(255, 0, 0, 0.49) 0%, #ffb900 100%);"
+                            value="提交" id="info-submit">
+                    </div>
+                </form>
+
+            </div>
+            <div class="new-product info-box" style="display:block;">
+                <div id="info-box"></div>
+            </div>
+        </div>
+    </div>
+    <div class="mask-works-wrap mask-works-wrap-none">
+        <div class="mask-works-box">
+            <ul class="mask-works-box-t">
+            </ul>
+            <div class="mask-works-box-b">
+                <button class="mask-works-box-b-back">取消</button>
+                <button class="mask-works-box-b-next">提交</button>
+            </div>
+        </div>
+    </div>
+    <div id="layer-more" style="display:none">
+    </div>
+{/block}
+
+{block name='js'}
+
+<script src="{:qiniu_domains()}/upload/67/1d2d0ecc6ad56a71cece7cda0231343a469f2ab75b54529407c4293896a914.js?origin=template.js"></script>
+    <script id="info_html" type="text/html">
+        <div class="new-product-box" style="width:600px;margin: auto">
+                <div class="new-product-info" style="min-height: 400px">
+                    <div class="creat-title">
+                        <i class="title-img"></i>
+                        <p class="text-o">活动创建完成</p>
+                    </div>
+                    <div class="product-type">
+                        <h2 class="product-type-tit">
+                            活动名称：
+                        </h2>
+                        <div class="product-type-inp">
+                            <%:= infoData.activity_name%>
+                        </div>
+                    </div>
+                    <div class="product-type">
+                        <h2 class="product-type-tit">
+                            活动时间：
+                        </h2>
+                        <div class="product-type-inp">
+                            <%:= infoData.start_time%> 至 <%:= infoData.end_time%>
+                        </div>
+                    </div>
+                    <div class="product-type">
+                        <h2 class="product-type-tit">
+                            活动版谷：
+                        </h2>
+                        <div class="product-type-inp works-box">
+                            <div class="works-box">
+                                <img src="<%:= infoData.works_img%>">
+                                <div>
+                                    <p><%:= infoData.artister_name%></p>
+                                    <p>《<%:= infoData.works_name%>》</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="product-type copyright_sum">
+                            <h2 class="product-type-tit" style="width:120px;">
+                                活动版谷总量：
+                            </h2>
+                            <div class="product-type-inp">
+                                <%:= infoData.total_num%>
+                            </div>
+                    </div>
+                    <div class="product-type copyright_sum">
+                            <h2 class="product-type-tit" style="width:120px;">
+                                活动二维码：
+                            </h2>
+                            <div class="product-type-inp">
+                                <div>
+                                    <img src="<%:= infoData.qrcode_url%>" alt="">
+                                    <a href="javascript:;" download  data-name="<%:= infoData.activity_name%>" class="text-o" id="downImg" >下载二维码</a>
+                                </div>
+                            </div>
+                        </div>
+                </div>
+            </div>
+            <div class="new-product-btn-box" style="width:600px;margin: auto;justify-content:center!important">
+                <input type="button" value="完成" onclick="location.href='/promotion/index'" class="btn btn-fill btn-lg">
+            </div>
+    </script>
+
+    <script id="layer-more-html" type="text/html">
+        <ol>
+            <%for (var i = 0; i < list.arr.length; i++) {%>
+            <%if (list.arr[i].use_type == 1){%>
+            <li>
+                <p style="font-size: 16px;">该版谷作品已被使用为商品<span class="text-blue" style="font-size: 16px;">认证版谷</span> </p>
+                <div class="flex-layer">
+                    <img src="<%:=list.arr[i].thumb_image%>" width="60">
+                    <p>
+                        <span><%:=list.arr[i].product_name%>&<%:=list.arr[i].property_name%></span>
+                        <span>ID:<%:=list.arr[i].product_id%></span>
+                    </p>
+                </div>
+            </li>
+            <%}%>
+            <%if (list.arr[i].use_type == 2){%>
+            <li>
+                <p style="font-size: 16px;">该版谷作品已被使用为商品<span class="text-blue" style="font-size: 16px;">营销版谷</span> </p>
+                <p class="text-gray">（连接了版主红包）   </p>
+            </li>
+            <%}%>
+            <%if (list.arr[i].use_type == 3){%>
+            <li>
+                <p style="font-size: 16px;">该版谷作品已被使用为商品<span class="text-blue" style="font-size: 16px;">营销版谷</span> </p>
+                <div class="flex-layer">
+                    <img src="<%:=list.arr[i].thumb_image%>" width="60">
+                    <p>
+                        <span><%:=list.arr[i].product_name%>&<%:=list.arr[i].property_name%></span>
+                        <span>ID:<%:=list.arr[i].product_id%></span>
+                    </p>
+                </div>
+            </li>
+            <%}%>
+            <%}%>
+        </ol>
+    </script>
+
+    <script>
+    var promotionObj = {$dataArr|raw};
+    jQuery.prototype.serializeObject=function(){
+        var obj=new Object();
+        $.each(this.serializeArray(),function(index,param){
+            if(!(param.name in obj)){
+                obj[param.name]=param.value;
+            }
+        });
+        return obj;
+    };
+    //日期时间有效范围的设定:
+    var date=new Date().getTime();
+    laydate.render({
+      elem: '#get_date'
+      ,type: 'date'
+      ,range: true //或 range: '~' 来自定义分割字符
+      ,min: date
+    });
+
+    laydate.render({
+        elem: '#end_date'
+        ,type: 'date'
+        ,range: false //或 range: '~' 来自定义分割字符
+        ,min: promotionObj.start_time
+    });
+    </script>
+
+    <script>
+        // 编辑活动
+        if (promotionObj.promotion_id) {
+            var sataus = '';
+            if (promotionObj.status == 0) {
+                sataus = '未开始';
+            }
+            if (promotionObj.status == 1) {
+                sataus = '进行中';
+            }
+            if (promotionObj.status == 7) {
+                sataus = '已下架';
+            }
+
+            $(".promotion-status").find('p').html(sataus);
+            $(".promotion-status").show();
+
+            // 活动状态
+            $("#promotion_status").val(promotionObj.status);
+            // 活动id
+            $("#promotion_id").val(promotionObj.promotion_id);
+            // 活动名称
+            $("#activity_name").val(promotionObj.activity_name);
+            // 活动推广描述
+            $("#share_desc").val(promotionObj.share_desc);
+            // 活动时间
+            $("#get_date").val(promotionObj.start_time+' - '+promotionObj.end_time);
+            if (promotionObj.status != 0) {
+                $("#get_date").hide();
+                $(".start-time").val(promotionObj.start_time);
+                $(".end-time").val(promotionObj.end_time);
+                $(".start-time").show();
+                $(".end-time").show();
+            }
+            // 活动版谷
+            $(".choose-works").find('.addimg').hide();
+            $("#worksId").val(promotionObj.works_id);
+            $(".choose-works").find('.works-box').attr('data-works_id',promotionObj.works_id);
+            $(".choose-works").find('.works-box').attr('data-name',promotionObj.works_name);
+            $(".choose-works").find('.works-box').attr('data-artistname',promotionObj.artister_name);
+            $(".choose-works").find('.works-box').find('img').attr('src',promotionObj.works_img);
+            $(".choose-works").find('.works-box').find('p').eq(0).html(promotionObj.works_name);
+            $(".choose-works").find('.works-box').find('p').eq(1).html(promotionObj.artister_name);
+            $(".choose-works").find('.works-box').show();
+            if (promotionObj.status != 0) {
+                $(".choose-works").find('.works-box').find('a').hide();
+            }
+            // 活动版权总量
+            if (promotionObj.status == 0) {
+                $(".copyright").show();
+            }
+
+            $(".num-type").each(function(){
+                if($(this).val() == promotionObj.num_type){
+                    $(this).attr('checked',true);
+                }
+            });
+            if (promotionObj.num_type == 2){
+                $("#total_num").val(promotionObj.total_num).show();
+            }
+        }
+
+        var worksID = {
+        };
+        var worksThat;
+        $('.product-type').on('click', '.choose-works', function () {
+            if (promotionObj.status != 0) {
+                return false;
+            }
+
+            worksID.works_id = '';
+            worksID.id = '';
+            worksThat = $(".works-box");
+
+            getWorksList();
+
+        });
+        $('.mask-works-box').on('click', function (e) {
+            e.stopPropagation();
+        });
+        $('.mask-works-wrap').on('click', function (e) {
+            $(this).addClass('mask-works-wrap-none');
+        });
+
+        //点击选择版权内容
+        $('.mask-works-box-t').on('click', '.mask-works-box-list', function (e) {
+            e.stopPropagation();
+            $(this).find('.mask-works-box-list-r').addClass('mask-works-box-list-r-true').parents(
+                '.mask-works-box-list').siblings().find('.mask-works-box-list-r').removeClass(
+                'mask-works-box-list-r-true');
+            $(this).find('.mask-works-box-list-radio').show().parents('.mask-works-box-list').siblings().find(
+                '.mask-works-box-list-radio').hide();
+            if ($(this).attr('works-id') && $(this).attr('data-id')) {
+                worksID.works_id = $(this).attr('works-id');
+                worksID.id = $(this).attr('data-id');
+                worksID.name = $(this).find('.mask-works-box-list-tit').children('h2').eq(0).text();
+                worksID.artistname = $(this).find('.mask-works-box-list-tit').children('h2').eq(1).text();
+                worksID.img = $(this).find('.mask-works-box-list-img').children('img').attr('src');
+                worksID.stock_num = $(this).attr('stock-num');
+            }
+        });
+
+        //点击取消选择版权
+        $('.mask-works-box-b-back').on('click', function () {
+            $('.mask-works-wrap').addClass('mask-works-wrap-none');
+        });
+
+        //点击提交版权
+        $('.mask-works-box-b-next').on('click', function () {
+            if (worksID.works_id && worksID.id) {
+                stockNum = worksID.stock_num;
+                $('.mask-works-wrap').addClass('mask-works-wrap-none');
+                worksThat.find('img').attr({'src':worksID.img});
+                $("#worksId").val(worksID.works_id);
+                worksThat.attr({'data-works_id':worksID.works_id,'data-name':worksID.name,'data-artistname':worksID.artistname});
+                    worksThat.find('p').eq(0).html(worksID.name);
+                    worksThat.find('p').eq(1).html(worksID.artistname);
+                    worksThat.show();
+                    worksThat.siblings(".addimg").hide();
+                    worksThat.parents('.product-type').next().show();
+                worksID.works_id = '';
+                worksID.id = '';
+            } else {
+                layer.msg('您还没有选择版谷', {
+                    icon: 2
+                });
+                return false;
+            }
+        });
+        //提交数据
+        $("#info-submit").on('click',function(){
+            var data=$("#form").serializeObject();
+            if(!data.activity_name){
+                layer.msg("亲，请填写活动名称！", {
+                        icon: 2
+                    },function(){
+                        $("#active_name").focus();
+                    });
+                    return false;
+            }
+
+            if(!data.share_desc){
+                layer.msg("亲，请填写活动推广描述！", {
+                        icon: 2
+                    },function(){
+                        $("#share_desc").focus();
+                    });
+                    return false;
+            }else{
+               if(data.share_desc.indexOf("红包") != -1 || data.share_desc.indexOf("现金") != -1 ){
+                layer.msg("亲，请请避免使用“红包”、“现金”等推广字眼<br>请重新修改提交！", {
+                        icon: 2
+                    },function(){
+                        $("#share_desc").focus();
+                    });
+                    return false;
+               }
+               if(data.share_desc.length>55){
+                layer.msg("活动推广描述不得超过55个字符！", {
+                        icon: 2
+                    },function(){
+                        $("#share_desc").focus();
+                    });
+                    return false;
+               }
+            }
+            if(!data.create_time){
+                layer.msg("亲，请选择活动开始及结束时间！", {
+                    icon: 2
+                },function(){
+                    $("#date").focus();
+                });
+                return false;
+            }
+            if (data.status != 0 && !data.set_time) {
+                layer.msg("亲，请选择活动结束时间！", {
+                    icon: 2
+                },function(){
+                    $(".end-time").focus();
+                });
+                return false;
+            }
+
+            if(!data.works_id){
+                layer.msg("亲，请选择活动赠送的版谷！", {
+                        icon: 2
+                    },function(){
+                        $(".choose-works").click();
+                    });
+                    return false;
+            }
+            if(!data.num_type){
+                layer.msg("亲，请设置版谷数量！", {
+                        icon: 2
+                    },function(){
+                        $("input[name='num_type']").focus();
+                    });
+                    return false;
+            }
+            if(data.num_type==2&data.total_num==""){
+                layer.msg("亲，请填写活动版谷的总量！", {
+                        icon: 2
+                    },function(){
+                        $("#total_num").focus();
+                    });
+                    return false;
+            }
+            if(data.total_num*1>worksID.stock_num*1){
+                layer.msg("亲，活动版谷的总量不能超过"+worksID.stock_num+",请重新设置！", {
+                        icon: 2
+                    },function(){
+                        $("#total_num").val("").focus();
+                    });
+                    return false;
+            }
+
+            layer.load(3, {
+                shade: [0.1, '#393D49']
+            });
+            $.ajax({
+                url: '/promotion/save', //请求地址
+                type: "POST", //请求方式
+                dataType: "json", //返回数据格式为json
+                data:data,
+                success: function (data) { //请求成功完成后要执行的方法
+
+                $(".info-box").show().siblings('.add-box').hide();
+                    getActiveInfo(data.data);
+                    layer.closeAll()
+
+                }
+            });
+        });
+        // 活动版权总量指定数量输入框显示隐藏;
+        $("input[name='num_type']").change(function(){
+            if($("input[name='num_type'][value='2']").is(":checked")){
+                $(this).parents('.product-type-inp').find("#total_num").show();
+            }else{$(this).parents('.product-type-inp').find("#total_num").hide();}
+        });
+        function getActiveInfo(data){
+            let info_html = template(document.getElementById('info_html').innerHTML, {
+                infoData: data
+            });
+            $("#info-box").html(info_html);
+        }
+        //getActiveInfo();
+
+    </script>
+    <script>
+    // 下载二维码到本地
+
+    $("#info-box").on("click","#downImg",function () {
+            var url = $(this).prev('img').attr('src');
+            var name=$(this).attr('data-name');
+            getBase64(url).then(base64 => {
+               // 执行下载图片
+                download(base64,name);
+            }, err => {
+                console.log(err)
+            });
+
+        });
+
+        //将远程图片转化为base64
+        function getBase64(img){
+            var image = new Image();
+            image.crossOrigin = '';
+            image.src = img;
+            return new Promise((resolve,reject)=>{
+                image.onload =function (){
+                    resolve(getBase64Image(image));//将base64传给done上传处理
+                }
+            });
+        }
+
+        //将base64传给done上传处理
+        function getBase64Image(img,width,height) {
+            var canvas = document.createElement("canvas");
+            canvas.width = width ? width : img.width;
+            canvas.height = height ? height : img.height;
+            var ctx = canvas.getContext("2d");
+            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+            var dataURL = canvas.toDataURL();
+            return dataURL;
+        }
+
+        // 下载图片
+        function download(url,name) {
+            let imgData = url;
+            //var myDate = new Date();
+            //var name = myDate.getSeconds();
+            downloadFile('qrcode_'+name+'.png', imgData);
+        }
+        //下载
+        function downloadFile(fileName, content) {
+            let aLink = document.createElement('a');
+            let blob = base64ToBlob(content); //new Blob([content]);
+            let evt = document.createEvent("HTMLEvents");
+            evt.initEvent("click", true, true);//initEvent 不加后两个参数在FF下会报错  事件类型，是否冒泡，是否阻止浏览器的默认行为
+            aLink.download = fileName;
+            aLink.href = URL.createObjectURL(blob);
+            // aLink.dispatchEvent(evt);
+            // aLink.click()
+            aLink.dispatchEvent(new MouseEvent('click', {bubbles: true, cancelable: true, view: window}));//兼容火狐
+        }
+        //base64转blob
+        function base64ToBlob(code) {
+            let parts = code.split(';base64,');
+            let contentType = parts[0].split(':')[1];
+            let raw = window.atob(parts[1]);
+            let rawLength = raw.length;
+            let uInt8Array = new Uint8Array(rawLength);
+            for (let i = 0; i < rawLength; ++i) {
+                uInt8Array[i] = raw.charCodeAt(i);
+            }
+            return new Blob([uInt8Array], {type: contentType});
+        }
+    </script>
+
+    <script>
+        // 查看版谷使用详情
+        function moreCodeUse(id){
+            var load=layer.load();
+            $.ajax({
+                url: "/copyright/get-more-use-two",
+                type: 'GET',
+                dataType: 'json',
+                data: {
+                    'works_id': id
+                },
+                success: function(data) {
+
+                    let html = template(document.getElementById('layer-more-html').innerHTML, {list:data.data});
+                    $('#layer-more').html(html);
+                    layer.close(load);
+
+                    layer.open({
+                        type: 1,
+                        content: $('#layer-more'),
+                        title: "《"+data.data.workData.works_name+"》用途",
+                        btn: ['知道了'],
+                        btnAlign: 'cc',
+                        shadeClose: true, //开启遮罩关闭
+                        area: ['auto','400px'],
+                    });
+                },
+
+            });
+        }
+
+        // 获取版谷列表信息
+        function getWorksList()
+        {
+            var load = layer.load(3, {shade: [0.1, '#393D49']});
+            $.ajax({
+                url: '/api/business-inventory', //请求地址
+                type: "get", //请求方式
+                dataType: "json", //返回数据格式为json
+                header: "Access-Control-Allow-Origin:*", //设置请求头
+                success: function(data) { //请求成功完成后要执行的方法
+                    layer.close(load);
+                    if (data.data.list.length) {
+                        $('.mask-works-wrap').removeClass('mask-works-wrap-none');
+                        var list = '';
+                        $.each(data.data.list, function(index, item) {
+                            var used='';
+                            switch (item.new_type) {
+                                case 0:used="";break;
+                                case 1:used="<p><i class='text-o'>已被使用，为“认证版谷”</i><a href='javascript:;'  class='text-blue type_detail' onclick='moreCodeUse("+item.works_id+")'>查看使用详情 >></a></p>";break;
+                                case 2:used="<p><i class='text-o'>已被使用，为“营销版谷”</i><a href='javascript:;'  class='text-blue type_detail' onclick='moreCodeUse("+item.works_id+")'>查看使用详情 >></a></p>";break;
+                                case 3:used="<p><i class='text-o'> 已被使用，为“营销版谷”</i><a href='javascript:;'  class='text-blue type_detail' onclick='moreCodeUse("+item.works_id+")'>查看使用详情 >></a></p>";break;
+                            }
+                            if (item.stock_num != 0) {
+                                list += '<li class="mask-works-box-list" stock-num="'+item.stock_num+'" data-id="' + item.id + '" works-id="' + item.works_id + '" data-artist="' + item.artist_name + '">' +
+                                    '<div class="mask-works-box-list-l">' +
+                                    '<div class="mask-works-box-list-img">' +
+                                    '<img src="{:qiniu_domains()}' + item.works_cover + '" alt="">' +
+                                    '</div>' +
+                                    '<div class="mask-works-box-list-tit">' +
+                                    '<h2>《' + item.works_name + '》</h2>' +
+                                    '<span>剩余' + item.stock_num + '份</span>' +
+                                    used+'</div>' +
+                                    '</div>' +
+                                    '<div class="mask-works-box-list-r">' +
+                                    '<div class="mask-works-box-list-radio"> </div>' +
+                                    '</div>' +
+                                    '</li>';
+                            } else {
+                                list += '<li class="mask-works-box-list">' +
+                                    '<div class="mask-works-box-list-l">' +
+                                    '<div class="mask-works-box-list-img">' +
+                                    '<img src="{:qiniu_domains()}' + item.works_cover + '" alt="">' +
+                                    '</div>' +
+                                    '<div class="mask-works-box-list-tit">' +
+                                    '<h2>《' + item.works_name + '》</h2>' +
+                                    '<span>剩余' + item.stock_num + '份</span>' +used+
+                                    '</div>' +
+                                    '</div>' +
+                                    '<div class="mask-works-box-list-title">' +
+                                    '数量不可用' +
+                                    '</div>' +
+                                    '</li>';
+                            }
+                        });
+                        $('.mask-works-box-t').html(list);
+                    } else {
+                        layer.msg('您没有可用的版谷', {icon: 2});
+                    }
+                }
+            });
+        }
+    </script>
+{/block}

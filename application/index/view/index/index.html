@@ -1,0 +1,606 @@
+{extend name="layout/base" /}
+
+{block name="seo"}
+    <title>{$title|default="品牌厂家直供平台"}</title>
+{/block}
+
+{block name="style"}
+<link rel="stylesheet" href="__STATIC__/style/login-store-add.css?{:config('huaban.css_version.version')}">
+<link rel="stylesheet" type="text/css" href="__STATIC__/style/css/normalize.css?{:config('huaban.css_version.version')}" media="screen">
+<link rel="stylesheet" type="text/css" href="__STATIC__/style/css/bootstrap.min.css?{:config('huaban.css_version.version')}" media="screen">
+<link rel="stylesheet" type="text/css" href="__STATIC__/style/css/frappe_theme.css?{:config('huaban.css_version.version')}" media="screen">
+<link rel="stylesheet" type="text/css" href="__STATIC__/style/css/index.css?{:config('huaban.css_version.version')}" media="screen">
+<link rel="stylesheet" type="text/css" href="__STATIC__/style/css/default.css?{:config('huaban.css_version.version')}" media="screen">
+<link rel="stylesheet" href="__STATIC__/style/index.css?{:config('huaban.css_version.version')}">
+<style>
+    .mask-brand-img-box{
+        position: relative;
+        overflow: hidden;
+    }
+    .clear-box{
+        width: 100%;
+        height:30px;
+        background: rgba(0,0,0,.4);
+        position: absolute;
+        top:-30px;
+        left:0;
+
+    }
+    .img-clear{
+        width:18px;
+        height:18px;
+        position: absolute;
+        top: 6px;
+        right: 10px;
+        z-index: 99;
+        cursor: pointer;
+    }
+    .row text{
+        font-size: 12px;
+    }
+    .row .border .chart-container .frappe-chart{
+        margin: 0;
+        padding: 0;
+    }
+    .row .border .chart-container .frappe-chart .chart{
+        overflow: inherit;
+    }
+    .header-box .header-box-r p{
+        padding: 0;
+    }
+    .header-box .header-box-r p.banma{
+        display: flex;
+        justify-content: flex-end;
+    }
+    .header-box .header-box-r p.banma a{
+        color:#fff;
+        text-decoration: none;
+    }
+    .btn, .btn:active{
+
+    background-image: linear-gradient(-152deg,#FF8544 100%, rgba(255, 0, 0, 1) 0% )!important;
+    }
+
+
+
+</style>
+{/block}
+
+{block name="title"}
+    <span>基本信息</span> /
+    <span class="colorTit">品牌馆首页</span>
+{/block}
+
+<!-- 平台功能区 -->
+{block name="content"}
+    {if $brandData->status == 2}
+    <p style="color:#2F323E;padding:15px 20px;background: #fff;border-bottom: 1px solid #e8e8e8;border-left: 1px solid #e8e8e8;">
+        <img src="{:qiniu_domains()}/upload/c5/52f3359079ab20e18f83eed8625c33385d2d581b5344a308c7499a49b2b7c8.png" style="width:15px;height:15px;">
+            品牌申请审核失败，请点击
+        <span style="color:#FF3E3E;cursor: pointer;" class="brandBtn">重新提交</span>
+    </p>
+    {/if}
+    <div class="ShopFrontPage-r-bot">
+
+        <!-- 个人信息部分 -->
+        <div class="header-box">
+            <div class="header-box-l">
+                <div class="header-box-l-img">
+                    <img src="<?= qiniu_domains() . session('shop.shop_logo')?>" alt="">
+                </div>
+                <div class="header-box-l-text">
+                    <h1>{:session('shop.shop_name')}</h1>
+                    <span style="display:flex;align-items: center;">主营类目：{$cate_name} <a href="/shop-info/detail"><em>详情</em></a></span>
+                </div>
+            </div>
+            <div class="header-box-r">
+                <p class="banma"><a href="/share/index" class="btn btn-fill">赠送版谷</a></p>
+                <p>您有 <span>&nbsp;{$pending_order_count} &nbsp;</span> 笔待处理的订单信息  <a href="/order/delivery-list">立即处理</a></p>
+            </div>
+        </div>
+
+        <!-- 交易金额部分 -->
+        <div class="money-box">
+            <div class="money-box-list">
+                <div class="money-box-list-cont">
+                    <div class="money-box-list-img">
+                        <img src="{:qiniu_domains()}/upload/6a/03f0a36a6dadab02a3e4c2efa05ab59880b2b522c654d24e9119c06abab9e5.png?origin=icon-1.png" alt="">
+                    </div>
+                    <div class="money-box-list-text">
+                        <span>总金额（元）</span>
+                        <h2>¥{$sum_price}</h2>
+                        <a href="/settlement/index">商品订单明细 <em></em></a>
+                    </div>
+                </div>
+            </div>
+            <div class="money-box-list">
+                <div class="money-box-list-cont">
+                    <div class="money-box-list-img">
+                        <img src="{:qiniu_domains()}/upload/23/040e164706675f21936281157ce9a33e73e85358e0c881f2a58d36f1e9aaea.png?origin=icon-2.png" alt="">
+                    </div>
+                    <div class="money-box-list-text">
+                        <span>已提现金额（元）</span>
+                        <h2>¥{$cash_outs_price}</h2>
+                        <a href="/order/cash-out?status=2">明细 <em></em></a>
+                    </div>
+                </div>
+            </div>
+            <div class="money-box-list">
+                <div class="money-box-list-cont">
+                    <div class="money-box-list-img">
+                        <img src="{:qiniu_domains()}/upload/d0/d9ffec3cec9f3cf6881949f801e47af550bccb14735ef044f4669ad300641c.png?origin=icon-3.png" alt="">
+                    </div>
+                    <div class="money-box-list-text">
+                        <span>冻结金额（元）</span>
+                        <h2>¥{$freezed_price}</h2>
+                        {if $freezed_price > 0}
+                        <a href="/withdrawal/forbidden">明细 <em></em></a>
+                        {/if}
+                    </div>
+                </div>
+            </div>
+            <div class="money-box-list">
+                <div class="money-box-list-cont">
+                    <div class="money-box-list-img">
+                        <img src="{:qiniu_domains()}/upload/e3/d918df77c6f22f100fc9b0d35d139baeab60a13132ca68d003427041f4af1e.png?origin=icon-4.png" alt="">
+                    </div>
+                    <div class="money-box-list-text">
+                        <span>可提现金额（元）</span>
+                        {if $available_price > 0}
+                        <h2>¥{$available_price}</h2>
+                        {else /}
+                        <h2>¥0.00</h2>
+                        {/if}
+                        {if $available_price > 0}
+                        <a href="/withdrawal/apply?cash_money={$available_price}">
+                            {if $applyMoney > 0}
+                            <span style="color:#999999;margin-right:10px;"> ( 已申请：¥{$applyMoney} ) </span>
+                            {/if}
+                            提现 <em></em>
+                        </a>
+                        {/if}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 收益概况部分 -->
+        <div class="income-profile">
+            <img class="income-profile-bg" src="{:qiniu_domains()}/upload/2e/5389432b3b23f1470612048e3e462f4389233e1f62b5291fb199f5a6e91018.png?origin=index-bg.png" alt="">
+            <h3 class="income-profile-tit">收益概况</h3>
+            <div class="income-profile-list">
+                <h2>¥{$share_price}</h2>
+                <p>分红收益累计（元）</p>
+            </div>
+            <div class="income-profile-list">
+                <h2>¥{$today_total_pay_price}</h2>
+                <p>今日成交金额（元）</p>
+            </div>
+            <div class="income-profile-list">
+                <h2>{$month_order_nums}</h2>
+                <p>近30日成单量（笔）</p>
+            </div>
+        </div>
+
+        <!-- 订单统计概况 -->
+        <div class="order-statistics">
+            <h1 class="order-statistics-tit">订单统计概况</h1>
+            <div class="order-statistics-box">
+                <a href="/order/delivery-list?type=1" class="order-list-box">
+                    <div class="order-statistics-list list-border-1">
+                        <h2>待发货订单</h2>
+                        <p class="bot-border"><span></span></p>
+                        <div class="order-statistics-list-cont">
+                            <div class="order-statistics-list-cont-text">
+                                {$wait_delivery_nums}<em>（笔）</em>
+                            </div>
+                            <div class="order-statistics-list-cont-img">
+                                <img src="{:qiniu_domains()}/upload/d4/12f0aa52be81101f604d82dca08abe0706d21e76c1af10a32ab1c62632db9e.png?origin=icon-bg-1.png" alt="">
+                            </div>
+                        </div>
+                    </div>
+                </a>
+                <a href="/order/delivery-list?type=3" class="order-list-box">
+                    <div class="order-statistics-list list-border-2">
+                        <h2>已延迟发货订单</h2>
+                        <p class="bot-border"><span></span></p>
+                        <div class="order-statistics-list-cont">
+                            <div class="order-statistics-list-cont-text">
+                                {$delayed_delivery_nums}<em>（笔）</em>
+                            </div>
+                            <div class="order-statistics-list-cont-img">
+                                <img src="{:qiniu_domains()}/upload/5f/9ed6bb0a87a7e810ad7494595436d653c56fdfc5203a35cae3fc3e97384d33.png?origin=icon-bg-2.png" alt="">
+                            </div>
+                        </div>
+                    </div>
+                </a>
+                <a href="/order/delivery-list?type=2" class="order-list-box">
+                    <div class="order-statistics-list list-border-3">
+                        <h2>即将延迟发货订单</h2>
+                        <p class="bot-border"><span></span></p>
+                        <div class="order-statistics-list-cont">
+                            <div class="order-statistics-list-cont-text">
+                                {$delayed_delivery1_nums}<em>（笔）</em>
+                            </div>
+                            <div class="order-statistics-list-cont-img">
+                                <img src="{:qiniu_domains()}/upload/6a/6412b780fb7b095b1f620d6be1c86c531da9b0253584a38bd6b53971a82757.png?origin=icon-bg-3.png" alt="">
+                            </div>
+                        </div>
+                    </div>
+                </a>
+                <a href="/order?status=3" class="order-list-box">
+                    <div class="order-statistics-list list-border-4">
+                        <h2>待确认收货订单</h2>
+                        <p class="bot-border"><span></span></p>
+                        <div class="order-statistics-list-cont">
+                            <div class="order-statistics-list-cont-text">
+                                {$to_confirm_receipt_nums}<em>（笔）</em>
+                            </div>
+                            <div class="order-statistics-list-cont-img">
+                                <img src="{:qiniu_domains()}/upload/b1/57db16b0c3517943381dc2acd412680679a1add4e495b828da3dd4b14b3c71.png?origin=icon-bg-4.png" alt="">
+                            </div>
+                        </div>
+                    </div>
+                </a>
+                <a href="/order?status=4" class="order-list-box">
+                    <div class="order-statistics-list list-border-5">
+                        <h2>已成交订单</h2>
+                        <p class="bot-border"><span></span></p>
+                        <div class="order-statistics-list-cont">
+                            <div class="order-statistics-list-cont-text">
+                                {$completed_order_nums}<em>（笔）</em>
+                            </div>
+                            <div class="order-statistics-list-cont-img">
+                                <img src="{:qiniu_domains()}/upload/c4/dd4134d48c0e66d445ba1547aa2eebc3e1ff33d08f371210cb5b71dabd994b.png?origin=icon-bg-5.png" alt="">
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+        <!-- 底部统计盒子 -->
+        <div class="canvas-box">
+            <div class="canvas-box-l">
+                <h1 class="canvas-box-l-tit">
+                    剩余可用版谷（份）
+                </h1>
+                <div class="canvas-circular">
+                    <canvas id="my_html" width="150" height="150"></canvas>
+                </div>
+                <div class="canvas-box-l-text">
+                    <h2>{:number_format($stock_num)}</h2>
+                    <a href="/copyright/index/">版谷详情</a>
+                </div>
+            </div>
+
+            <div class="canvas-box-r">
+                <div class="row hero" style="padding:0;">
+                    <div class="col-sm-10 push-sm-1 later" style="font-size: 14px;">
+                        <div id="chart-composite-1" class="border" style="border:0"><svg height=225></svg></div>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+    <div class="mask-wrap mask-wrap-none">
+            <div class="mask-brand-box">
+                <span style="color:red;">拒绝原因：品牌申请信息不符合，请重新提交！</span>
+                <input type="hidden" id="brand_id" value="{$brandData->brand_id}">
+                <!-- 品牌中文名 -->
+                <div class="mask-brand-list">
+                    <div class="mask-brand-list-l">
+                        <p>品牌名称&nbsp;（中文）</p>
+                        <div class="symbol">
+                            :
+                            <em>*</em>
+                        </div>
+                    </div>
+                    <div class="mask-brand-list-r">
+                        <input type="text" style="width:250px;" value="{$brandData->brand_name}" maxlength="20" id="brand_name_ch" placeholder="请输入品牌中文名称">
+                    </div>
+                </div>
+                <!-- 品牌英文名 -->
+                <div class="mask-brand-list">
+                    <div class="mask-brand-list-l">
+                        <p>品牌名称&nbsp;（英文）</p>
+                        <div class="symbol">
+                            :
+                            <em>*</em>
+                        </div>
+                    </div>
+                    <div class="mask-brand-list-r">
+                        <input type="text" style="width:250px;" value="{$brandData->brand_name_en}" maxlength="20" id="brand_name_en" placeholder="请输入品牌英名称">
+                    </div>
+                </div>
+                <!-- 品牌所属国家 -->
+                <div class="mask-brand-list">
+                    <div class="mask-brand-list-l">
+                        <p>品牌所属国家</p>
+                        <div class="symbol">
+                            :
+                            <em>*</em>
+                        </div>
+                    </div>
+                    <div class="mask-brand-list-r">
+                        <select name="prefix_id" id="prefix_id" style="width:250px;">
+                            {foreach $countryList as $country}
+                            <option value="{$country->prefix_id}" {if $brandData->country_prefix_id eq $country->prefix_id}selected{/if}>{$country->chinese_name}</option>
+                            {/foreach}
+                        </select>
+                    </div>
+                </div>
+                <!-- 品牌LOGO -->
+                <div class="mask-brand-list">
+                    <div class="mask-brand-list-l">
+                        <p>品牌LOGO</p>
+                        <div class="symbol">
+                            :
+                            <em>*</em>
+                        </div>
+                    </div>
+                    <div class="mask-brand-list-r">
+                        <div class="mask-brand-img-box" id="brand_logo" url_path="{:qiniu_domains().$brandData->logo}">
+                            <div class="clear-box"><img class="img-clear" style="width: 18px;height: 18px;" src="/static/imgs/close2.png"></div>
+                            <img class="logo-img" src="{:qiniu_domains().$brandData->logo}">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 品牌简介 -->
+                <div class="mask-brand-list">
+                    <div class="mask-brand-list-l">
+                        <p>品牌简介</p>
+                        <div class="symbol">
+                            :
+                            <em>*</em>
+                        </div>
+                    </div>
+                    <div class="mask-brand-list-r">
+                        <textarea name="" maxlength="200" id="brand_desc" cols="30" rows="10" placeholder="请输入品牌简介，限200字以内">{$brandData->brand_desc}</textarea>
+                    </div>
+                </div>
+                <div class="mask-btn-box">
+                    <button class="mask-btn-back">取消</button>
+                    <button class="mask-btn-next">完成</button>
+                </div>
+            </div>
+        </div>
+
+<!-- 首页弹框提示 -->
+<div class="prompt-tips" style="display:none">
+    <div id="prompt-tips" style="margin:20px;">
+
+    </div>
+</div>
+
+{/block}
+
+{block name='js'}
+    <script src="__STATIC__/layuiadmin/layui/layui.js?{:config('huaban.css_version.version')}"></script>
+    <script src="__STATIC__/lib/progress.js?{:config('huaban.css_version.version')}"></script>
+
+    <script src="__STATIC__/lib/docs/js/frappe-charts.min.js?{:config('huaban.css_version.version')}"></script>
+    <script src="__STATIC__/lib/docs/js/index.js?{:config('huaban.css_version.version')}"></script>
+
+    <script>
+        var orderCount = {$orderCount|raw}
+        var lineCompositeData = {
+            labels : orderCount.date,
+
+            datasets : [
+                {
+                "name": "订单总量",
+                "values": orderCount.total_num,
+                },
+                {
+                "name": "已支付",
+                "values": orderCount.pay_num,
+                }
+            ]
+        };
+
+        var c1 = document.querySelector("#chart-composite-1");
+
+        var lineCompositeChart = new Chart (c1, {
+            title: "七日订单成交量",
+            data: lineCompositeData,
+            type: 'line',
+            height: 200,
+            colors: ['#1296db','#FF8544'],
+            isNavigable: 1,
+            valuesOverPoints: 1,
+
+            lineOptions: {
+                dotSize: 8
+            },
+        });
+
+
+        lineCompositeChart.parent.addEventListener('data-select', (e) => {
+            var i = e.index;
+            barCompositeChart.updateDatasets([
+                fireballOver25[i], fireball_5_25[i], fireball_2_5[i]
+            ]);
+        });
+    </script>
+    <script>
+        //扇形统计图
+        var p1 = new Progress({
+            el:'my_html',//canvas元素id
+            deg:orderCount.receive_num/orderCount.goods_num*360,//绘制角度
+            timer:10,//绘制时间
+            lineWidth:20,//线宽
+            lineBgColor:'#FFE4D6',//底圆颜色
+            lineColor:'#FF8544',//动态圆颜色
+            textColor:'#fff',//文本颜色
+            fontSize:0,//字体大小
+            circleRadius:100//圆半径
+        });
+    </script>
+    <script>
+        // 品牌创建
+        $(".brandBtn").on('click',function () {
+            $('.mask-wrap').removeClass('mask-wrap-none');
+        });
+
+        //详情弹框关闭
+        $('.mask-wrap').on('click', '.mask-btn-back', function() {
+            $('.mask-wrap').addClass('mask-wrap-none');
+        });
+
+        //品牌弹框完成
+        $('.mask-wrap').on('click', '.mask-btn-next', function() {
+            // 获取数据进行提交
+            var brand_id = $("#brand_id").val();
+            var brand_name_ch = $("#brand_name_ch").val();
+            var brand_name_en = $("#brand_name_en").val();
+            var prefix_id = $("#prefix_id").val();
+            var brand_logo = $("#brand_logo").attr('url_path');
+            var brand_desc = $("#brand_desc").val();
+
+            if (brand_name_ch == '') {
+                layer.msg('请填写品牌名称（中文）！',{icon: 2});
+                return false;
+            }
+            if (brand_name_en == '') {
+                layer.msg('请填写品牌名称（英文）！',{icon: 2});
+                return false;
+            }
+            if (prefix_id == '') {
+                layer.msg('请选择品牌所属国家！',{icon: 2});
+                return false;
+            }
+            if (brand_logo == '') {
+                layer.msg('请上传品牌LOGO！',{icon: 2});
+                return false;
+            }
+            if (brand_desc == '') {
+                layer.msg('请填写品牌简介！',{icon: 2});
+                return false;
+            }
+            layer.load(3, {shade: [0.1, '#393D49']});
+            $.ajax({
+                url: '/index/brand-update',
+                type: 'POST',
+                data: {
+                    'brand_id':brand_id,
+                    'brand_name_ch':brand_name_ch,
+                    'brand_name_en': brand_name_en,
+                    'prefix_id': prefix_id,
+                    'brand_logo': brand_logo,
+                    'brand_desc': brand_desc
+                },
+                dataType: 'json',
+                success: function(data) {
+                    layer.closeAll();
+                    layer.msg(data.msg, {
+                        icon: 6,
+                        time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                    }, function(){
+                        $('.mask-wrap').addClass('mask-wrap-none');
+                        $('.etails').removeClass('etails-none');
+                        location.reload();
+                    });
+                },error:function (data) {
+                    layer.msg(data.responseJSON.msg,{icon: 2});
+                }
+            });
+        });
+
+        //品牌上传图片功能
+        $('.mask-wrap').on('change', '.file', function() {
+            var that = $(this);
+            var file = $(this)[0].files[0];
+            var formData = new FormData();
+            formData.append('file', file);
+            var urls = '/api/shop-image';
+            var load = layer.load(3, {shade: [0.1, '#393D49']});
+            $.ajax({
+                url: urls,
+                type: 'POST',
+                cache: false,
+                data: formData,
+                dataType: 'json',
+                processData: false,
+                contentType: false,
+                success: function(data) {
+                    // console.log(data);
+                    layer.close(load);
+                    layer.msg('上传成功！',{icon: 1,time:1000});
+                    var $img = '<div class="clear-box"><img class="img-clear" style="width: 18px;height: 18px;" src="/static/imgs/close2.png"></div>';
+                    $img += '<img class="logo-img" src="'+data.data.url+'">';
+                    that.parents('.mask-brand-img-box').attr('url_path', data.data.url);
+                    that.parents('.mask-brand-img-box').html($img);
+                },error:function (data) {
+                    layer.close(load);
+                    layer.msg(data.responseJSON.msg,{icon: 2});
+                }
+            });
+        });
+
+        //主图动画触发
+        $('.mask-brand-img-box').on('mouseenter',  function(e) {
+
+            e.stopPropagation();
+            $(this).find('.clear-box').animate({
+                top: '0'
+            });
+        });
+
+        $('.mask-brand-img-box').on('mouseleave',  function(e) {
+
+            e.stopPropagation();
+            //执行的动画
+            $(this).find('.clear-box').animate({
+                top: '-31px'
+            }, 300);
+        });
+
+        $('.mask-wrap').on('click','.img-clear',function () {
+            var box2 = '<img class="add-img" src="{:qiniu_domains()}/upload/7f/1afb3c68fcbb0d68421b558c8fb28ba88e7e93f2837996e67f581dabe3b393.png?origin=add.png" alt="">' +
+                '<input class="add-imgLOGO file" type="file" name="" id="">';
+            $(this).parents('.mask-brand-img-box').html(box2);
+        });
+    </script>
+    <script type="text/javascript">
+    // 首页添加版谷数量不足提醒
+    $(function(){
+        $.ajax({
+            url: '/api/business-inventory',
+            type: 'GET',
+            cache: false,
+            data: '',
+            dataType: 'json',
+            processData: false,
+            contentType: false,
+            success: function(data) {
+                if(data.data.list[0].stock_num*1 <= 500){
+                    if(data.data.list.length>0){
+                        var msg = '您好，您账户中的“《'+data.data.list[0].works_name+'》| '+data.data.list[0].artist_name+'”'
+                        +'<font color="#FF0000">'+'等'+'</font>'+'版谷作品的版谷数量已不足500个，将影响关联业务进行，请联系客户经理及时补充！';
+                    }else{
+                        var msg = '您好，您账户中的“《'+data.data.list[0].works_name+'》| '+data.data.list[0].artist_name+'”版权作品的版谷数量已不足500个，将影响关联业务进行，请联系客户经理及时补充！';
+                    }
+                    $("#prompt-tips").html(msg);
+                    layer.open({
+                        type: 1,
+                        content: $('.prompt-tips'),
+                        title: '画版提示您：',
+                        btn: ["去查看","取消"],
+                        btnAlign: 'cc',
+                        shadowClose: true,
+                        area: "500px",
+                        yes: function(){
+                            window.location.href="/copyright/index";
+                        }
+                    });
+                }
+
+            }
+        });
+    })
+    </script>
+
+{/block}

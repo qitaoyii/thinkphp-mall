@@ -1,0 +1,674 @@
+.store-info-wrap {
+    width: 100%;
+    -webkit-box-flex: 1;
+        -ms-flex: 1;
+            flex: 1;
+    overflow-y: scroll;
+    padding: 30px;
+    .store-info-box {
+        width: 100%;
+        height: auto;
+        background: #fff;
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-box-orient: vertical;
+        -webkit-box-direction: normal;
+            -ms-flex-direction: column;
+                flex-direction: column;
+    
+        .store-info-logo-box {
+            width: 100%;
+            height: auto;
+            display: -webkit-box;
+            display: -ms-flexbox;
+            display: flex;
+            -webkit-box-align: center;
+                -ms-flex-align: center;
+                    align-items: center;
+            padding: 20px;
+            padding-bottom: 50px;
+            border-bottom: 1px solid #f6f6f6;
+            .store-info-logo {
+                width: 90px;
+                height: 90px;
+                border: 1px solid #EDF1F5;
+                text-align: center;
+                img {
+                    width: 100%;
+                    height: 100%;
+                }
+            }
+            .store-info-phone {
+               -webkit-box-flex:1;
+                   -ms-flex:1;
+                       flex:1;
+               padding-left: 20px;
+               display: -webkit-box;
+               display: -ms-flexbox;
+               display: flex;
+               -webkit-box-orient: vertical;
+               -webkit-box-direction: normal;
+                   -ms-flex-direction: column;
+                       flex-direction: column;
+               -webkit-box-pack: justify;
+                   -ms-flex-pack: justify;
+                       justify-content: space-between;
+            }
+            .store-info-logo-btn {
+                font-family: MicrosoftYaHei;
+                font-size: 14px;
+                color: #FF7D2C;
+                margin-top: 10px;
+            }
+            .store-info-logo-phone {
+                font-family: MicrosoftYaHei;
+                font-size: 15px;
+                color: #2F323E;
+                margin-top: 5px;
+                span {
+                    font-family: MicrosoftYaHei;
+                    font-size: 15px;
+                    color: #2F323E;
+                }
+            }
+            p {
+                font-family: MicrosoftYaHei;
+                font-size: 12px;
+                color: #737577;
+                line-height: 1.8;
+            }
+            .store-info-logo-pass-btn {
+                width: 90px;
+                height: 24px;
+                color: #fff;
+                background-image: linear-gradient(165deg, rgba(255, 0, 0, 0.59) 0%, #FFB900 160%);
+                border-radius: 30px;
+                font-size: 12px;
+                border: 0;
+                margin: 10px 0 0px 0;
+            }
+        }
+        .login-store-add-cont-box {
+            width: 100%;
+            height: auto;
+            border-bottom: 1px solid #F4F5F6;
+            .login-store-add-cont-box-tit {
+                width: 100%;
+                height: 80px;
+                display: -webkit-box;
+                display: -ms-flexbox;
+                display: flex;
+                -webkit-box-align: center;
+                    -ms-flex-align: center;
+                        align-items: center;
+                padding: 15px 0 10px 0;
+                padding-left: 24px;
+                img {
+                    margin-right: 6px;
+                }
+                h2 {
+                    font-size: 16px;
+                    color: #2F323E;
+                    font-weight: 600;
+                }
+            }
+            .login-store-add-reject-box-list {
+                width: 100%;
+                height: auto;
+                display: -webkit-box;
+                display: -ms-flexbox;
+                display: flex;
+                -webkit-box-align: baseline;
+                    -ms-flex-align: baseline;
+                        align-items: baseline;
+                -webkit-box-direction: normal;
+                    -ms-flex-direction: column;
+                        flex-direction: column;
+                margin-bottom: 25px;
+                .login-store-add-reject-list {
+                    display: -webkit-box;
+                    display: -ms-flexbox;
+                    display: flex;
+                    -webkit-box-align: center;
+                        -ms-flex-align: center;
+                            align-items: center;
+                    -webkit-box-pack: center;
+                        -ms-flex-pack: center;
+                            justify-content: center;
+                    -webkit-box-orient: vertical;
+                    margin-right: 120px;
+                    margin-top:20px;
+                    .login-store-add-cont-box-list-tit {
+                        margin-right: 20px;
+                        font-size: .14rem;
+                        color: #54667A;
+                        width:190px;
+                        text-align: right;
+                    }
+                    p {
+                        font-size: 14px;
+                        color: #000;
+                    }
+                }
+            }
+            .login-store-add-cont-box-list {
+                width: 100%;
+                height: auto;
+                display: -webkit-box;
+                display: -ms-flexbox;
+                display: flex;
+                margin-bottom: 30px;
+                .login-store-add-cont-box-list-tit {
+                    width: 190px;
+                    height: 36px;
+                    display: -webkit-box;
+                    display: -ms-flexbox;
+                    display: flex;
+                    -webkit-box-align: center;
+                        -ms-flex-align: center;
+                            align-items: center;
+                    -webkit-box-pack: end;
+                        -ms-flex-pack: end;
+                            justify-content: flex-end;
+                    color: #54667A;
+                    span {
+                        color: #FF3E3E;
+                        margin-left: 5px;
+                    }
+                }
+                .login-store-add-cont-box-list-content {
+                    -webkit-box-flex: 1;
+                        -ms-flex: 1;
+                            flex: 1;
+                    height: 36px;
+                    margin-left: 12px;
+                    display: -webkit-box;
+                    display: -ms-flexbox;
+                    display: flex;
+                    -webkit-box-align: center;
+                        -ms-flex-align: center;
+                            align-items: center;
+                    .inp {
+                        width: 200px;
+                        height: 34px;
+                        border: 1px solid #E8E8E8;
+                        border-radius: 3px;
+                        padding: 0 5px;
+                    }
+                    input::-webkit-input-placeholder {
+                        /* placeholder颜色  */
+                        color: #C7C8C9;
+                    }
+                    p {
+                        font-size: 12px;
+                        color: #898E93;
+                        margin-left: 30px;
+                    }
+                    .text {
+                        font-size: 14px;
+                        color: #000;
+                    }
+                    .login-store-add-cont-box-list-content-radio {
+                        width: auto;
+                        height: 100%;
+                        display: -webkit-box;
+                        display: -ms-flexbox;
+                        display: flex;
+                        -webkit-box-align: center;
+                            -ms-flex-align: center;
+                                align-items: center;
+                        .list-radio {
+                            width: 70px;
+                            height: 100%;
+                            display: -webkit-box;
+                            display: -ms-flexbox;
+                            display: flex;
+                            -webkit-box-align: center;
+                                -ms-flex-align: center;
+                                    align-items: center;
+                            -webkit-box-pack: justify;
+                                -ms-flex-pack: justify;
+                                    justify-content: space-between;
+                            margin-right: 35px;
+                            .radio {
+                                width: 16px;
+                                height: 16px;
+                                border: 1px solid #3c98ff;
+                                border-radius: 50%;
+                                display: -webkit-box;
+                                display: -ms-flexbox;
+                                display: flex;
+                                -webkit-box-align: center;
+                                    -ms-flex-align: center;
+                                        align-items: center;
+                                -webkit-box-pack: center;
+                                    -ms-flex-pack: center;
+                                        justify-content: center;
+                                cursor: pointer;
+                                .s-radio {
+                                    display: none;
+                                    background: #3c98ff;
+                                    border-radius: 50%;
+                                    width: 10px;
+                                    height: 10px;
+                                }
+                                .s-radio-Y {
+                                    display: block;
+                                }
+                            }
+                        }
+                    }
+                }
+                .login-store-add-cont-box-list-type {
+                    width: 880px;
+                    height: auto;
+                    display: -webkit-box;
+                    display: -ms-flexbox;
+                    display: flex;
+                    -ms-flex-wrap: wrap;
+                        flex-wrap: wrap;
+                    -webkit-box-align: center;
+                        -ms-flex-align: center;
+                            align-items: center;
+                    margin-left: 5px;
+                    .list-type-box {
+                        width: 12.5%;
+                        height: 28px;
+                        display: -webkit-box;
+                        display: -ms-flexbox;
+                        display: flex;
+                        -webkit-box-align: center;
+                            -ms-flex-align: center;
+                                align-items: center;
+                        -webkit-box-pack: center;
+                            -ms-flex-pack: center;
+                                justify-content: center;
+                        margin-bottom: 20px;
+                        .list-type {
+                            width: 92px;
+                            height: 28px;
+                            border: 1px solid #E8E8E8;
+                            position: relative;
+                            text-align: center;
+                            line-height: 28px;
+                            cursor: pointer;
+                            img {
+                                display: none;
+                                position: absolute;
+                                right: 0;
+                                top: 0;
+                            }
+                        }
+                        .list-type-Y {
+                            border: 1px solid #FF8544;
+                            color: #FF8544;
+                            img {
+                                display: block;
+                            }
+                        }
+                    }
+                }
+                .login-store-add-cont-box-list-logo {
+                    -webkit-box-flex: 1;
+                        -ms-flex: 1;
+                            flex: 1;
+                    height: auto;
+                    display: -webkit-box;
+                    display: -ms-flexbox;
+                    display: flex;
+                    margin-left: 12px;
+                    .shop-logo-box {
+                        width: 100px;
+                        height: 100px;
+                        display: -webkit-box;
+                        display: -ms-flexbox;
+                        display: flex;
+                        -webkit-box-align: center;
+                            -ms-flex-align: center;
+                                align-items: center;
+                        -webkit-box-pack: center;
+                            -ms-flex-pack: center;
+                                justify-content: center;
+                        .shop-logo-file-box {
+                            width: 100%;
+                            height: 100%;
+                            display: -webkit-box;
+                            display: -ms-flexbox;
+                            display: flex;
+                            -webkit-box-align: center;
+                                -ms-flex-align: center;
+                                    align-items: center;
+                            -webkit-box-pack: center;
+                                -ms-flex-pack: center;
+                                    justify-content: center;
+                            position: relative;
+                            border: 1px dashed #E8E8E8;
+                            img {
+                                width: 60px;
+                                height: 60px;
+                            }
+                            .file {
+                                width: 100%;
+                                height: 100%;
+                                cursor: pointer;
+                                position: absolute;
+                                top: 0;
+                                left: 0;
+                                opacity: 0;
+                            }
+                        }
+                    }
+                    .logo-img {
+                        width: 100%;
+                        height: 100%;
+                        border: 1px solid #E8E8E8;
+                    }
+                    p {
+                        font-size: 12px;
+                        color: #898E93;
+                        margin-left: 30px;
+                        text-align: end;
+                        padding-top: 85px;
+                    }
+                }
+                .login-store-add-cont-box-list-email {
+                    width: 160px;
+                    height: 100%;
+                    display: -webkit-box;
+                    display: -ms-flexbox;
+                    display: flex;
+                    -webkit-box-align: center;
+                        -ms-flex-align: center;
+                            align-items: center;
+                    -webkit-box-pack: end;
+                        -ms-flex-pack: end;
+                            justify-content: flex-end;
+                    color: #54667A;
+                    span {
+                        color: #FF3E3E;
+                        margin-left: 5px;
+                    }
+                }
+                .login-store-add-cont-box-list-email-content {
+                    width: auto;
+                    height: 36px;
+                    margin-left: 12px;
+                    display: -webkit-box;
+                    display: -ms-flexbox;
+                    display: flex;
+                    -webkit-box-align: center;
+                        -ms-flex-align: center;
+                            align-items: center;
+                    .inp {
+                        width: 200px;
+                        height: 34px;
+                        border: 1px solid #E8E8E8;
+                        border-radius: 3px;
+                        padding: 0 5px;
+                    }
+                    input::-webkit-input-placeholder {
+                        /* placeholder颜色  */
+                        color: #C7C8C9;
+                    }
+                }
+            }
+            .idcard-imgbox {
+                // padding-left: 54px;
+                width: 100%;
+                height: auto;
+                display: -webkit-box;
+                display: -ms-flexbox;
+                display: flex;
+                margin-bottom: 30px;
+                .idcard-imgbox-l,
+                .idcard-imgbox-r {
+                    width: auto;
+                    height: 100%;
+                    display: -webkit-box;
+                    display: -ms-flexbox;
+                    display: flex;
+                    .login-store-add-cont-box-list-tit {
+                        width: 190px;
+                        height: 36px;
+                        display: -webkit-box;
+                        display: -ms-flexbox;
+                        display: flex;
+                        -webkit-box-align: center;
+                            -ms-flex-align: center;
+                                align-items: center;
+                        -webkit-box-pack: end;
+                            -ms-flex-pack: end;
+                                justify-content: flex-end;
+                        color: #54667A;
+                        span {
+                            color: #FF3E3E;
+                            margin-left: 5px;
+                        }
+                    }
+                    .login-store-add-cont-box-list-content {
+                        -webkit-box-flex: 1;
+                            -ms-flex: 1;
+                                flex: 1;
+                        height: 36px;
+                        margin-left: 12px;
+                        display: -webkit-box;
+                        display: -ms-flexbox;
+                        display: flex;
+                        -webkit-box-align: center;
+                            -ms-flex-align: center;
+                                align-items: center;
+                    }
+                    .login-store-add-cont-box-list-logo {
+                        -webkit-box-flex: 1;
+                            -ms-flex: 1;
+                                flex: 1;
+                        height: auto;
+                        display: -webkit-box;
+                        display: -ms-flexbox;
+                        display: flex;
+                        margin: 0 50px 0 12px;
+                        .shop-logo-box {
+                            width: 100px;
+                            height: 100px;
+                            display: -webkit-box;
+                            display: -ms-flexbox;
+                            display: flex;
+                            -webkit-box-align: center;
+                                -ms-flex-align: center;
+                                    align-items: center;
+                            -webkit-box-pack: center;
+                                -ms-flex-pack: center;
+                                    justify-content: center;
+                            .shop-logo-file-box {
+                                width: 100%;
+                                height: 100%;
+                                display: -webkit-box;
+                                display: -ms-flexbox;
+                                display: flex;
+                                -webkit-box-align: center;
+                                    -ms-flex-align: center;
+                                        align-items: center;
+                                -webkit-box-pack: center;
+                                    -ms-flex-pack: center;
+                                        justify-content: center;
+                                position: relative;
+                                border: 1px dashed #E8E8E8;
+                                img {
+                                    width: 60px;
+                                    height: 60px;
+                                }
+                                .file {
+                                    width: 100%;
+                                    height: 100%;
+                                    cursor: pointer;
+                                    position: absolute;
+                                    top: 0;
+                                    left: 0;
+                                    opacity: 0;
+                                }
+                            }
+                        }
+                        .logo-img {
+                            width: 100%;
+                            height: 100%;
+                            border: 1px solid #E8E8E8;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+.mask-box {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    background: rgba(0, 0, 0, .5);
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+        -ms-flex-align: center;
+            align-items: center;
+    -webkit-box-pack: center;
+        -ms-flex-pack: center;
+            justify-content: center;
+    .amend-logo-img-box,
+    .amend-pass-box {
+        width: 990px;
+        height: 590px;
+        border-radius: 8px;
+        background: #fff;
+        margin-left: 10%;
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-box-align: center;
+            -ms-flex-align: center;
+                align-items: center;
+        -webkit-box-orient: vertical;
+        -webkit-box-direction: normal;
+            -ms-flex-direction: column;
+                flex-direction: column;
+        h3 {
+            font-size: 15px;
+            color: #2F323E;
+            margin: 100px 0 14px 0;
+        }
+        .amend-logo-img {
+            width: 120px;
+            height: 120px;
+            background: #FAFAFA;
+            border: 1px solid #E8E8E8;
+            img {
+                width: 100%;
+                height: 100%;
+            }
+        }
+        .amend-logo-img-choose-box {
+            width: 84px;
+            height: 24px;
+            position: relative;
+            margin: 16px 0 25px 0;
+            .amend-logo-img-choose-btn {
+                width: 84px;
+                height: 24px;
+                font-size: 12px;
+                color: #fff;
+                background-image: linear-gradient(165deg, rgba(255, 0, 0, 0.59) 0%, #FFB900 160%);
+                border-radius: 15px;
+                border: 0;
+            }
+            .amend-logo-img-choose-file {
+                width: 100%;
+                height: 100%;
+                position: absolute;
+                top: 0;
+                left: 0;
+                opacity: 0;
+            }
+        }
+        p {
+            font-family: MicrosoftYaHei;
+            font-size: 12px;
+            color: #747678;
+        }
+        .amend-logo-img-btn-box {
+            display: -webkit-box;
+            display: -ms-flexbox;
+            display: flex;
+            -webkit-box-align: center;
+                -ms-flex-align: center;
+                    align-items: center;
+            -webkit-box-pack: center;
+                -ms-flex-pack: center;
+                    justify-content: center;
+            margin-top: 60px;
+            button {
+                width: 220px;
+                height: 48px;
+            }
+            .amend-logo-img-btn-back {
+                border: 1px solid #FF8544;
+                border-radius: 30px;
+                color: #FF8544;
+                background: #fff;
+                margin-right: 88px;
+            }
+            .amend-logo-img-btn-next {
+                color: #fff;
+                background-image: linear-gradient(165deg, rgba(255, 0, 0, 0.59) 0%, #FFB900 160%);
+                border-radius: 30px;
+                border: 0;
+            }
+        }
+        .amend-new-pass-box {
+            width: 100%;
+            height: 36px;
+            display: -webkit-box;
+            display: -ms-flexbox;
+            display: flex;
+            -webkit-box-align: center;
+                -ms-flex-align: center;
+                    align-items: center;
+            -webkit-box-pack: center;
+                -ms-flex-pack: center;
+                    justify-content: center;
+            margin-bottom: 30px;
+            .amend-new-pass-box-l {
+                width: 100px;
+                height: 100%;
+                line-height: 36px;
+                font-size: 15px;
+                color: #2F323E;
+                text-align: right;
+                margin-right: 10px;
+            }
+            input {
+                width: 237px;
+                height: 34px;
+                border: 1px solid #E8E8E8;
+                border-radius: 3px;
+                font-size: 13px;
+                padding: 0 10px;
+            }
+            &:nth-child(1) {
+                margin-top: 155px;
+            }
+        }
+    }
+}
+
+// .mask-box {
+//     display: none;
+// }
+// .amend-logo-img-box {
+//     display: none;
+// }
+// .amend-pass-box {
+//     display: none;
+// }

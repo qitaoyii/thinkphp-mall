@@ -1,0 +1,70 @@
+{extend name="layout/base" /}
+
+{block name="seo"}
+<title>{$title|default="品牌厂家直供平台"}</title>
+{/block}
+
+{block name="style"}
+<style></style>
+{/block}
+
+{block name="title"}
+<span>订单管理</span> /
+<span class="colorTit">待结算订单</span>
+{/block}
+{block name="content"}
+<!-- 平台功能区 -->
+<div class="ShopFrontPage-r-bot">
+    <div class="order-box cards">
+        <div class="order-search">
+
+        </div>
+        <div class="order-table">
+            <table class="order-tb">
+                <thead>
+                <tr class="tr-th">
+                    <!--<th>序号</th>-->
+                    <th>交易时间</th>
+                    <th>交易订单号</th>
+                    <th>支付金额（元）</th>
+                    <!--<th>手续费金额（元）</th>-->
+                    <!--<th>推广佣金金额（元）</th>-->
+                    <th>结算金额（元）</th>
+                </tr>
+                </thead>
+                <tbody>
+                {foreach name='list' item='val'}
+                <tr class="tr-bd">
+                    <!--<td>{$list->num++}</td>-->
+                    <td>{$val->pay_time}</td>
+                    <td>{$val->transaction_id}</td>
+                    <td>{$val->pay_price}</td>
+                    <td>{$val->supply_price_text}</td>
+                </tr>
+                {/foreach}
+                </tbody>
+            </table>
+            <div class="order-search">
+                <div class="form-group">
+                    <div class=" text-right">
+                        共<span class="text-blue">{$num}</span>笔订单&nbsp;&nbsp;
+                        待结算总金额(元)：
+                        <span class="text-o">￥{$total_price}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--分页-->
+        <div class="pragination-group" id="pageToolbar">
+            {$list->render()|raw}
+        </div>
+        <div class="btn-group">
+            <a href="javascript:;" class="btn btn-o btn-lg" onclick="window.history.back()">关闭</a>
+        </div>
+    </div>
+</div>
+{/block}
+
+{block name='js'}
+
+{/block}

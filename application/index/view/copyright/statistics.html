@@ -1,0 +1,97 @@
+{extend name="layout/base" /}
+
+{block name="seo"}
+<title>{$title|default="画版商户后台管理系统"}</title>
+{/block}
+
+{block name="style"}
+<style></style>
+{/block}
+
+{block name="title"}
+<span>版谷管理</span> /
+<span class="colorTit">版谷中心</span>
+{/block}
+
+<!-- 平台功能区 -->
+{block name="content"}
+
+<div class="ShopFrontPage-r-bot">
+    <div class="order-box cards">
+        <div class="cr-info">
+            <div class="info-img"><img src="{:qiniu_domains().$works->works_cover}" width="90px" height="90px"></div>
+            <div class="info-text">
+                <h5>《{$works->works_name}》</h5>
+                <p>{$works->artister->real_name}</p>
+            </div>
+        </div>
+        <h2>版谷分配详情</h2>
+        <div class="choose-list">
+            {if $product}
+            <div class="choose-item {if 1== $type} active {/if}">
+                <a href="/copyright/statistics?works_id={$works->works_id}&type=1">商品认证版谷</a>
+            </div>
+            {/if}
+            {if $promotion}
+            <div class="choose-item {if 2== $type} active {/if}">
+                <a href="/copyright/statistics?works_id={$works->works_id}&type=2">活动营销版谷</a>
+            </div>
+            {/if}
+        </div>
+        <div class="deal-box choose-box show">
+            <div class="order-table">
+                <table class="order-tb">
+                    <thead>
+                        <tr class="scope-tr"></tr>
+                        <tr class="tr-th">
+                            <th>序号</th>
+                            {if 1== $type}
+                                <th>商品名称</th>
+                                <th>商品规格</th>
+                                <th>规格图片</th>
+                            {else /}
+                                <th>活动名称</th>
+                                <th>活动版谷数量</th>
+                                <th>活动状态</th>
+                            {/if}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {foreach name='list' item='vo'}
+                            {if 1 == $type}
+                                <tr class="tr-bd">
+                                    <td>{$templates->num++}</td>
+                                    <td>{:optional($vo->product)->product_name}</td>
+                                    <td>{$vo->property_name_text}</td>
+                                    <td><img src="{:qiniu_domains().$vo->image_url.'?imageView2/2/w/100/h/100'}" style="width:40px;height:40px;"></td>
+                                </tr>
+                            {else /}
+                                <tr class="tr-bd">
+                                    <td>{$templates->num++}</td>
+                                    <td>{$vo->activity_name}</td>
+                                    <td>
+                                        {if $vo->num_type == 1}
+                                            不限量
+                                        {else /}
+                                            {$vo->total_num}
+                                        {/if}
+                                    </td>
+                                    <td>{$vo->status_text}</td>
+                                </tr>
+                            {/if}
+                        {/foreach}
+                    </tbody>
+                </table>
+            </div>
+            <!--分页-->
+            <div class="pragination-group" id="pageToolbar">
+                {$list->render()|raw}
+            </div>
+        </div>
+    </div>
+</div>
+{/block}
+
+{block name='js'}
+<script></script>
+{/block}

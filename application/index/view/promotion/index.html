@@ -1,0 +1,360 @@
+{extend name="layout/base" /}
+
+{block name="seo"}
+<title>{$title|default="画版商户后台管理系统"}</title>
+{/block}
+
+{block name="style"}
+    <script src="__STATIC__/lib/paging.js?{:config('huaban.css_version.version')}"></script>
+    <style>
+        .icon-parent{position:relative;}
+        .icon-parent>.icon{display: block;position: absolute;width: 40px;height: 40px;top:0;right: -2px;background: url('{:qiniu_domains()}/upload/4d/b67585abc61333aaabc5b88ae367768c0c4e794c615947fbdf79b6465369cf.png?origin=active_css_sprites.png') no-repeat;
+        background-size:120px 40px;}
+        .icon-parent>.icon.not_start{
+            background-position:center center;
+        }
+        .icon-parent>.icon.starting{
+            background-position:left center;
+        }
+        .icon-parent>.icon.stop{
+            background: url('{:qiniu_domains()}/upload/a3/640e9b9d6f6061ff87e2cb917739e1ac4966054025dea1e2b45e1f4b7260af.png?origin=已结束.png') no-repeat;
+            background-size: 40px;
+            background-position: center center;
+        }
+        .icon-parent>.icon.soldOut{
+            background: url('{:qiniu_domains()}/upload/0f/c963764aae1d365bc3e83bc4a3b0a854d3cbf50e053d9e4d633a5f65991d79.png?origin=已下架.png') no-repeat;
+            background-size: 40px;
+            background-position: center center;
+        }
+
+    </style>
+{/block}
+
+{block name="title"}
+<span>活动管理</span> /
+<span class="colorTit">全部活动</span>
+{/block}
+
+<!-- 平台功能区 -->
+{block name="content"}
+    <div class="ShopFrontPage-r-bot">
+        <div class="order-box cards">
+            <div class="order-search">
+                <form action="/promotion/index" method="get">
+                    <div class="form-group"  style="justify-content: flex-start;">
+                        <div class="form-item">
+                            <label for="date">发布时间</label>
+                            <input type="text" autocomplete="off" placeholder="请选择日期" name="create_time" value="{$create_time}" id="date">
+                            <i></i>
+                        </div>
+                        <div class="form-item">
+                            <label for="select">活动状态</label>
+                            <select id="select" name="status">
+                                <option value="all" {:isset($status)?($status=='all'?'selected':''):''}>全部</option>
+                                <option value="0" {:isset($status)?($status=='0'?'selected':''):''}>未开始</option>
+                                <option value="1" {:isset($status)?($status=='1'?'selected':''):''}>进行中</option>
+                                <option value="2" {:isset($status)?($status=='2'?'selected':''):''}>已结束</option>
+                                <option value="7" {:isset($status)?($status=='7'?'selected':''):''}>已下架</option>
+                            </select>
+                        </div>
+                        <div class="form-item">
+                            <label for="name">活动名称</label>
+                            <input type="text" placeholder="请输入活动名称" name="activity_name" value="{$activity_name}" id="name">
+                            <i></i>
+                        </div>
+                        <div class="form-item">
+                            <label for="name">作品名称</label>
+                            <input type="text" placeholder="请输入作品名称" name="works_name" value="{$works_name}" id="works_name">
+                            <i></i>
+                        </div>
+                    </div>
+                    <div class="form-group" style="justify-content: flex-start;padding-left:10px;">
+                        <div>
+                            <input type="submit" value="查询" class="btn btn-fill">
+                            <i></i>
+                        </div>
+                    </div>
+                </form>
+
+                <div class="form-group right"><a href="/promotion/create" class="btn btn-fill">创建新活动</a></div>
+            </div>
+            <div class="order-table">
+                <table class="order-tb">
+                    <thead>
+                    <tr class="tr-th">
+                        <th>序号</th>
+                        <th>活动名称</th>
+                        <th>活动时间</th>
+                        <th>作品名称</th>
+                        <th>版谷数量</th>
+                        <th>已领取数量</th>
+                        <th>创建时间</th>
+                        <th>操作</th>
+                    </tr>
+                    </thead>
+                    {foreach name='promotions' item='promotion'}
+                        <tbody>
+
+                            {if 2 == $promotion->status}
+                                <tr class="tr-bd" style="background:rgba(0, 0, 0, 0.01);color:#bbb">
+                            {else /}
+                                <tr class="tr-bd">
+                            {/if}
+                                    <td>{$promotions->num++}</td>
+                                    <td class="icon-parent">
+                                        <span class="clip">{$promotion->activity_name}</span>
+                                        {if 0 == $promotion->status}
+                                        <i class="icon not_start"></i>
+                                        {/if}
+                                        {if 1 == $promotion->status}
+                                        <i class="icon starting"></i>
+                                        {/if}
+                                        {if 2 == $promotion->status}
+                                        <i class="icon stop"></i>
+                                        {/if}
+                                        {if 7 == $promotion->status}
+                                        <i class="icon soldOut"></i>
+                                        {/if}
+                                    </td>
+                                    <td>
+                                        <span class="active-time">{:time_to_date($promotion->start_time)} 至 {:time_to_date($promotion->end_time)}</span>
+                                    </td>
+                                    <td>
+                                        <div class="goods-item">
+                                            <div class="goods-img">
+                                                <img src="{:qiniu_domains().optional($promotion->work)->works_cover}"
+                                                    alt="" width="40px" height="40px">
+                                            </div>
+                                            <div class="goods-title" style="overflow: inherit;cursor: pointer;">
+                                                <span class="artister-name">{:optional(optional($promotion->work)->artister)->real_name}</span>
+                                                <div class="text-gray">
+                                                    <span class="works-name">《{:optional($promotion->work)->works_name}》</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        {if $promotion->num_type == 1}
+                                            不限
+                                        {else /}
+                                            {$promotion->total_num}
+                                        {/if}
+                                    </td>
+                                    <td>
+                                        {$promotion->receive_num}
+                                    </td>
+                                    <td>
+                                        {$promotion->create_time}
+                                    </td>
+
+                                    <td>
+                                        <div class="operate">
+                                            <p class="operate-item" onclick="showInfo($(this))">
+                                                <a href="javascript:;" data-qrcode="{:qiniu_domains().$promotion->qrcode_url}"><i class="icon icon-qr"></i>获客二维码</a>
+                                            </p>
+                                            {if $promotion->status != 0}
+                                            <p class="operate-item">
+                                                <a href="/promotion/statistics?promotion_id={$promotion->promotion_id}"><i class="icon icon-tongji"></i>活动统计</a>
+                                            </p>
+                                            {/if}
+
+                                            {if 2 != $promotion->status}
+                                            <p class="operate-item">
+                                                <a href="/promotion/create?promotion_id={$promotion->promotion_id}"><i class="icon icon-edit"></i>编辑</a>
+                                            </p>
+                                            {/if}
+                                            {if in_array($promotion->status, [1,7])}
+                                            <p class="operate-item">
+                                                <a class="promotion_sale" style="cursor: pointer;" data-promotion-id="{$promotion->promotion_id}" data-status="{$promotion->status}">
+                                                    {if $promotion->status == 7}
+                                                    <i class="icon icon-shangjia"></i>上架
+                                                    {/if}
+                                                    {if $promotion->status == 1}
+                                                    <i class="icon icon-xiajia"></i>下架
+                                                    {/if}
+                                                </a>
+                                            </p>
+                                            {/if}
+                                        </div>
+                                    </td>
+                                </tr>
+                        </tbody>
+                    {/foreach}
+                </table>
+            </div>
+            <!--分页-->
+            {$promotions->render()|raw}
+        </div>
+    </div>
+    <div id="layer-showqr-box">
+            <div class="qr-item">
+                <span class="item-label">活动名称：</span>
+                <div class="item-value" id="value1">版谷活动获客</div>
+            </div>
+            <div class="qr-item">
+                <span class="item-label">活动时间：</span>
+                <div class="item-value" id="value2">2019-10-01—2019-12-31</div>
+            </div>
+            <div class="qr-item">
+                <span class="item-label">作品名称：</span>
+                <div class="item-value" id="value3">
+                    <span class="item-img">
+                        <img src="" alt="" width="60" height="60">
+                    </span>
+                    <p class="item-value-info">
+                        <i id="item-works_nickName">吴志鹏</i>
+                        <i id=item-works_name>海的那边</i>
+                    </p>
+                </div>
+            </div>
+            <div class="qr-item">
+                <span class="item-label">获客二维码：</span>
+                <div class="item-value" id="value4">
+                    <img src="" alt="" width="100">
+                    <br>
+                    <a href="javascript:;" class="btn btn-o btn-icon btn-export" download>
+                        <i class="fa fa-download"></i>下载至本地
+                    </a>
+                </div>
+            </div>
+    </div>
+{/block}
+
+{block name='js'}
+    <script type="text/javascript">
+        // 获客二维码
+        function showInfo(obj){
+            // 获取列表的数据
+            var active_name = obj.parents('tr').find('.clip').html().trim();
+            var active_time = obj.parents('tr').find('.active-time').html().trim();
+            var works_img = obj.parents('tr').find('.goods-img').find('img').attr('src');
+            var works_name = obj.parents('tr').find('.works-name').html().trim();
+            var artister_name = obj.parents('tr').find('.artister-name').html().trim();
+            var qrcode_url = obj.find('a').attr('data-qrcode');
+
+            // 进行赋值
+            $("#value1").html(active_name);
+            $("#value2").html(active_time);
+            $("#value3").find('img').attr('src', works_img);
+            $("#item-works_nickName").html(artister_name);
+            $("#item-works_name").html(works_name);
+            $("#value4").find('img').attr('src',qrcode_url);
+            $("#value4").find('a').attr('data-href',qrcode_url);
+            setTimeout(function () {
+                layer.open({
+                    type:1,
+                    title: "获客二维码",
+                    shadeClose: true,
+                    content: $("#layer-showqr-box"),
+                    area:['500px','400px'],
+                });
+            },100);
+        }
+
+        // 下载二维码到本地
+        $(".btn-export").click(function () {
+            var url = $(this).attr('data-href');
+            var name=$("#value1").html();
+            getBase64(url).then(base64 => {
+               // 执行下载图片
+                download(base64,name);
+            }, err => {
+                console.log(err)
+            });
+
+        });
+
+        //将远程图片转化为base64
+        function getBase64(img){
+            var image = new Image();
+            image.crossOrigin = '';
+            image.src = img;
+            return new Promise((resolve,reject)=>{
+                image.onload =function (){
+                    resolve(getBase64Image(image));//将base64传给done上传处理
+                }
+            });
+        }
+
+        //将base64传给done上传处理
+        function getBase64Image(img,width,height) {
+            var canvas = document.createElement("canvas");
+            canvas.width = width ? width : img.width;
+            canvas.height = height ? height : img.height;
+            var ctx = canvas.getContext("2d");
+            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+            var dataURL = canvas.toDataURL();
+            return dataURL;
+        }
+
+        // 下载图片
+        function download(url,name) {
+            let imgData = url;
+            //var myDate = new Date();
+            //var name = myDate.getSeconds();
+            downloadFile('qrcode_'+name+'.png', imgData);
+        }
+        //下载
+        function downloadFile(fileName, content) {
+            let aLink = document.createElement('a');
+            let blob = base64ToBlob(content); //new Blob([content]);
+            let evt = document.createEvent("HTMLEvents");
+            evt.initEvent("click", true, true);//initEvent 不加后两个参数在FF下会报错  事件类型，是否冒泡，是否阻止浏览器的默认行为
+            aLink.download = fileName;
+            aLink.href = URL.createObjectURL(blob);
+            // aLink.dispatchEvent(evt);
+            // aLink.click()
+            aLink.dispatchEvent(new MouseEvent('click', {bubbles: true, cancelable: true, view: window}));//兼容火狐
+        }
+        //base64转blob
+        function base64ToBlob(code) {
+            let parts = code.split(';base64,');
+            let contentType = parts[0].split(':')[1];
+            let raw = window.atob(parts[1]);
+            let rawLength = raw.length;
+            let uInt8Array = new Uint8Array(rawLength);
+            for (let i = 0; i < rawLength; ++i) {
+                uInt8Array[i] = raw.charCodeAt(i);
+            }
+            return new Blob([uInt8Array], {type: contentType});
+        }
+
+    </script>
+
+    <script>
+        $(".promotion_sale").click(function () {
+            var promotion_id = $(this).attr('data-promotion-id');
+            var status = $(this).attr('data-status');
+            if (status == 1) {
+                $msg = '确定要下架吗？';
+            } else {
+                $msg = '确定要上架吗？';
+            }
+            layer.confirm($msg,{
+                btn:["确定", "取消"]
+            }, function () {
+                $.ajax({
+                    url: '/promotion/sale',
+                    type: 'POST',
+                    data:  {'promotion_id': promotion_id, 'status': status},
+                    dataType: 'json',
+                    success: function (data) {
+                        console.log(data)
+                        layer.msg(data.msg, {
+                            icon: 6,
+                            time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                        }, function () {
+                            layer.closeAll();
+                            location.reload();
+                        });
+                    },
+                    error: function (data) {
+                        layer.msg(data.responseJSON.msg, {icon: 2}, function () {
+                            layer.closeAll();
+                        });
+                    }
+                });
+            });
+        });
+    </script>
+{/block}

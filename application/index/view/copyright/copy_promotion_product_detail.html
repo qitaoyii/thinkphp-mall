@@ -1,0 +1,90 @@
+{extend name="layout/base" /}
+
+{block name="seo"}
+<title>{$title|default="画版商户后台管理系统"}</title>
+{/block}
+
+{block name="style"}
+<style></style>
+{/block}
+
+{block name="title"}
+<span>版谷管理</span> /
+<span class="colorTit">版谷中心</span>
+{/block}
+
+<!-- 平台功能区 -->
+{block name="content"}
+    <div class="ShopFrontPage-r-bot">
+        <div class="order-box cards">
+
+            <table class="order-tb">
+                    <thead>
+                    <tr class="tr-th">
+                        <th>序号</th>
+                        <th>版谷</th>
+                        <th>作品名称</th>
+                        <th>版谷获取方式</th>
+                        <th>
+                            {if 1 == $type} 商品名称 {else /} 活动名称 {/if}
+                        </th>
+                        <th>领取手机号</th>
+                        <th>领取时间</th>
+                        <!--<th>操作</th>-->
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {foreach name='receiveList' item='receive'}
+                    <tr class="tr-bd">
+                        <td>{$receive->send_id}</td>
+                        <td>
+                            {$receive->copy_code}
+                        </td>
+                        <td>
+                            《{:optional($receive->works)->works_name}》
+                        </td>
+                        <td>
+                            {$receive->send_type_text}
+                        </td>
+
+                        <td>
+                            {if 1 == $type}
+                                {$product->product_name}
+                            {else /}
+                                {:optional($receive->promotion)->activity_name}
+                            {/if}
+
+                        </td>
+                        <td>
+                            <span class="userphone">{:optional($receive->user)->phone}</span>
+                        </td>
+                        <td>
+                            {:time_to_date($receive->create_time)}
+                        </td>
+                        <!--<td>-->
+                        <!--<div class="operate">-->
+                        <!--<p class="operate-item">-->
+                        <!--<a href="copyright_search-detial.html?id="><i class="icon icon-yulan"></i>详情</a>-->
+                        <!--</p>-->
+                        <!--</div>-->
+                        <!--</td>-->
+                    </tr>
+                    {/foreach}
+                    </tbody>
+                </table>
+
+            <div class="pragination-group" id="pageToolbar">
+                {$receiveList->render()|raw}
+            </div>
+
+            <div class="btn-group">
+                <a href="javascript:;" class="btn btn-o btn-lg" onclick="window.history.back()">关闭</a>
+            </div>
+        </div>
+    </div>
+{/block}
+
+{block name='js'}
+<script>
+</script>
+{/block}

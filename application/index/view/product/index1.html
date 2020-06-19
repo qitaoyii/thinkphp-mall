@@ -1,0 +1,370 @@
+{extend name="layout/base" /}
+
+{block name="seo"}
+<title>{$title|default="品牌厂家直供平台"}</title>
+{/block}
+
+{block name="style"}
+
+{/block}
+
+{block name="title"}
+    <span>商品管理</span> /
+    <span class="colorTit">所有商品</span>
+{/block}
+
+{block name="content"}
+    <!-- 平台功能区 -->
+    <div class="ShopFrontPage-r-bot">
+        <div class="goods-box cards">
+            <div class="order-search">
+                <form action="/product/index" method="get" id="myform">
+                    <input type="hidden" name="status" id="order_status">
+                    <div class="form-group">
+                        <div class="form-item">
+                            <label for="create_time">创建时间：</label>
+                            <input type="text" autocomplete="off" placeholder="请选择日期" name="create_time" value="{$create_time}" id="date">
+                            <i></i>
+                        </div>
+                        <div class="form-item">
+                            <label for="order_sn">商品标题：</label>
+                            <input type="text" placeholder="请输入商品标题" name="product_name" value="{$product_name}">
+                            <i></i>
+                        </div>
+                        <div class="form-item">
+                            <label for="product_name">商品ID：</label>
+                            <input type="text" placeholder="请输入商品ID" name="product_id" value="{$product_id}">
+                            <i></i>
+                        </div>
+                        <div class="form-item-btn" style="visibility: hidden"></div>
+                    </div>
+                    <div class="form-group">
+                        <div class="form-item">
+                            <label for="transaction_id">作品名称：</label>
+                            <input type="text" placeholder="请输入版谷作品名称" name="works_name" id="date1" value="{$works_name}">
+                            <i></i>
+                        </div>
+                        <div class="form-item">
+                            <label for="goods-state">商品状态：</label>
+                            <select name="status" id="goods">
+                                <option value="">全部</option>
+                                {foreach $statuses as $k => $v}
+                                <option value="{$k}" {if condition="$status eq $k"}selected{/if}>{$v}</option>
+                                {/foreach}
+                            </select>
+                        </div>
+                        <div class="form-item-btn">
+                            <input type="submit" value="查询" class="btn btn-fill">
+                            <i></i>
+                            <a href="/product/wait-release" style="color:blue;cursor: pointer;">待发布</a>
+                        </div>
+                        <div class="form-item" style="visibility: hidden"></div>
+                    </div>
+                </form>
+
+            </div>
+            <div class="goods-table">
+
+                <table class="goods-tb">
+                    <thead>
+                    <!--<tr>-->
+                        <!--<th colspan="9">-->
+                            <!--<div class="form-group">-->
+                                <!--<div class="form-checkbox" id="allCheck">-->
+                                    <!--<label for="">-->
+                                        <!--<input type="checkbox" class="allcheck">-->
+                                        <!--<span></span> 全选-->
+                                    <!--</label>-->
+                                <!--</div>-->
+                                <!--<div class="form-item-btn">-->
+                                    <!--<a href="javascript:;" class="btn btn-o btn-icon saleout">-->
+                                        <!--<img src="{:qiniu_domains()}/upload/6d/4aa22e217109e565b4533ba89efc63fa43df731ada0a520549d6e60331c3ca.png?origin=xiajia-h.png" alt="">-->
+                                        <!--批量下架-->
+                                    <!--</a>-->
+                                <!--</div>-->
+                            <!--</div>-->
+                        <!--</th>-->
+                    <!--</tr>-->
+                    <tr>
+                        <th>
+                            商品ID
+                        </th>
+                        <th>
+                            商品标题
+                        </th>
+                        <th>
+                            作品名称
+                        </th>
+                        <th>规格</th>
+                        <th>结算价（元）</th>
+                        <th>可获积分</th>
+                        <th>库存数量</th>
+                        <th>操作项</th>
+                    </tr>
+                    </thead>
+                    <?php foreach($products as $product) {
+                            $count = count($product->productPropertyDetails);
+                            $count < 1 && $count = 1;
+                    ?>
+                        <tbody>
+                            <tr class="scope-tr"></tr>
+                            <tr class="tr-th">
+                                <td colspan='9'>
+                                    <!--<div class="form-checkbox">-->
+                                        <!--<label for="">-->
+                                            <!--<input type="checkbox" name="product_id[]" class="item-check" value="{$product->product_id}">-->
+                                            <!--<span></span></label>-->
+                                    <!--</div>-->
+                                    <span class="time">创建时间：{$product->create_time}</span>
+                                    {if $product->product_status == 5 || $product->product_status == 2}
+                                    <span class="state text-red" >{$product->status_text}( 原因：{$product->refusal_cause} )</span>
+                                    {elseif $product->product_status == 1}
+                                    <span class="state text-o" >{$product->status_text}</span>
+                                    {elseif $product->product_status == 3}
+                                    <span class="state" >{$product->status_text}</span>
+                                    {elseif $product->product_status == 4}
+                                    <span class="state text-blue" >{$product->status_text}</span>
+                                    {else}
+                                    <span class="state" >{$product->status_text}</span>
+                                    {/if}
+                                </td>
+                            </tr>
+                            <tr class="tr-bd">
+                                <td rowspan="{$count}">
+                                    <div class="">
+                                        {$product->product_id}
+                                    </div>
+                                </td>
+                                <td rowspan="{$count}">
+                                    <div class="">
+                                        {$product->product_name}
+                                    </div>
+                                </td>
+                                <td rowspan="{$count}">
+                                    <div class="goods-name">
+                                        《{:optional($product->works)->works_name}》
+                                    </div>
+                                </td>
+                                <td colspan="4">
+                                    {if $count >=1}
+                                        <?php $i = 1;?>
+                                        {foreach $product->productPropertyDetails as $detail}
+                                            <div class="goods-info">
+                                                <div class="goods-item">
+                                                        <p class="goods-img">
+                                                                <img src="{:qiniu_domains().$detail->image_url}" width="40" height="40">
+                                                            </p>
+                                                    <p class="goods-"><span class="text-link">{:optional($detail->shopProductPropertyType1)->name}</span><br>
+                                                    <span class="text-gray">{:optional($detail->shopProductPropertyType2)->name}</span></p>
+
+                                                </div>
+                                                <div class="goods-price">{$detail->supply_price}</div>
+                                                <div class="goods-price">{$detail->score}</div>
+                                                <div class="goods-price">{$detail->stock}</div>
+                                            </div>
+                                            <?php $i++;?>
+                                        {/foreach}
+                                    {else /}
+                                            <div class="goods-info">
+                                                <div class="goods-item">
+                                                    <p class="text-link">-</p>
+                                                    <p class="text-gray">-</p>
+                                                    <p class="goods-img">
+                                                        <img  width="40" height="40">
+                                                    </p>
+                                                </div>
+                                                <div class="goods-price">-</div>
+                                                <div class="goods-price">-</div>
+                                                <div class="goods-price">-</div>
+
+                                            </div>
+                                    {/if}
+                                </td>
+                                <td rowspan="{$count}">
+                                    <div class="operate">
+                                        {if 2 !== $product->product_status}
+                                            <p class="operate-item">
+                                                <a href="javascript:void(0);" class="preview" product_id="{$product->product_id}" shop_id="{:get_shop_id()}"><i class="icon icon-yulan"></i>预览</a>
+                                            </p>
+                                        {/if}
+                                        {haspermission:close key="edit-product"}
+                                        {if 5 !== $product->product_status}
+                                            <p class="operate-item">
+                                                <a href="/product/save?product_id={$product->product_id}&type=2"><i class="icon icon-edit"></i>编辑</a>
+                                            </p>
+                                        {/if}
+                                        {/haspermission:close}
+                                        {haspermission:close key="edit-product-sale"}
+                                        {if 3 === $product->product_status}
+                                            <p class="operate-item">
+                                                <a href="javascript:void(0);" class="product_saleout" productid="{$product->product_id}"><i class="icon icon-xiajia"></i>下架</a>
+                                            </p>
+                                        {/if}
+                                        {if 4 === $product->product_status || 6 === $product->product_status}
+                                            <p class="operate-item">
+                                                <a href="javascript:void(0);" class="product_saleup" productid="{$product->product_id}" worksid="{$product->works_id}"><i class="icon icon-shangjia"></i>上架</a>
+                                            </p>
+                                        {/if}
+                                        {/haspermission:close}
+                                        {haspermission:close key="delete-product"}
+                                        {if 2 === $product->product_status || 4 === $product->product_status || 6 === $product->product_status}
+                                            <p class="operate-item">
+                                                <a href="javascript:void(0);" class="product_del" productid="{$product->product_id}"><i class="icon icon-detel"></i>删除</a>
+                                            </p>
+                                        {/if}
+                                        {/haspermission:close}
+                                        <p class="operate-item">
+                                            <a href="/product/save?product_id={$product->product_id}&type=1"><i class="icon icon-shangjia"></i>新批次生成</a>
+                                        </p>
+                                        <p class="operate-item">
+                                            <a href="/product/log-list?product_id={$product->product_id}"><i class="icon icon-shangjia"></i>操作记录</a>
+                                        </p>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    <?php } ?>
+                </table>
+            </div>
+            <!--分页-->
+            {$products->render()|raw}
+        </div>
+    </div>
+{/block}
+
+{block name='js'}
+    <script>
+    // 批量下架
+    $(".saleout").click(function () {
+        var product_ids=[];
+        $("input[name='product_id[]']").each(function() {
+            if ($(this).is(':checked')) {
+                product_ids.push($(this).val());
+            }
+        });
+        if (product_ids.length == 0) {
+            layer.msg('您没有勾选信息，无法进行操作！', {
+                icon: 0,
+                time: 2000 //2秒关闭（如果不配置，默认是3秒）
+            });
+            return false;
+        }
+        product_ids= product_ids.join(',');
+
+        layer_confirm(product_ids);
+    });
+
+    // 单个商品上架
+    $(".product_saleup").click(function () {
+        var productid = $(this).attr('productid');
+        var works_id = $(this).attr('worksid');
+        layer.confirm('是否要上架该商品？', {
+            btn: ['立即上架', '取消']
+        }, function(index, layero){
+            $.ajax({
+                url: "sale-up",
+                type: 'POST',
+                dataType: 'json',
+                data: {'product_ids': productid, 'works_id': works_id},
+                success: function (result) {
+                    console.log(result);
+                    layer.msg(result.msg, {
+                        icon: 6,
+                        time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                    }, function(){
+                        location.reload();
+                    });
+
+                },error: function (data) {
+                    console.log(data);
+                    layer.msg(data.responseJSON.msg,{icon: 2});
+                }
+            });
+        }, function(index){
+            layer.close(index);
+        });
+    });
+    // 单个商品下架
+    $(".product_saleout").click(function () {
+        var product_ids = $(this).attr('productid');
+
+        layer_confirm(product_ids);
+    });
+
+    function layer_confirm(product_ids){
+        layer.confirm('下架后，该商品将不在前端展示是否要下架该商品？', {
+            btn: ['立即下架', '取消']
+        }, function(index, layero){
+            sale_ajax(product_ids);
+        }, function(index){
+            layer.close(index);
+        });
+    }
+
+    function sale_ajax(productid){
+        $.ajax({
+            url: "sale-out",
+            type: 'POST',
+            dataType: 'json',
+            data: {'product_ids':productid},
+            success: function (result) {
+                console.log(result);
+                layer.msg(result.msg, {
+                    icon: 6,
+                    time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                }, function(){
+                    location.reload();
+                });
+
+            },error: function (data) {
+                console.log(data);
+                layer.msg(data.responseJSON.msg,{icon: 2});
+            }
+        });
+    }
+
+    // 商品删除
+    $(".product_del").click(function () {
+        var product_id = $(this).attr("productid");
+        layer.confirm('是否要删除该商品？', {
+            btn: ['立即删除', '取消']
+        }, function (index, layero) {
+            $.ajax({
+                url: "delete",
+                type: 'POST',
+                dataType: 'json',
+                data: {'product_id': product_id},
+                success: function (result) {
+                    console.log(result);
+                    layer.msg(result.msg, {
+                        icon: 6,
+                        time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                    }, function () {
+                        location.reload();
+                    });
+                }, error: function (data) {
+                    layer.msg(data.responseJSON.msg, {icon: 2});
+                }
+            });
+        }, function (index) {
+            layer.close(index);
+        });
+    });
+
+    // 商品预览
+    $(".preview").click(function () {
+        var url = "{:shop_domain()}";
+        var product_id = $(this).attr('product_id');
+        var shop_id = $(this).attr('shop_id');
+
+        layer.open({
+            type: 2,
+            title: '商品预览',
+            shadeClose: true,
+            shade: 0.5,
+            area: ['20%', '65%'],
+            content: url + '/product_preview?product_id='+product_id+'&shop_id='+shop_id //iframe的url
+        });
+    });
+</script>
+{/block}

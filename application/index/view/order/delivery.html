@@ -1,0 +1,502 @@
+{extend name="layout/base" /}
+
+{block name="seo"}
+<title>{$title|default="品牌厂家直供平台"}</title>
+<meta name="keywords" content="{$keywords|default='网站关键字'}">
+<meta name="description" content="{$desc|default='网站描述'}">
+{/block}
+
+{block name="style"}
+<style>
+.btn-box{width:700px;text-align: right;padding-right:px;margin-top:-40px;}
+.btn-box>input{cursor: pointer;}
+.form-items{display: flex;justify-content: space-between;align-items: center;width: 150px;}
+.form-items .form-radio{
+    display: inline-flex;
+    align-items: center;
+}
+.bor-1{
+    width: 370px;
+}
+.bor-2{
+    width: 270px;
+}
+</style>
+
+{/block}
+
+{block name="title"}
+<span>订单管理</span> /
+<span class="colorTit">编辑发货</span>
+{/block}
+
+{block name="content"}
+<div class="ShopFrontPage-r-bot">
+    <form id="form">
+        <input type="hidden" name="order_id" value="{$order->order_id}">
+        <input type="hidden" id="productName" name="product_name" value="">
+        <input type="hidden" id="productImg" name="product_img" value="">
+        <input type="hidden" id="userId" name="user_id" value="{$order->user_id}">
+        <input type="hidden" id="is-object" value="{$order->order_virtual ? 1 : 0}">
+        <div class="order-box cards">
+            <div class="order-state">
+                <!--买家已付款，等待发货-->
+                <div class="state-list">
+                    <!--待付款订单-->
+                    <div class="state-item">
+                        <span>订单状态:</span>
+                        <!--等待发货订单-->
+                        <img src="{:qiniu_domains()}/upload/3c/4ce2190d825828d249da76b47bd3fb8918fb17c56809e9b2297d1270b29df7.png?origin=待发货.png"
+                             alt="买家已付款">
+                        <p class="text-o">买家已付款,等待发货 </p>
+                    </div>
+                    <div class="btn btn-fill" style="cursor: pointer" id="getMore">查看订单详情</div>
+                </div>
+                <div class="state-info">
+                    <div class="info-list">
+                        <div class="info-item">
+                            <span>订单号：</span>
+                            <p>{$order->order_sn}</p>
+                        </div>
+                        <div class="info-item"><span>支付金额：</span>
+                            {if $order->settlement_price < 0}
+                            <p>￥0.00</p>
+                            {else /}
+                            <p>￥{$order->settlement_price}</p>
+                            {/if}
+                        </div>
+                        <div class="info-item">
+                            <span>收货人：</span>
+                            <p>{$order->consignee}（<span class="userphone">{$order->tel}</span>）</p>
+                        </div>
+                        <div class="info-item">
+                            <span>收货地址：</span>
+                            <p>{$order->full_address}</p>
+                        </div>
+                    </div>
+                    <!--<div class="btn-box">-->
+                        <!--<input type="button" class="btn btn-fill" value="复制收货人信息">-->
+                    <!--</div>-->
+
+                </div>
+                <div class="order-detail" style="display: none">
+                    <div class="state-info">
+                        <!--未发货-->
+                        <div class="info-list">
+                            <div class="info-item">
+                                <span>订单号：</span>
+                                <p>{$order->order_sn}</p>
+                            </div>
+                            <div class="info-item">
+                                <span>订单创建时间：</span>
+                                <p>{$order->create_time}</p>
+                            </div>
+                            <div class="info-item"><span>支付方式：</span>
+                                <p>{$order->pay_type_text}</p>
+                            </div>
+
+                            <div class="info-item"><span>支付金额：</span>
+                                {if $order->settlement_price < 0}
+                                <p>￥0.00</p>
+                                {else /}
+                                <p>￥{$order->settlement_price}</p>
+                                {/if}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="state-info">
+                        <div class="info-title">
+                            收货人信息
+                        </div>
+                        <div class="info-item">
+                            <span>收货人：</span>
+                            <p>{$order->consignee}（<span class="userphone">{$order->tel}</span>）</p>
+                        </div>
+                        <div class="info-item">
+                            <span>收货地址：</span>
+                            <p>{$order->full_address}</p>
+                        </div>
+                        <div class="btn-box">
+                        <input type="button" class="btn btn-fill" value="复制收货人信息">
+                    </div>
+
+                    </div>
+                    <div class="state-info">
+                        <div class="info-title">商品信息</div>
+                        <div class="order-table" style="margin-top: 30px;min-height: 0">
+                            <table class="order-tb">
+                                <tr class="tr-th" style="text-align: center;background: #fff">
+                                    <td style="width: 30%">商品标题</td>
+                                    <!--<td style="width: 20%">商品ID</td>-->
+                                    <td style="width: 20%">售价（元）</td>
+                                    <td style="width: 10%">积分</td>
+                                    <td style="width: 10% ">数量</td>
+                                    <td style="width:10%">可获积分</td>
+                                </tr>
+                                <tbody>
+                                <tr class="tr-bd">
+                                    <td colspan="6" style="position: relative">
+                                        {foreach $order->order_items as $orderItem}
+                                        <div class="goods-info" data-trace-status="{$orderItem->trace_status}" data-sku-id="{$orderItem->product_property_detail_id}">
+                                            <div class="goods-item" style="flex:3;min-width:0;-webkit-flex:3;-moz-flex:3;max-width: none;padding-right:0">
+                                                {if $order->pre_sale == 1}
+                                                <img style="width:50px; position: absolute;top: 10px; left:-2px" src="{:qiniu_domains()}/upload/43/cf76a959e8696365d3575889943c1603587cd49b045c7996b8a20aa17b6aaa.png?attname=pre_sale.png">
+                                                {/if}
+                                                <div class="goods-img">
+                                                    <img src="{:qiniu_domains().$orderItem->product_sku_img}" alt="商品图" width='60px' height="60px">
+                                                </div>
+                                                <div class="goods-title">
+                                                    <p class="data-product-name" title="{$orderItem->product_name}">{:cut_str($orderItem->product_name,20)}</p>
+                                                    <!--<p class="text-gray data-product-property-detail-id">ID:{$orderItem->product_property_detail_id}</p>-->
+                                                    <p class="text-gray data-property-name">
+                                                        规格:{$orderItem->property_name}
+                                                    </p>
+                                                    {if $order->pre_sale == 1}
+                                                    <p style="color:#ff8544;font-size: 13px;">排号：{$orderItem->row_number}</p>
+                                                    {/if}
+                                                </div>
+                                            </div>
+                                            <!--<div style="flex:2">{$orderItem->product_id}</div>-->
+                                            <div style="flex:2">
+                                                ￥{$orderItem->sell_price}
+                                            </div>
+                                            <div style="flex:1">{$orderItem->score}</div>
+                                            <div style="flex:1" class="data-num">{$orderItem->num}</div>
+                                            <div style="flex:1">{$orderItem->num*$orderItem->score}
+                                            </div>
+
+                                        </div>
+                                        {/foreach}
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                            <div class="info-list" style="display: flex;align-items: flex-end;flex-direction: column;">
+                                <div class="info-item" style="width:220px;justify-content: space-between;">
+                                    <span>订单金额：</span>
+                                    <p>￥{$order->total_price}</p>
+                                </div>
+                                <div class="info-item" style="width: 220px;justify-content: space-between;">
+                                    <!--<span>-->
+                                        <!--{if $order->red_packet_record_id > 0}-->
+                                            <!--红包：-->
+                                        <!--{else /}-->
+                                            <!--优惠券：-->
+                                        <!--{/if}-->
+                                    <!--</span>-->
+                                    <span>五谷优惠</span>
+                                    <p>-￥{$order->discount_amount}</p>
+                                </div>
+                                <div class="info-item" style="width: 220px;justify-content: space-between;">
+                                    <span>运费金额：</span>
+                                    <p>￥{$order->freight_price}</p>
+                                </div>
+                                <div class="info-item" style="width: 220px;justify-content: space-between;border-top:1px solid #e8e8e8">
+                                    {if 8 == $order->pay_type}
+                                    <span style="font-size: 16px">紫谷兑换：</span>
+                                    <p class="text-o" style="font-size:18px ">
+                                        ￥{:optional(optional($order->payment_order_item)->payment_order)->purple_price}
+                                    </p>
+                                    {else /}
+                                    <span style="font-size: 16px">现金支付：</span>
+                                    <p class="text-o" style="font-size:18px ">
+                                        ￥{:optional(optional($order->payment_order_item)->payment_order)->channel_pay_price}
+                                    </p>
+                                    {/if}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {if $order->order_virtual}
+                <div class="order-search order-delive-search state-info">
+                    <div class="info-title" style="margin-bottom:20px;">
+                        填写发货信息<span style="color: #54667a;font-size: 12px;"></span>
+                    </div>
+                    <div class="form-group">
+                        <div class="form-items bor-0">
+                                <label for="express_id">发货方式:</label>
+                                <span>无物流发货</span>
+                        </div>
+
+                        <div class="form-items bor-1">
+                            <label for="delivery_no">商品类型:</label>
+                            <div class="form-radio">
+                                <label>
+                                    <input type="radio" class="item-check" name="product_type" value="1" checked>
+                                    <span></span>卡号和密码
+                                </label>
+                            </div>
+                            <div class="form-radio">
+                                <label>
+                                    <input type="radio" class="item-check" name="product_type" value="2">
+                                    <span></span>激活码
+                                </label>
+                            </div>
+                            <div class="form-radio">
+                                <label>
+                                    <input type="radio" class="item-check" name="product_type" value="3">
+                                    <span></span>其他
+                                </label>
+                            </div>
+                        </div>
+                        <div class="form-items bor-2">
+                            <label for="delivery_date">商品内容:</label>
+                            <input type="text" name="account" placeholder="卡号" class='input-s' id="act">
+                            <input type="text" name="password" placeholder="密码" class='input-s' id="pwd">
+                        </div>
+
+                    </div>
+                </div>
+                {else /}
+                <div class="order-search order-delive-search state-info">
+                    <div class="info-title" style="margin-bottom:20px;">
+                        填写发货信息<span style="color: #54667a;font-size: 12px;">&nbsp;&nbsp;&nbsp;&nbsp;(缺少物流公司,请联系画版添加)</span>
+                    </div>
+                    <div class="form-group">
+                        <div class="form-item">
+                            <label for="express_id">物流公司名称</label>
+                            <select name="express_id" id="company">
+                                <option value="0" selected="">请选择物流公司</option>
+                                {foreach \app\index\model\Express::allArr() as $express}
+                                <option value="{$express->express_id}">{$express->express_name}</option>
+                                {/foreach}
+                            </select>
+                            <i></i>
+                        </div>
+                        <div class="form-item">
+                            <label for="delivery_no">物流单号</label>
+                            <input type="text" placeholder="请输入物流单号" oninput="value=value.replace(/[^\w]/ig,'')" name="delivery_no" id="name">
+                            <i></i>
+                        </div>
+                        <div class="form-item">
+                            <label for="delivery_date">商品发货时间</label>
+                            <input type="text" autocomplete="off" placeholder="选择发货时间" name="delivery_date"
+                                   id="delivery_date" lay-key="1">
+                            <i></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="state-info" style="margin-left:22px;display:none;">
+                    <div class="info-title">一物一码溯源</div>
+                    <div class="order-table" style="margin-top:30px;min-height: 0;">
+                        <input type="hidden" name="traceDatas" id="trace-data">
+                        <table class="order-tb">
+                            <thead>
+                                <tr class="tr-th">
+                                    <th>序号</th>
+                                    <th>商品标题</th>
+                                    <th>序列号</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tbody">
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                {/if}
+            </div>
+            <div class="btn-group">
+                <a href="javascript:;" class="btn btn-o btn-lg" onclick="cancelDelivery()">取消</a>
+                <a href="javascript:;" class="btn btn-fill btn-lg" onclick="submit()">提交</a>
+            </div>
+        </div>
+    </form>
+</div>
+{/block}
+
+
+{block name='js'}
+<script src="{:qiniu_domains()}/upload/67/1d2d0ecc6ad56a71cece7cda0231343a469f2ab75b54529407c4293896a914.js?origin=template.js"></script>
+
+<script id="trace-html" type="text/html">
+    <%for (var i = 0; i < num; i++) {%>
+        <tr class="trace-tr">
+            <td></td>
+            <td>
+                <div class="goods-item">
+                    <div class="goods-img" data-sku-id="<%:=data.product_property_detail_id%>">
+                        <img src="<%:=data.product_img%>" alt="">
+                    </div>
+                    <div class="goods-title">
+                        <p><%:=data.product_name%></p>
+
+                        <!--<p class="text-gray"><span>ID:</span><%:=data.product_property_detail_id%></p>-->
+                        <p class="text-gray"><%:=data.property_name%></p>
+                    </div>
+                </div>
+            </td>
+            <td>
+                <input type="text" class="input-sm" placeholder="请输入序列号" style="text-align: center;">
+            </td>
+        </tr>
+    <%}%>
+</script>
+
+
+<script>
+     //商品类型选择
+       $("input[name='product_type']").change(function(){
+        if($(this).is(':checked') && $(this).val() == 1){
+            $('#act').attr('placeholder','卡号')
+            $('#pwd').show()
+        }else if($(this).is(':checked') && $(this).val() == 2){
+            $('#act').attr('placeholder','激活码')
+            $('#pwd').hide()
+        }else{
+            $('#act').attr('placeholder','其他')
+            $('#pwd').hide()
+        }
+       })
+
+    //商品发货时间选择
+    laydate.render({
+        elem: '#delivery_date',
+        type: 'datetime',
+        min: "{$order->pay_time}"
+    });
+
+    //提交发货信息
+    function submit() {
+        var product_img = $(".goods-info").eq(0).find('.goods-img').find('img').attr('src');
+        var product_name = $(".goods-info").eq(0).find('.goods-title').find('p').eq(0).text();
+        var property_name = $(".goods-info").eq(0).find('.goods-title').find('p').eq(1).text();
+        $("#productImg").val(product_img);
+        $("#productName").val(product_name.trim(' ') + ' ' + property_name.trim(' '));
+
+        // 如果有一物一码商品配置 获取配置的信息
+        if ($("#tbody").find('tr').length > 0) {
+            var traceArr = [];
+            $("#tbody").find('tr').each(function (index, item) {
+                traceArr.push({
+                    "product_property_detail_id": $(item).find('.goods-img').attr('data-sku-id')*1,
+                    "qrcode_num": $(item).find('.input-sm').val()
+                });
+            });
+            $("#trace-data").val(JSON.stringify(traceArr));
+        }
+
+        // 增加加载层
+        layer.load(0, {
+            shade: [0.1,'black'] //0.1透明度的白色背景
+        });
+
+        $url = '/order/delivery';
+        if ($("#is-object").val() == 1) { // 虚拟订单
+            $url = '/order/delivery-virtual';
+        }
+
+        $.ajax({
+            url: $url,
+            type: 'post',
+            data: $('#form').serialize(),
+            dataType: 'json',
+            success: function (json) {
+                layer.msg(json.msg, {
+                    icon: 1
+                }, function () {
+                    layer.closeAll();
+                    location.href = "/order/delivery-list"
+                });
+            },
+            error: function (data) {
+                layer.msg(data.responseJSON.msg, {icon: 2}, function () {
+                    layer.closeAll();
+                    // $("#tbody").find('input').trigger('focus');
+                });
+            }
+        });
+    }
+
+    function cancelDelivery() {
+        layer.confirm('确定取消当前订单的发货？', {
+            btn: ['立即取消', '再想想'],
+            btnAlign: 'c'
+        }, function (index) {
+            location.href = "/order/delivery-list" //立即取消跳转至去发货页面
+
+        }, function (index) {
+            layer.close(index);
+        })
+    }
+
+    $("#getMore").on("click", function () {
+        $(".order-detail").toggle().prev('.state-info').toggle();
+        if ($(this).html() == "查看订单详情") {
+            $(this).html("收起订单详情");
+        } else {
+            $(this).html("查看订单详情")
+        }
+    })
+</script>
+<script>
+    // 溯源信息
+    $(function () {
+        var trace_show = 0;
+        $(".goods-info").each(function () {
+            var trace_status = $(this).attr('data-trace-status')*1;
+            if (trace_status == 2) {
+                trace_show = 1;
+                var num = $(this).find('.data-num').html().trim()*1;
+                var product_name = $(this).find('.data-product-name').html().trim();
+                var product_property_detail_id = $(this).attr("data-sku-id").trim();
+                var property_name = $(this).find('.data-property-name').html().trim();
+                var product_img = $(this).find('img').attr('src');
+
+                var arr = {
+                    'product_property_detail_id': product_property_detail_id,
+                    'product_name': product_name,
+                    'property_name': property_name,
+                    'product_img': product_img,
+                };
+                addTrace(num, arr);
+            }
+        });
+
+        // 渲染溯源配置
+        function addTrace(num, arr){
+            let add_trace_html = template(document.getElementById('trace-html').innerHTML, {num: num, data:arr});
+            $('#tbody').append(add_trace_html);
+        }
+
+        // 重新排列序号
+        $(".trace-tr").each(function (index, item) {
+            $(item).find('td').eq(0).html(index+1);
+        });
+
+        // 如果是一物一码的商品 就需要进行配置管理溯源二维码信息
+        if (trace_show) {
+            $(".state-info").show();
+        }
+    });
+</script>
+<script>
+    //复制文本
+function copy (str) {
+        let oInput = document.createElement('textarea');
+        oInput.value = str;
+        document.body.appendChild(oInput);
+        oInput.select();
+        document.execCommand("Copy");
+        oInput.style.display = 'none';
+        document.body.removeChild(oInput);
+       layer.msg("复制成功",{icon:1});
+}
+var user={
+    name:"{$order->consignee}",
+    tel:"{$order->tel}",
+    address:"{$order->full_address}"
+
+};
+var str='收货人：'+user.name+'\n手机号：'+user.tel+'\n收货地址：'+user.address;
+$(".btn-box").on('click','.btn',function(){
+    copy(str);
+});
+
+
+
+</script>
+
+{/block}

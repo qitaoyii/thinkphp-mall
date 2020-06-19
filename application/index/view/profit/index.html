@@ -1,0 +1,175 @@
+{extend name="layout/base" /}
+
+{block name="seo"}
+<title>{$title|default="品牌厂家直供平台"}</title>
+{/block}
+
+{block name="style"}
+<style>
+    .copy-right{
+        cursor: pointer;
+        color:blue;
+    }
+</style>
+{/block}
+
+{block name="title"}
+<span>分红管理</span> /
+<span class="colorTit">分红查询</span>
+{/block}
+
+{block name="content"}
+<!-- 平台功能区 -->
+<div class="ShopFrontPage-r-bot">
+
+    <div class="order-box cards">
+
+        <div class="choose-box" style="display: block">
+            <form action="/profit/index" method="get">
+                <div class="order-search">
+                    <!--<div class="form-group">-->
+                        <!--<p>固定分红比例：<span class="text-o">30%</span><span class="text-gray">【厂家客户使用版谷领取其他厂家直供平台的优惠券，并使用优惠券进行商品消费后，厂家可获得的毛利金额分红】</span></p>-->
+                    <!--</div>-->
+                    <div class="form-group" style="justify-content: flex-start;align-items:center">
+
+                        <div class="form-item">
+                            <label>分红时间</label>
+                            <input type="text" autocomplete="off" placeholder="请选择分红日期" name="pay_time" id="get_date" readonly value="{$pay_time}">
+                            <i></i>
+                        </div>
+                        <div class="form-item">
+                            <label>版谷</label>
+                            <input type="text" autocomplete="off" placeholder="请输入版谷" name="copyright_code" id="copyright_code" value="{$copyright_code}">
+                            <i></i>
+                        </div>
+
+                        <div class="form-item">
+                            <label>作品名称</label>
+                            <input type="text" autocomplete="off" placeholder="请输入作品名称" name="works_name" value="{$works_name}">
+                            <i></i>
+                        </div>
+                        <div class="form-item" style="width:20%">
+                            <label for="commission_status">状态</label>
+                            <select name="commission_status" id="commission_status">
+                                <option value="0" selected>全部</option>
+                                {foreach \app\index\model\Order::COMMISSION_STATUS as $k => $v}
+                                <option value="{$k}" <?= $k == $commission_status ? 'selected' : '' ?>>{$v}</option>
+                                {/foreach}
+                            </select>
+                        </div>
+                        <div>
+                            <input type="submit" value="查询" class="btn btn-fill">
+                            <i></i>
+                        </div>
+                    </div>
+                </div>
+            </form>
+
+            <div class="order-table">
+                <div style="margin-left:20px;">版谷的分红</div>
+                <br>
+                <table class="order-tb">
+                    <thead>
+                    <tr class="tr-th">
+                        <th style="width:5%">序号</th>
+                        <th style="width:15%">版谷</th>
+                        <th style="width:10%">作品名称</th>
+                        <!--<th style="width:15%">交易订单号</th>-->
+                        <!--<th>订单金额</th>-->
+                        <th>分红时间</th>
+                        <th>分红金额（元）</th>
+                        <th>状态</th>
+                        <th>操作</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        {foreach $orderProfit as $key=>$val}
+                            <tr class="tr-bd">
+                                <td>{$orderProfit->num++}</td>
+                                <td>
+                                    <span data-id="1" class="copy-right">{:optional($val->copyright, '--')->serial}</span>
+                                    <span data-id="2" class="copy-right" style="display:none;">{$val->copy_code}</span>
+                                    <span data-id="3" class="copy-right" style="display:none;">{:optional($val->copyright, '--')->ranking}</span>
+                                </td>
+                                <td>
+                                    {if $val->works_id}
+                                        《{:optional($val->work)->works_name}》
+                                    {else /}
+                                        --
+                                    {/if}
+                                </td>
+                                <!--<td>-->
+                                    <!--{:optional($val->order_proint)->transaction_id}-->
+                                <!--</td>-->
+                                <!--<td>-->
+                                    <!--￥{:optional($val->order_proint)->pay_price}-->
+                                <!--</td>-->
+                                <td>
+                                    {$val->pay_time}
+                                </td>
+
+                                <td>
+                                    ￥{$val->share_price}
+                                </td>
+                                <td>
+                                    {if $val->order_proint['refund_status'] == 3}
+                                        已退款
+                                    {else /}
+                                        {:optional($val->order_proint)->commission_status_text}
+                                    {/if}
+                                </td>
+                                <td>
+                                    <div class="operate">
+                                        <p class="operate-item">
+                                            <a href="/profit/detail?order_id={$val->order_id}"><i class="icon icon-yulan"></i>详情</a>
+                                        </p>
+                                    </div>
+                                </td>
+                            </tr>
+                        {/foreach}
+                    </tbody>
+                </table>
+            </div>
+            <!--分页-->
+            <div class="pragination-group" id="pageToolbar">
+                {$orderProfit->render()|raw}
+            </div>
+        </div>
+    </div>
+</div>
+{/block}
+
+{block name='js'}
+<script>
+    /*手机号分割显示*/
+    (function userphone(obj) {
+        obj.each(function () {
+            var phoneNum = $(this).text();
+            $(this).html(phoneNum.replace(/(?=(\d{4})+$)/g, " "));
+        });
+    })($(".userphone"));
+    laydate.render({
+        elem: "#get_date",
+        range: true,
+        change: function (value, date, endDate) {
+            console.log(value); //得到日期生成的值，如：2017-08-18
+            console.log(date); //得到日期时间对象：{year: 2017, month: 8, date: 18, hours: 0, minutes: 0, seconds: 0}
+            console.log(endDate); //得结束的日期时间对象，开启范围选择（range: true）才会返回。对象成员同上。
+        }
+    });
+    $(".choose-list").on('click', '.choose-item', function () {
+        var idx = $(this).index();
+        $(this).addClass('active').siblings('.choose-item').removeClass('active');
+        $('.choose-box').eq(idx).addClass('show').siblings('.choose-box').removeClass('show');
+    });
+
+    $(".copy-right").on('click', function () {
+        var index = $(this).attr('data-id');
+        if (index == 3) {
+            $(this).parents('td').find('.copy-right').eq(0).show().siblings().hide();
+        } else {
+            $(this).next().show().siblings().hide();
+        }
+    });
+</script>
+{/block}

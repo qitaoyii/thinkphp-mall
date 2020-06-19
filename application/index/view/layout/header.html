@@ -1,0 +1,52 @@
+<!-- 公用的头 -->
+<div class="nav-r-top">
+    <div class="nav-r-top-tit">
+        <h1>{:session('shop.shop_name')}</h1>
+    </div>
+    <div class="nav-r-top-news">
+        {include file="layout/message"/}
+        <ul class="news-list">
+            <li>
+                {if get_moderator_id() && !session('shop.shop_id')}
+                <p>欢迎回来 , {:session('moderator.moderator_name')}</p>
+                {else /}
+                <p>欢迎回来 , {:session('shop_user.username')}</p>
+                {/if}
+                <img src="{:qiniu_domains()}/upload/ce/fefb23ebe2dd263cbc5c32fd5acac10c864036acbf22ca1f32cd084dfabc95.png?origin=下三角 向下 面性.png" alt="">
+            </li>
+            <ol class="personal-list">
+                <!--<a href="#"><li>个人资料</li></a>-->
+                <a href="/logout"><li>退出</li></a>
+            </ol>
+        </ul>
+    </div>
+</div>
+
+<script>
+    var isTrue = false;
+    $('.news-icon-img-btn,.news-icon-tit-btn').on('click',function(e){
+        e.stopPropagation();
+        if(!isTrue){
+            isTrue = true;
+            $('.info-tit-box').show().animate({opacity: 1},300);
+        }else{
+            isTrue = false;
+            $('.info-tit-box').animate({opacity: 0},300);
+            setTimeout(function(){
+                $('.info-tit-box').hide();
+            },300);
+        }
+    })
+
+    $('.info-tit-box').on('click',function(e){
+        e.stopPropagation();
+    })
+
+    $('body').on('click',function(e){
+        e.stopPropagation();
+        $('.info-tit-box').animate({opacity: 0},300);
+        setTimeout(function(){
+            $('.info-tit-box').hide();
+        },300);
+    })
+</script>

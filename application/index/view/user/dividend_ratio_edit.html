@@ -1,0 +1,145 @@
+{extend name="layout/base" /}
+
+{block name="seo"}
+<title>{$title|default="画版商户后台管理系统"}</title>
+{/block}
+
+{block name="style"}
+<style></style>
+{/block}
+
+{block name="title"}
+<span>用户管理</span> /
+<span class="colorTit">用户版谷统计</span>
+{/block}
+{block name="content"}
+    <!-- 平台功能区 -->
+    <div class="ShopFrontPage-r-bot">
+        <div class="order-box cards">
+            <div class="order-table">
+                <form id="myForm">
+                    <input type="hidden" name="send_id" value="{$visitor->send_id}">
+                    <table class="order-tb">
+                        <caption>
+                            <div class="tb-title text-gray">
+                                <p>版谷：<span class="text-link">{$visitor->copy_code}</span></p>
+                                <p>版谷作品：
+                                    <sapn class="text-link">《{:optional($visitor->works)->works_name}》</sapn>
+                                </p>
+                                <div class="btn-group"><a href="javascript:;" class="btn btn-fill" onclick="adduser()">添加分润用户</a></div>
+                            </div>
+                        </caption>
+                        <thead>
+                        <tr class="tr-th">
+                            <th>序号</th>
+                            <th>国际区号</th>
+                            <th>用户手机号</th>
+                            <th>分红比例</th>
+                            <th>操作</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {foreach $visitor->agent_detail as $key=>$detail}
+                            <tr class="tr-bd">
+                                <td>{$key+1}</td>
+                                <td>
+                                    <select class="form-item" name="prefix[]">{foreach $country_prefixes as $country_prefix}<option value="{$country_prefix->prefix}" {if $detail['phone_prefix'] == $country_prefix->prefix}selected{/if}>+{$country_prefix->prefix}</option>{/foreach}</select>
+                                </td>
+                                <td>
+                                    <input type="text" name="phone[]" class="input-c" value="{$detail['phone']}">
+                                </td>
+                                <td>
+                                    <input type="number" name="ratio[]" class="input-c" value="{$detail['ratio']}">
+                                </td>
+
+                                <td style="width:180px;">
+                                    <div class="operate">
+                                        <p class="operate-item"><a href="javascript:;" class="del-btn"><i class="icon icon-detel"></i>删除</a></p>
+                                    </div>
+                                </td>
+                            </tr>
+                        {/foreach}
+                        </tbody>
+                    </table>
+                    <div class="adduser-box">
+                    </div>
+                </form>
+            </div>
+            <div class="btn-group">
+                <a href="javascript:;" class="btn btn-o btn-lg" onclick="window.history.back()">取消</a>
+                <a href="javascript:;" class="btn btn-fill btn-lg save-btn" onclick="">提交</a>
+            </div>
+        </div>
+    </div>
+{/block}
+
+{block name='js'}
+    <script>
+        // 添加分润用户节点
+        var a = 0;
+        function adduser() {
+            a++;
+            var str = '<div class="adduser-item" class="div' + a + '" >' +
+                      '<p><label>国际区号<span class="text-red"> * </span> ' +
+                      '<select class="form-item" name="prefix[]">' +
+                      '{foreach $country_prefixes as $country_prefix}' +
+                      '<option value="{$country_prefix->prefix}">+{$country_prefix->prefix}</option>' +
+                      '{/foreach}' +
+                      '</select>' +
+                      '</label>' +
+                      '<p><label>手机号<span class="text-red"> *</span>' +
+                      '<input type="text" placeholder="请输入用户手机号" class="input-c" name="phone[]"></label>' +
+                      '</p><label>佣金利润比例<span class="text-red"> *</span>' +
+                      '<span class="item-hint"><input type="number" placeholder="请设置分润比例" class="input-c" name="ratio[]"><i>说明：该比例将从一级代理商的佣金比例中拆分</i></span></label>' +
+                      '<p><a href="javascript:;" class="text-o" onclick="deleteItem($(this))">取消添加分润用户</a></p>' +
+                      '</div>';
+            $(".adduser-box").append(str);
+        }
+
+        // 删除新增的分润用户节点
+        function deleteItem(obj) {
+            $(obj).parent('p').parent('div').remove();
+        }
+
+        // 删除
+        $('.del-btn').on('click', removeTr);
+        function removeTr() {
+            var _that = $(this);
+            let count = $('.del-btn').length;
+            if (1 === count) {
+                return layer.msg('不能删除，至少需要一个代理', {icon: 2, time: 2000});
+            }
+            layer.confirm('删除后该用户不再参与版谷后续的分红，<br>是否删除？', {
+                btn: ['确定', '取消'], //按钮
+                btnAlign: 'c'
+            }, function (index) {
+                _that.parents('tr').remove();
+                layer.close(index);
+            }, function (index) {
+                layer.close(index);
+            });
+        }
+
+        // 提交保存
+        $('.save-btn').on('click', function () {
+            $.ajax({
+                url: '/user/dividend-ratio-update',
+                type: 'POST',
+                data: $('#myForm').serialize(),
+                dataType: 'json',
+                success: function (result) {
+                    console.log(result);
+                    layer.msg(result.msg, {
+                        icon: 6,
+                        time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                    }, function(){
+                        location.reload();
+                    });
+                },error: function (data) {
+                    console.log(data);
+                    layer.msg(data.responseJSON.msg,{icon: 2});
+                }
+            });
+        });
+    </script>
+{/block}

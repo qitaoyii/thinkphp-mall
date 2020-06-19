@@ -1,0 +1,500 @@
+{extend name="layout/base" /}
+
+{block name="seo"}
+<title>{$title|default="品牌厂家直供平台"}</title>
+{/block}
+
+{block name="style"}
+<link rel="stylesheet" href="__STATIC__/style/tracing.min.css?{:config('huaban.css_version.version')}">
+{/block}
+
+{block name="title"}
+<span>商品管理</span> /
+<span class="colorTit">溯源管理</span>
+{/block}
+
+{block name="content"}
+<div class="ShopFrontPage-r-bot">
+    <div class="card">
+        <div class="trace_detail">
+            <div class="trace-status">
+                <!-- 审核中 -->
+                {if $applyInfo->status == 0}
+                <div class="status status-blue">
+                    <h3 class="text-blue"><img
+                            src="{:qiniu_domains()}/upload/df/ed4b0012817feaa13b38e84352e721701445de4b72e9ee1ef7121d3953c8c2.png?origin=审核.png"
+                            alt="" width="30px">
+                        审核中</h3>
+                    <p>您好，您配置的商品防伪标信息已提交申请，请耐心等待审核及生产过程。
+                    </p>
+                    <p>根据您配置的溯源商品及内容不同，系统生成防伪标素材所需的时长不定，请以接收的平台消息通知为准！</p>
+                </div>
+               {/if}
+                {if $applyInfo->status == 1}
+                <!-- 已同意，生成中 -->
+                <div class="status status-o">
+                    <h3 class="text-o"><img
+                            src="{:qiniu_domains()}/upload/f6/7e157292acf0c29c15a3c272078d96ecbc71f5e1fa1e0a60dd38a18e123d99.png?origin=打印 copy.png"
+                            alt="" width="30px">
+                        已同意，生成中</h3>
+                    <p>您好，您配置的商品防伪标信息已提交申请，请耐心等待审核及生产过程。
+                    </p>
+                    <p>根据您配置的溯源商品及内容不同，系统生成防伪标素材所需的时长不定，请以接收的平台消息通知为准！</p>
+                </div>
+            </div>
+            {/if}
+            <div class="box-top">
+                <div class="content content1" class="{in_array(1,$applyInfo->scene_type) ? 'is_show' : ''}">
+                    <p class="label_title">防伪标使用场景</p>
+                    <div class="content-list">
+                        {if in_array(1,$applyInfo->scene_type)}
+                        <div class="content-item _1">
+                            <div class="item-choose">
+                                <i>01场景一</i>
+                                <img src="{:qiniu_domains()}/upload/9a/80c4c7276a00f61d5c50eaa67cf47703769075c7273cba13c1bae62e466780.png?origin=icon01.png"
+                                    width="36px">
+                            </div>
+                            <div class="item-text">
+                                <h3>“防伪标”包装</h3>
+                                <p class="text-gray">印制在商品的包装上</p>
+                            </div>
+                        </div>
+                        {/if}
+                        {if in_array(2,$applyInfo->scene_type)}
+                         <div class="content-item _2">
+                            <div class="item-choose">
+                                <i>02场景二</i>
+                                <img src="{:qiniu_domains()}/upload/46/678fb8c4d563f78c2df5e70a1d21465d9b7640c719719818231649a3daf0bc.png?origin=icon02.png"
+                                    width="36px">
+                            </div>
+                            <div class="item-text">
+                                <h3>“防伪标”标签</h3>
+                                <p class="text-gray">贴在商品实体上</p>
+                            </div>
+                        </div>
+                        {/if}
+                        {if in_array(3,$applyInfo->scene_type)}
+                        <div class="content-item _3">
+                            <div class="item-choose">
+                                <i>03场景三</i>
+                                <img src="{:qiniu_domains()}/upload/20/be51d8863985a4788e60c5fcd206dc8f4cca42fdf9e792275c9a937381f40e.png?origin=icon03.png"
+                                    width="36px">
+                            </div>
+                            <div class="item-text">
+                                <h3>“防伪标”卡片</h3>
+                                <p class="text-gray">实体卡片</p>
+                            </div>
+                        </div>
+                        {/if}
+                        {if in_array(4,$applyInfo->scene_type)}
+                        <div class="content-item _4">
+                            <div class="item-choose">
+                                <i>04场景四</i>
+                                <img src="{:qiniu_domains()}/upload/7f/88afaa8bf800a918c1f44b2a86c6e08d4f1053204fbe8dfbf4f4cba21ecad2.png?origin=icon04.png"
+                                    width="36px">
+                            </div>
+                            <div class="item-text">
+                                <h3>“防伪标”证书</h3>
+                                <p class="text-gray">物权资产登记证书</p>
+                            </div>
+                        </div>
+                        {/if}
+                    </div>
+                </div>
+                <div class="content content2">
+                    <p class="label_title">防伪标样式（{$applyInfo->tag_type_text}）</p>
+                    <div class="content">
+                        <img src="{:qiniu_domains().$applyInfo->tag_url}." width="100px">
+                    </div>
+                </div>
+            </div>
+
+            {if $applyInfo->tag_type != 3}
+            <div id="layer-trace-detail">
+
+            </div>
+            {/if}
+            {foreach $distributorArr as $list}
+            <div class="box-bottom">
+                <div class="label_title">防伪标配置信息</div>
+                <!-- 防伪标已生成状态 下载防伪标 -->
+                {if in_array($applyInfo->status, [5])}
+                <a href="{:qiniu_domains().$applyInfo->package_url}" class="btn btn-fill float-right down">下载防伪标</a>
+                <!--<input type="button" value="下载防伪标" class="btn btn-fill float-right down">-->
+                {/if}
+                <!-- 防伪标已生成状态 end -->
+                <div class="trace-card-box">
+                    <div class="trace-card-item">
+                        <span class="label-type-title">经销商:</span>
+                        <p class="text-o">{$list['distributor_name']}</p>
+                    </div>
+                    <div class="trace-card-item">
+                        <span class="label-type-title">获客图:</span>
+                        <div class="works-item">
+                            <img src="{$list['works_cover']}" alt="" width="80px" height="80px" style="border: 1px solid #e8e8e8">
+                            <p>{$list['artist_name']}</p>
+                            <p>{$list['works_name']}</p>
+                        </div>
+                    </div>
+                    <div class="label-type-title">
+                        防伪标
+                    </div>
+                    <table class="trace-table">
+                        <thead>
+                            <tr class="tr-th">
+                                <th>二维码</th>
+                                <th>商品规格</th>
+                                <th>防伪标分配数量</th>
+                                {if $applyInfo->tag_type == 3}
+                                <th>操作</th>
+                                {/if}
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {foreach $list['sku'] as $sku}
+                            <tr>
+                                <td>
+                                    <img src="{:qiniu_domains()}/upload/29/e696a9999d7d7fef151edf339672720bf1ac27aa6e0de545c250a6df39ba84.png?origin=二维码.png" alt="" width="20px" height="20px">
+                                </td>
+                                <td>
+                                    {if $sku['property_name'] == "@#@"}
+                                    单品
+                                    {else /}
+                                    {:str_replace('@#@', ' | ', $sku['property_name'])}
+                                    {/if}
+                                </td>
+                                <td>
+                                    {$sku['num']}
+                                </td>
+                                {if $applyInfo->tag_type == 3}
+                                <td>
+                                    <a href="/trace/qrcode?product_id={$list['product_id']}&detail_id={$sku['detail_id']}">立即配置</a>
+                                </td>
+                                {/if}
+                            </tr>
+                        {/foreach}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            {/foreach}
+            <div class="step-btn">
+                <a href="javascript:history.back()" class="btn btn-o btn-lg">关闭</a>
+                {if $applyInfo->tag_type != 3}
+                <input type="button" value="修改溯源详情页信息" data-apply-id="{$applyInfo->id}" class="btn btn-fill btn-lg trace-edit">
+                {/if}
+            </div>
+        </div>
+    </div>
+</div>
+<div id="layer-add-trace-content" style="display:none;">
+
+</div>
+{/block}
+
+{block name='js'}
+<script src="{:qiniu_domains()}/upload/67/1d2d0ecc6ad56a71cece7cda0231343a469f2ab75b54529407c4293896a914.js?origin=template.js"></script>
+<script id="trace_html" type="text/html">
+    <div class="tracing-info">
+        <div class="info-top">
+            <div class="label-type-title"> 防伪标溯源详情页信息</div>
+            <div class="info-list">
+                <%for (var i = 0; i < traceData.content.items.length; i++) {%>
+                    <%if (traceData.content.items[i].val) {%>
+                        <div class="info-item trace-item">
+                            <span><%:=traceData.content.items[i].key%></span>：
+                            <p><%:=traceData.content.items[i].val%></p>
+                        </div>
+                    <%}%>
+                <%}%>
+                <div class="info-item">
+                    <span style="letter-spacing: 12px">版谷:</span>
+                    <p class="works-flex" data-works-id="">
+                        <img src="{:qiniu_domains()}<%:=traceData.work.works_cover%>" alt="" width="100px" height="100px" style="background: #ccc">
+                        <span><%:=traceData.work.artister.real_name%></span>
+                        <span style="font-size:16px">《<%:=traceData.work.works_name%>》</span>
+                    </p>
+                </div>
+            </div>
+
+            <div class="label-type-title">自定义文字溯源信息</div>
+            <div class="addbox-list">
+                <input type="button" class="addtrace" value="＋">
+            </div>
+            <div id="add-trace">
+                <%for (var j = 0; j < traceData.content.custom_items.length; j++) {%>
+                <div class="addbox-list" style="margin-top:20px;">
+                    <div class="addbox-item">名称：
+                        <input type="text" maxlength="8" class="input-s" value="<%:=traceData.content.custom_items[j].key%>" placeholder="如：产地">
+                        <input type="text" maxlength="25" class="input-sm" value="<%:=traceData.content.custom_items[j].val%>" placeholder="如：鄂尔多斯">
+                    </div>
+                    <input type="button" class="del-trace" value="-">
+                </div>
+                <%}%>
+            </div>
+            <div class="label-type-title">自定义图片溯源信息</div>
+            <div class="addimg-list">
+                <input class="file" type="file" style="opacity: 0" multiple accept="image/jpeg, image/jpg, image/png">
+                <div class="addimg" style="cursor: pointer;">
+                    <img class="long-file-img" src="{:qiniu_domains()}/upload/7f/1afb3c68fcbb0d68421b558c8fb28ba88e7e93f2837996e67f581dabe3b393.png?origin=add.png">
+                </div>
+                <p class="text-gray">此处可上传多张鉴定证书等溯源图片信息</p>
+                <ul class="ul1">
+                    <%for (var k = 0; k < traceData.content.imgs.length; k++) {%>
+                    <li class="trace-imgs">
+                        <img style="width:120px;" src="<%:=traceData.content.imgs[k].img_url%>" width="150px">
+                        <span class="img-del" style="cursor: pointer;color:red;">
+                            <img src="{:qiniu_domains()}/upload/00/42dd6b62a6b259c35308168e041c371a364cf408bdcb69105ddbc0ca0d3c74.png?origin=删除.png">
+                        </span>
+                    </li>
+                    <%}%>
+                </ul>
+            </div>
+        </div>
+    </div>
+</script>
+<script id="trace_detail_html" type="text/html">
+    <div class="label_title">
+        防伪标溯源详情页信息
+    </div>
+    <div class="info-list">
+        <%for (var i = 0; i < traceDetail.content.items.length; i++) {%>
+            <%if (traceDetail.content.items[i].val) {%>
+                <div class="info-item">
+                    <span><%:=traceDetail.content.items[i].key%></span>：
+                    <p><%:=traceDetail.content.items[i].val%></p>
+                </div>
+            <%}%>
+        <%}%>
+        <div class="info-item">
+            <span style="letter-spacing: 12px">版谷</span>：
+            <p class="works-flex" data-works-id="">
+                <img src="{:qiniu_domains()}<%:=traceDetail.work.works_cover%>" alt="" width="100px" height="100px" style="background: #ccc">
+                <span><%:=traceDetail.work.artister.real_name%></span>
+                <span style="font-size:16px">《<%:=traceDetail.work.works_name%>》</span>
+            </p>
+        </div>
+    </div>
+    <%if (traceDetail.content.custom_items.length > 0) {%>
+    <div class="label_title">自定义文字溯源信息</div>
+    <div class="info-list">
+        <%for (var j = 0; j < traceDetail.content.custom_items.length; j++) {%>
+        <div class="info-item">
+            <span style="letter-spacing: 12px"><%:=traceDetail.content.custom_items[j].key%></span>：
+            <p><%:=traceDetail.content.custom_items[j].val%></p>
+        </div>
+        <%}%>
+    </div>
+    <%}%>
+
+    <%if (traceDetail.content.imgs.length > 0) {%>
+    <div class="label_title">自定义图片溯源信息</div>
+    <div class="img-list">
+        <%for (var k = 0; k < traceDetail.content.imgs.length; k++) {%>
+        <img src="<%:=traceDetail.content.imgs[k].img_url%>" width="150px">
+        <%}%>
+    </div>
+    <%}%>
+</script>
+<script>
+    var traceContent = {$content|raw};
+
+    if (traceContent) {
+        setTimeout(function () {
+            getTraceDetail();
+        }, 300);
+    }
+
+    $(".trace-edit").click(function () {
+        var apply_id = $(this).attr('data-apply-id')*1;
+        // ajax 请求获取溯源信息，处理数据并渲染页面
+        $.ajax({
+            url: "/trace/get-trace-content",
+            type: 'GET',
+            dataType: 'json',
+            data: {apply_id:apply_id},
+            success: function(res) {
+                // 渲染自定义溯源信息
+                getTraceReload(res.data);
+                //捕获页
+                layer.open({
+                    type: 1,
+                    shade: false,
+                    title: false, //不显示标题
+                    area:['800px', '850px'],
+                    btn:["确定", "取消"],
+                    content: $('#layer-add-trace-content'), //捕获的元素，注意：最好该指定的元素要存放在body最外层，否则可能被其它的相对元素所影响
+                    yes:function(index){
+                        // 验证 溯源自定义信息 并放入变量中
+                        var code = 1;
+                        var custom_items = [];
+                        if ($(".addbox-item").length > 0) {
+                            $(".addbox-item").each(function (index, item) {
+                                var name = $(item).find('.input-s').val();
+                                var value = $(item).find('.input-sm').val();
+                                if (name == "") {
+                                    layer.msg("自定义第"+(index+1)+"行的名称不能为空", {icon: 2});
+                                    code = 0;
+                                    return false;
+                                }
+
+                                if (value == "") {
+                                    layer.msg("自定义第"+(index+1)+"行的值不能为空", {icon: 2});
+                                    code = 0;
+                                    return false;
+                                }
+                                custom_items.push({'key':name,'val':value});
+                            });
+                        }
+
+                        // 获取溯源图片信息
+                        var images = [];
+                        if ($(".trace-imgs").length > 0) {
+                            $(".trace-imgs").each(function (index, item) {
+                                var value = $(item).find('img').attr('src');
+                                images.push({'img_url':value});
+                            });
+                        }
+                        // 给数据结构赋值
+                        traceContent.content.custom_items = custom_items;
+                        traceContent.content.imgs = images;
+
+                        if (code) {
+                            // 执行修改操作
+                            $.ajax({
+                                url: "/trace/update",
+                                type: 'POST',
+                                dataType: 'json',
+                                data: traceContent,
+                                success: function(res) {
+                                    layer.msg(res.msg, {
+                                        icon: 6,
+                                        time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                                    }, function () {
+                                        getTraceDetail();
+                                        layer.closeAll();
+                                        // location.reload();
+                                    });
+                                },
+                                error: function (res) {
+                                    layer.msg(res.msg, {icon: 2});
+                                }
+                            });
+                        }
+                    }
+                });
+            }
+        });
+    });
+</script>
+<script>
+    // 添加自定义溯源信息
+    $("#layer-add-trace-content").on('click', '.addtrace', function () {
+        var add_trace = '';
+        add_trace += '<div class="addbox-list" style="margin-top:20px;">' +
+            '<div class="addbox-item">名称：' +
+            '<input type="text" class="input-s" maxlength="8" placeholder="如：产地">' +
+            '<input type="text" class="input-sm" maxlength="25" placeholder="如：鄂尔多斯">' +
+            '</div>'+
+            '<input type="button" class="del-trace" value="-">'+
+            '</div>';
+        $("#add-trace").append(add_trace);
+    });
+
+    // 删除自定义节点
+    $("#layer-add-trace-content").on('click', '.del-trace', function () {
+        $(this).parent('.addbox-list').remove();
+    });
+
+    // 溯源上传图片
+    $('#layer-add-trace-content').on('click', '.long-file-img', function() {
+        $(this).parents('.addimg-list').find('input').trigger('click');
+    });
+
+    //上传图片功能
+    $('#layer-add-trace-content').on('change', '.file', function() {
+
+        var file_len = $('.file')[0].files.length;
+        if (file_len == 0) {
+            return false;
+        }
+        if (file_len > 10) {
+            layer.msg('一次最多上传10张图片！', {icon: 2, time: 1000}, function () {
+                layer.closeAll();
+            });
+            return false;
+        }
+        var formData = new FormData();
+        var count = 0;
+
+        for(var i=0; i<$(".file")[0].files.length; i++){
+            count++;
+            formData.append('file'+i, $('.file')[0].files[i]);
+        }
+        var load = layer.load(3, {shade: [0.1, '#393D49'], time: 1000});
+        $.ajax({
+            url: '/api/trace-multi-image',
+            type: 'POST',
+            cache: false,
+            data: formData,
+            dataType: 'json',
+            processData: false,
+            contentType: false,
+            // async: false,
+            success: function(data) {
+                var failMsg = '';
+                if (count > data.data.succNum) {
+                    errNum = count-data.data.succNum;
+                    failMsg = " 失败 " + errNum + " 张,失败原因如下：<br>" + data.data.errmsg;
+                }
+                layer.confirm('图片上传成功 ' + data.data.succNum + ' 张 ' + failMsg, {
+                    btn: ['取消','确定'] //可以无限个按钮
+                }, function(index, layero){
+                    //按钮【按钮一】的回调
+                    layer.close(index);
+                    layer.close(load);
+                    $(".file").val('');
+                }, function(index){
+                    //按钮【按钮二】的回调
+                    // 修改当前分类的数量
+                    $(".file").val('');
+                    var img_html = '';
+                    for (var i=0; i<data.data.urlArr.length; i++) {
+                        img_html += '<li class="trace-imgs">' +
+                            '<img style="width:120px;" src="'+data.data.urlArr[i]+'">' +
+                            '<span class="img-del" style="cursor: pointer;color:red;"><img src="{:qiniu_domains()}/upload/00/42dd6b62a6b259c35308168e041c371a364cf408bdcb69105ddbc0ca0d3c74.png?origin=删除.png"></span>'+
+                            '</li>';
+                    }
+                    $(".ul1").append(img_html);
+                });
+            }
+        });
+    });
+
+    // 删除图片
+    $('#layer-add-trace-content').on('click', '.img-del', function () {
+        $(this).parent('li').remove();
+    });
+
+    // 加载自定义溯源信息
+    function getTraceReload(data){
+        let trace_html = template(document.getElementById('trace_html').innerHTML, {
+            traceData: data
+        });
+        $('#layer-add-trace-content').html(trace_html);
+    }
+
+    // 预览溯源信息
+    function getTraceDetail(){
+        if (traceContent == 0) {
+            traceContent = traceContentDefault;
+        }
+
+        let trace_detail_html = template(document.getElementById('trace_detail_html').innerHTML, {
+            traceDetail: traceContent
+        });
+
+        $("#layer-trace-detail").html(trace_detail_html);
+    }
+</script>
+{/block}

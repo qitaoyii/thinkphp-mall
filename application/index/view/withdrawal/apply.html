@@ -1,0 +1,188 @@
+{extend name="layout/base" /}
+
+{block name="seo"}
+<title>{$title|default="品牌厂家直供平台"}</title>
+<meta name="keywords" content="{$keywords|default='网站关键字'}">
+<meta name="description" content="{$desc|default='网站描述'}">
+{/block}
+{block name="style"}
+<link rel="stylesheet" type="text/css" href="{:qiniu_domains()}/upload/8c/2ce94d9e23ed70b5eea5de66eb3e1875a80213d728eb51c40263b6ff9cc338.css?origin=bootstrap-theme.min.css">
+<link rel="stylesheet" type="text/css" href="__STATIC__/style/demo.css?{:config('huaban.css_version.version')}">
+<link rel="stylesheet" type="text/css" href="{:qiniu_domains()}/upload/94/20d2fac999116490b9e6ea1a2b459351cfb8ac8dcd8cffeae8175e32743ce5.css?origin=webuploader.css">
+<link rel="stylesheet" href="__STATIC__/style/newProduct.css?{:config('huaban.css_version.version')}">
+<link type="text/css" rel="stylesheet" href="{:qiniu_domains()}/upload/05/5ac49f96e0da433abf218f15f1247933d8916d0e0b9e5929b06e7e340c7b82.css?origin=zdialog.css" />
+<link type="text/css" rel="stylesheet" href="__STATIC__/style/new-product.css?{:config('huaban.css_version.version')}" />
+
+<style>
+
+</style>
+
+{/block}
+
+{block name="title"}
+<span>提现</span>
+{/block}
+
+
+{block name="content"}
+
+<!-- 平台功能区 -->
+<div class="ShopFrontPage-r-bot">
+    <div class="order-box cards">
+<div class="new-product">
+    <form id="form">
+        <div class="new-product-box" style="width:600px;margin: auto">
+
+            <div class="new-product-info">
+
+                <div class="product-type" style="align-items: baseline;">
+                    <h2 class="product-type-tit">
+                        可提现金额
+                    </h2>
+                    <div class="all_money text-o" style="font-size: 24px;">{$cashMoney}</div> 元
+                </div>
+
+                {if $shopCard
+                && $shopCard.account_name
+                && $shopCard.bank.bank_name
+                && $shopCard.opening_bank
+                && $shopCard.account}
+
+                <input type="hidden" name="shop_id" id="shop_id" value="{$shopCard.shop_id}">
+                <input type="hidden" name="card_id" id="card_id" value="{$shopCard.card_id}">
+
+                <div class="product-type">
+                    <h2 class="product-type-tit">
+                        提现金额：
+                    </h2>
+                    <div class="product-type-inp">
+                        <input class="input-sm" id="cash_price" onkeyup="this.value=this.value.replace(/^\D*(\d*(?:\.\d{0,2})?).*$/g, '$1')" name="cash_price" type="text" placeholder="请输入提现金额" maxlength="10" style="margin: 0">
+                    </div>
+                    <a href="javascript:;" onclick="all_cash()">全部提现</a>
+                </div>
+
+                <div class="product-type">
+                    <h2 class="product-type-tit">
+                        开户名称：
+                    </h2>
+                    <div class="product-type-inp">{$shopCard.account_name}</div>
+                </div>
+
+                <div class="product-type">
+                    <h2 class="product-type-tit">
+                        开户银行：
+                    </h2>
+                    <div class="product-type-inp">{$shopCard.bank.bank_name}</div>
+                </div>
+
+                <div class="product-type">
+                    <h2 class="product-type-tit">
+                        开户支行名称：
+                    </h2>
+                    <div class="product-type-inp">{$shopCard.opening_bank}</div>
+                </div>
+
+                <div class="product-type">
+                    <h2 class="product-type-tit">
+                        银行帐号：
+                    </h2>
+                    <div class="product-type-inp">{$shopCard.account}</div>
+                </div> 
+                <div class="new-product-btn-box">
+                        <!--<a href="javascript:;" onclick="window.history.back(-1);" class="new-product-btn-back">取消</a>-->
+                        <a class="btn btn-fill" onclick="submit()">提交申请</a>
+                </div>
+                
+                {else /}
+                <div class="text-o" style="height:200px;">
+                        抱歉，您尚未填写账号相关信息，请先完善再操作提现！<a href="/shop-info/detail"><font color="#42a5f5">立即去完善</font></a>
+                </div>
+                <div class="new-product-btn-box">
+                        <a href="/shop-info/detail" class="btn btn-fill">去完善</a>
+                    </div>
+    
+                {/if}
+
+            </div>
+        </div>
+    </form>
+    
+</div>
+</div>
+
+{/block}
+
+{block name='js'}
+<script type="text/javascript" src="{:qiniu_domains()}/upload/0a/93eb5eca9ad8575e8d80ed71bdfd74559e0fcc76b4efa54f15ebca8ebbe2ee.js?origin=zdialog.js"></script>
+<script src="{:qiniu_domains()}/upload/37/8ed53ec0ace147b1b80fd807623140a6e3011f03e7d95c4062682983cd767c.js?origin=bootstrap-3.3.4.js"></script>
+<script type="text/javascript" src="__STATIC__/lib/move.js?{:config('huaban.css_version.version')}"></script>
+<script src="{:qiniu_domains()}/upload/67/1d2d0ecc6ad56a71cece7cda0231343a469f2ab75b54529407c4293896a914.js?origin=template.js"></script>
+
+<script>
+    var all_money = '';
+
+    // 全部提现
+    function all_cash() {
+        all_money = $('.all_money').text();
+        $("#cash_price").val(all_money)
+    }
+
+    //点击页面提交
+    function submit() {
+        shop_id = $('#shop_id').val();
+        card_id = $('#card_id').val();
+        // 可提现金额
+        all_money = $('.all_money').text()*1;
+
+        // 提现金额
+        cash_price = $('#cash_price').val()*1;
+
+        if (cash_price == ''){
+            layer.msg('请输入提现金额',{icon: 2});
+            return false;
+        }
+        if (isNaN(cash_price) || cash_price == 0){
+            layer.msg('请输入合法的提现金额',{icon: 2});
+            return false;
+        }
+        if (cash_price > all_money){
+            layer.msg('已超出可提现金额，请填写正确的提现金额',{icon: 2});
+            return false;
+        }
+
+        layer.load(3, {shade: [0.1, '#393D49']});
+
+        $.ajax({
+            url: '/withdrawal/add',
+            type: 'POST',
+            data: {
+                'shop_id':shop_id,
+                'card_id':card_id,
+                'all_money': all_money,
+                'cash_price': cash_price,
+            },
+            dataType: 'json',
+            success: function(data) {
+
+                layer.msg(data.msg, {
+                    icon: 6,
+                    time: 3000 //2秒关闭（如果不配置，默认是3秒）
+                }, function() {
+                    //location.reload();
+                    window.location.href = "/order/cash-out";
+                    // self.location = data.data.jump_url;
+                });
+            },error:function (data) {
+                layer.msg(data.responseJSON.msg, {icon: 2}, function () {
+                    layer.closeAll();
+                });
+            }
+        });
+
+    }
+
+
+
+</script>
+
+{/block}

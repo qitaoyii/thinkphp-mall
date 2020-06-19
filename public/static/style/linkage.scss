@@ -1,0 +1,203 @@
+.linkage-box::-webkit-scrollbar {
+    -webkit-appearance: none;
+}
+
+.linkage-box::-webkit-scrollbar:vertical {
+    width: 11px;
+}
+
+.linkage-box::-webkit-scrollbar:horizontal {
+    height: 11px;
+}
+
+.linkage-box::-webkit-scrollbar-thumb {
+    border-radius: 8px;
+    border: 2px solid white; /* should match background, can't be transparent */
+    background-color: rgba(0, 0, 0, .5);
+}
+
+.linkage-cont::-webkit-scrollbar {
+    -webkit-appearance: none;
+}
+
+.linkage-cont::-webkit-scrollbar:vertical {
+    width: 11px;
+}
+
+.linkage-cont::-webkit-scrollbar:horizontal {
+    height: 11px;
+}
+
+.linkage-cont::-webkit-scrollbar-thumb {
+    border-radius: 8px;
+    border: 2px solid white; /* should match background, can't be transparent */
+    background-color: rgba(0, 0, 0, .5);
+}
+.linkage-box {
+    width: 100%;
+    flex: 1;
+    overflow-y: scroll;
+    padding: 30px;
+    .linkage-flexbox {
+        width: 100%;
+        height: 410px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        .one-linkage,
+        .two-linkage,
+        .three-linkage {
+            width: 32%;
+            height: 100%;
+            background: #fff;
+            border-radius: 4px;
+            h2 {
+                width: 100%;
+                height: 59px;
+                line-height: 59px;
+                padding-left: 32px;
+                color: #2F323E;
+                font-weight: 600;
+                font-family: MicrosoftYaHei;
+                border-bottom: 1px solid #E8E8E8;
+            }
+        }
+        .linkage-cont {
+            width: 100%;
+            height: 350px;
+            overflow-y: scroll;
+            position: relative;
+            .coffeeimg {
+                position: absolute;
+                width: 47px;
+                height: 47px;
+                top: 50%;
+                left: 50%;
+                margin-left: -25px;
+                margin-top: -50px;
+            }
+            li {
+                width: 100%;
+                height: 43px;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 0 20px 0 40px;
+                cursor: pointer;
+                span {
+                    font-size: 13px;
+                }
+            }
+        }
+    }
+    .linkage-prompt {
+        width: 100%;
+        height: 50px;
+        line-height: 50px;
+        font-size: 14px;
+        color: #898E93;
+        padding-left: 10px;
+    }
+    .linkage-btnbox {
+        width: 100%;
+        height: 150px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        button {
+            width: 288px;
+            height: 48px;
+            border: 0;
+            background-image: linear-gradient(152deg, rgba(255, 0, 0, 0.49) 0%, #FFB900 130%);
+            border-radius: 30px;
+            color: #fff;
+        }
+    }
+    .linkage-process-box{
+        width:100%;
+        height:102px;
+        display: flex;
+        align-items: center;
+        margin-bottom:20px;
+        .linkage-process-l{
+            width:50px;
+            height:102px;
+            position: relative;
+            img{
+                width:100%;
+                height:100%;
+                position: absolute;
+            }
+            p{
+                width:14px;
+                height:76px;
+                position: absolute;
+                font-size: 14px;
+                color:#fff;
+            }
+            .process-l-p-1{
+                top:12px;
+                left:8px;
+            }
+            .process-l-p-2{
+                top:12px;
+                left:27px;
+            }
+        }
+        .linkage-process-r{
+            padding-left:15px;
+            flex: 1;
+            height:100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            .linkage-process-r-t,.linkage-process-r-b{
+                display: flex;
+                align-items: center;
+                width:100%;
+                height:45px;
+                .process-img-r{
+                    width:105px;
+                    height:100%;
+                    position: relative;
+                    img{
+                        position: absolute;
+                        width:100%;
+                        height:100%;
+                    }
+                }
+                .process-img-one{
+                    width:163px;
+                    height:100%;
+                    position: relative;
+                    img{
+                        position: absolute;
+                        width:100%;
+                        height:100%;
+                    }
+                }
+                .process-img-two{
+                    width:186px;
+                    height:100%;
+                    position: relative;
+                    img{
+                        position: absolute;
+                        width:100%;
+                        height:100%;
+                    }
+                }
+                .process-img-three{
+                    width:176px;
+                    height:100%;
+                    position: relative;
+                    img{
+                        position: absolute;
+                        width:100%;
+                        height:100%;
+                    }
+                }
+            }
+        }
+    }
+}

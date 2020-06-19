@@ -1,0 +1,265 @@
+@tcolor: #54667A;
+@btn-c: #ff8544;
+
+/*按钮*/
+
+.btn {
+    width: auto;
+    height: auto;
+    border-radius: 14px;
+    padding: 4px 20px;
+    border: none;
+    background: none;
+    text-align: center;
+    box-sizing: content-box;
+
+    &.btn-fill {
+        background-image: linear-gradient(-152deg, rgba(255, 0, 0, 0.49) 0%, #FFB900 100%);
+        color: #fff;
+
+    }
+
+    &.btn-o {
+        border: 1px solid @btn-c;
+        color: @btn-c;
+
+    }
+
+    &.btn-normal {
+        display: inline-flex;
+        border: 1px solid #E8E8E8;
+        border-radius: 3px;
+        width: 80px;
+        height: 28px;
+        justify-content: space-around;
+        align-items: center;
+        float: left;
+        margin-top: 15px;
+        padding: 0;
+        cursor: pointer;
+        color: #54667A;
+
+        .direction {
+            display: inline-flex;
+            flex-direction: column;
+            justify-content: center;
+            float: right;
+
+            .fa.active {
+                color: @btn-c
+            }
+        }
+    }
+
+    &.btn-lg {
+        padding: 15px 96px;
+        border-radius: 48px;
+    }
+
+}
+
+/*卡片*/
+.cards {
+    width: 100%;
+    height: auto;
+    background: #fff;
+    border-radius: 4px;
+    padding: 15px;
+}
+
+/*文字颜色*/
+.text- {
+    &gray {
+        color: #898E93;
+    }
+
+    &link {
+        color: #2F323E
+    }
+
+    &blue {
+        color: #1797FF;
+    }
+
+    &o {
+        color: #FF8544;
+    }
+
+    &red {
+        color: #f00;
+    }
+}
+
+a {
+    color: #333;
+    text-decoration: none;
+
+    &hover {
+        color: #000;
+    }
+
+    &active {
+        color: #000;
+    }
+}
+
+/*表单*/
+/*查询式表单*/
+.form-group {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-content: center;
+    margin-bottom: 28px;
+
+    &:last-child {
+        padding-bottom: 28px;
+    }
+
+    .form-item {
+        width: 20%;
+        min-width: 270px;
+        border: 1px solid #E8E8E8;
+        border-radius: 3px;
+        display: flex;
+
+        label {
+            background: #f0f2f8;
+            height: 34px;
+            width: auto;
+            padding: 0 10px;
+            display: inline-block;
+            line-height: 34px;
+            color: @tcolor;
+            font-size: 12px;
+        }
+
+        input:not([type='button']),
+        select {
+            border: none;
+            background: none;
+            color: @tcolor;
+            flex: 1;
+            padding-left: 5px;
+        }
+
+        span#select2-select-container {
+            line-height: 34px;
+        }
+        span.select2-selection.select2-selection--single{
+            border:none;
+        }
+
+
+    }
+
+    .form-item-btn {
+        width: 20%;
+        line-height: 34px;
+
+        input {
+            margin-left: 16px;
+        }
+    }
+}
+
+.form-checkbox {
+    position: relative;
+    display: inline-block;
+    height: 100%;
+    margin-left: 10px;
+
+    label {
+        padding-left: 25px;
+    }
+
+    input[type='checkbox'] {
+        position: absolute;
+        z-index: 2;
+        opacity: 0;
+        width: 20px;
+        height: 20px;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        margin: auto;
+        cursor: pointer;
+
+        &:checked {
+            & + span {
+                background: url(../imgs/checked.png) no-repeat center center;
+                background-size: auto;
+            }
+        }
+    }
+
+    span {
+        position: absolute;
+        z-index: 1;
+        width: 20px;
+        height: 20px;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        margin: auto;
+        display: block;
+        background: url(../imgs/check.png) no-repeat center center;
+        background-size: auto;
+    }
+}
+
+.form-radio {
+    position: relative;
+    display: inline-block;
+    height: 100%;
+    margin-left: 10px;
+
+    label {
+        padding-left: 25px;
+    }
+
+    input[type='radio'] {
+        position: absolute;
+        z-index: 2;
+        opacity: 0;
+        width: 16px;
+        height: 16px;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        margin: auto;
+        cursor: pointer;
+
+        &:checked {
+            & + span {
+                background: url(../imgs/radio.png) no-repeat center top;
+                background-size: cover;
+            }
+        }
+    }
+
+    span {
+        position: absolute;
+        z-index: 1;
+        width: 16px;
+        height: 16px;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        margin: auto;
+        display: block;
+        background: url(../imgs/radio.png) no-repeat center bottom;
+        background-size: cover;
+    }
+}
+
+/*表格*/
+.table {
+    width: 100%;
+    table-layout: auto;
+
+    .tr-th {
+        background: #E8F3FF;
+        height: 40px;
+    }
+}

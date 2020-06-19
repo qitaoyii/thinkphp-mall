@@ -1,0 +1,102 @@
+{extend name="layout/base" /}
+
+{block name="seo"}
+   <title>{$title|default="画版商户后台管理系统"}</title>
+{/block}
+
+{block name="style"}
+   <script src="__STATIC__/lib/paging.js?{:config('huaban.css_version.version')}"></script>
+   <!-- <link rel="stylesheet" href="__STATIC__/style/freight.css?{:config('huaban.css_version.version')}"> -->
+   <link rel="stylesheet" href="__STATIC__/style/promotion_detail.css?{:config('huaban.css_version.version')}">
+{/block}
+
+{block name="title"}
+   <span>客户管理</span> /
+   <span class="colorTit">查看详情</span>
+{/block}
+
+<!-- 平台功能区 -->
+{block name="content"}
+<!-- 平台功能区 -->
+   <div class="ShopFrontPage-r-bot">
+      <div class="cards">
+         <!--<form action="" type="post">-->
+         <div class="tpl-box">
+            <!-- <div class="tpl-title">活动基础信息</div> -->
+            <div class="tpl-content1">
+               <div class="tpl-item-box">
+                  <div class="tpl-item flex">
+                     <span>客户手机号</span>
+                     <div>{$data.phone?:'-'}</div>
+                  </div>
+                  <div class="tpl-item flex" style="margin-left:200px;">
+                     <span>客户姓名</span>
+                     <div>{$data.username?:'-'}</div>
+                  </div>
+               </div>
+
+               <div class="tpl-item">
+                  <span>获客方式<b class="text-red">*</b></span>
+                  <div>
+                     {$data.type==1?'消费':'活动'}
+                  </div>
+               </div>
+               {if $data.works_id?2:'2'}
+               <div class="tpl-item">
+                  <span>客户领取版谷</span>
+                  <div class="goods-item">
+                     <div>
+                        <div class="goods-title">
+                           <p class="text">{$data.works_name?:'-'}</p>
+                           <p class="text">{$data.artist_name?:'-'}</p>
+                           <p class="text">版谷：{$data.copy_code?:'-'}</p>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+               <div class="goods-img-box">
+                  <img class="goods-img" src="{:qiniu_domains().$data.works_cover?:''}" alt="{$data.works_name?:'-'}" width="80px" height="80px">
+               </div>
+               {/if}
+            </div>
+            <h1 class="new-product-box-tit">
+               <span></span> 活动详情
+            </h1>
+            <div class="tpl-content2">
+               <div class="tpl-item">
+                  <span>活动名称</span>
+                  {$data.activity_name?:'-'}
+               </div>
+
+               <div class="tpl-item">
+                  <span>活动时间</span>
+                  <div>
+                     {$data.activity_time?:'-'}
+                  </div>
+               </div>
+               <div class="tpl-item">
+                  <span>活动内容</span>
+                  <div>
+                     {$data.explain?:'-'}
+                  </div>
+               </div>
+               <div class="tpl-item">
+                  <span>有效期</span>
+                  <div>
+                     {$data.expiry_time?:'-'}
+                  </div>
+               </div>
+            </div>
+
+         </div>
+         <div class="tpl-btn">
+            <a href="javascript:history.back()" class="btn btn-o btn-lg">关闭</a>
+         </div>
+
+      </div>
+   </div>
+{/block}
+
+{block name='js'}
+   <script type="text/javascript"></script>
+{/block}

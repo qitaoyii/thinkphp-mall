@@ -1,0 +1,325 @@
+{extend name="layout/base" /}
+
+{block name="seo"}
+<title>{$title|default="品牌厂家直供平台"}</title>
+{/block}
+
+{block name="style"}
+    <style>
+        .input-hidden input{
+            border:0px;
+        }
+    </style>
+{/block}
+
+{block name="title"}
+<span>销售管理</span> /
+<span class="colorTit">经销商管理</span>
+{/block}
+
+{block name="content"}
+<!-- 平台功能区 -->
+<div class="ShopFrontPage-r-bot">
+    <div class="order-box cards">
+        <form action="/distributor/index" method="get">
+            <div class="order-search">
+                <div class="form-group" style="justify-content: flex-start;">
+                    <div class="form-item" style="width: 25%">
+                        <label>经销商名称</label>
+                        <input type="text" placeholder="请输入经销商名称" name="distributor_name" value="{$distributor_name}">
+                    </div>
+                    <div class="form-item" style="width: 25%">
+                        <label>经销商编号</label>
+                        <input type="text" placeholder="请输入经销商编号" name="distributor_number" value="{$distributor_number}">
+                    </div>
+                    <div class="form-item" style="width: 25%">
+                        <label>经销商姓名</label>
+                        <input type="text" placeholder="请输入经销商姓名" name="user_name" value="{$user_name}">
+                    </div>
+                </div>
+                <div class="form-group" style="justify-content: flex-start;align-items:center;">
+                    <div class="form-item" style="width: 25%">
+                        <label>经销商手机号</label>
+                        <input type="text" placeholder="请输入经销商手机号" name="phone" value="{$phone}" style="width: 12em">
+                    </div>
+                    <div class="form-item-btn " style="width:25%">
+                        <input type="submit" class="btn btn-fill" value="查询">
+                        {haspermission:close key="add-distributor-info"}
+                        <input type="button" class="btn btn-o" value="添加经销商" onclick="addOper()">
+                        {/haspermission:close}
+                    </div>
+                </div>
+            </div>
+        </form>
+        <div class="order-table">
+            <table class="order-tb">
+                <thead>
+                    <tr class='tr-th'>
+                        <th>序号</th>
+                        <th>经销商名称</th>
+                        <th>经销商编号</th>
+                        <th>经销商姓名</th>
+                        <th>经销商手机号</th>
+                        <th>创建时间</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                <tbody>
+                    {foreach $distributorLists as $key=>$val}
+                    <tr class="tr-bd">
+                        <td>{$distributorLists->num++}</td>
+                        <td>{$val->distributor_name}</td>
+                        <td> {$val->distributor_number}</td>
+                        <td>{$val->user_name}</td>
+                        <td><span class="userphone">{$val->phone}</span></td>
+                        <td>{$val->create_time}</td>
+                        <td>
+                            <div class="operate">
+                                {haspermission:close key="edit-distributor-info"}
+                                <p class="operate-item" onclick="editOper($(this))">
+                                    <a style="cursor: pointer;" data-id="{$val->id}" data-name="{$val->distributor_name}" data-number="{$val->distributor_number}"
+                                       data-username="{$val->user_name}" data-phone="{$val->phone}"><i class="icon icon-mod"></i>修改</a>
+                                </p>
+                                {/haspermission:close}
+                                {haspermission:close key="view-distributor-detail"}
+                                <p class="operate-item">
+                                    <!--<a href="/distributor/detail?id={$val->id}"><i class="icon icon-yulan"></i>详情</a>-->
+                                    <a style="cursor: pointer;" class="getDetail" data-id="{$val->id}" data-name="{$val->distributor_name}" data-number="{$val->distributor_number}"
+                                       data-username="{$val->user_name}" data-phone="{$val->phone}"><i class="icon icon-yulan"></i>详情</a>
+                                </p>
+                                {/haspermission:close}
+                            </div>
+                        </td>
+                    </tr>
+                    {/foreach}
+                </tbody>
+            </table>
+            <!--分页-->
+            {$distributorLists->render()|raw}
+        </div>
+    </div>
+</div>
+
+<!--新增经销渠道商-->
+<div class="add-layer" style="display:none">
+    <p>
+        <label>经销商名称：</label>
+        <input type="text" id="oper_name" oninput="value=value.replace(/[^\w\u4E00-\u9FA5\_]/g, '')" maxlength="10"  placeholder="请输入经销商名称" class="input-sm">
+    </p>
+    <p>
+        <label>经销商编号：</label>
+        <input type="text" id="serialnum" onkeyup="this.value=this.value.replace(/[^\d]/g,'')"  placeholder="请设置经销商编号" maxlength="10" class="input-sm">
+    </p>
+    <p>
+        <label>经销商姓名：</label>
+        <input type="text" oninput="value=value.replace(/[^\w\u4E00-\u9FA5\_]/g, '')" maxlength="10" id="oper_username"  placeholder="请输入经销商姓名" class="input-sm">
+    </p>
+    <p>
+        <label>经销商手机号：</label>
+        <input type="tel" id="oper_phone" placeholder="请设置经销商手机号" class="input-sm">
+    </p>
+</div>
+
+<!--编辑经销商渠道-->
+<div class="edit-layer" style="display:none">
+    <input type="hidden" id="edit_oper_id" value=""/>
+    <p>
+        <label>经销商名称：</label>
+        <input type="text" id="edit_oper_name" oninput="value=value.replace(/[^\w\u4E00-\u9FA5\_]/g, '')" maxlength="10"  placeholder="请输入经销商名称" class="input-sm">
+    </p>
+    <p>
+        <label>经销商编号：</label>
+        <input type="text" id="edit_serialnum" onkeyup="this.value=this.value.replace(/[^\d]/g,'')" maxlength="10" placeholder="请设置经销商编号" disabled class="input-sm">
+    </p>
+    <p>
+        <label>经销商姓名：</label>
+        <input type="text" oninput="value=value.replace(/[^\w\u4E00-\u9FA5\_]/g, '')" maxlength="10" id="edit_oper_username"  placeholder="请输入经销商姓名" class="input-sm">
+    </p>
+    <p>
+        <label>经销商手机号：</label>
+        <input type="tel" id="edit_oper_phone" placeholder="请设置经销商手机号" disabled class="input-sm">
+    </p>
+</div>
+{/block}
+
+{block name='js'}
+<script>
+    /*手机号分割显示*/
+    (function userphone(obj) {
+        obj.each(function () {
+            var phoneNum = $(this).text();
+            $(this).html(phoneNum.replace(/(?=(\d{4})+$)/g, " "));
+        });
+    })($(".userphone"));
+
+    /*新增经销渠道*/
+    function addOper() {
+        $("#serialnum").val('');
+        $("#oper_name").val('');
+        $("#oper_username").val('');
+        $("#oper_phone").val('');
+        $(".add-layer").removeClass('input-hidden');
+        layer.open({
+            type: 1,
+            content: $('.add-layer'),
+            title: '添加经销商',
+            btn: ['提交', '取消'],
+            shadowClose: true,
+            area: "500px",
+            yes: function(index) {
+
+                var shopUser={
+
+                    distributor_number :$("#serialnum").val(),
+                    distributor_name : $("#oper_name").val(),
+                    user_name:$("#oper_username").val(),
+                    phone:$("#oper_phone").val()
+                };
+
+                if (!shopUser.distributor_name) {
+                    layer.msg('经销商名称不能为空', {icon:2});
+                    return false;
+                }
+                if (!shopUser.distributor_number) {
+                   layer.msg('经销商编号不能为空', {icon:2});
+                   return false;
+                }
+                if (!shopUser.user_name) {
+                    layer.msg('经销商姓名不能为空', {icon:2});
+                    return false;
+                }
+                if (!shopUser.phone) {
+                    layer.msg('经销商手机号不能为空', {icon:2});
+                    return false;
+                }
+
+                layer.load(3, {shade: [0.1, '#393D49']});
+                $.ajax({
+                     url: "/distributor/add",
+                     type: 'POST',
+                     dataType: 'json',
+                     data: shopUser,
+                     success: function(result) {
+                         layer.msg(result.msg, {
+                             icon: 6,
+                             time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                         }, function() {
+                             layer.closeAll();
+                             location.reload();
+                         });
+                     },
+                     error: function(data) {
+                         layer.msg(data.responseJSON.msg, {
+                             icon: 2
+                         },function () {
+                             layer.closeAll();
+                         });
+                     }
+                });
+            }
+        });
+    }
+
+    // 修改经销商渠道
+    function editOper(obj) {
+        var showData = obj.children('a');
+        $("#edit_oper_id").val(showData.data('id'));
+        $("#edit_oper_name").val(showData.data('name'));
+        $("#edit_serialnum").val(showData.data('number'));
+        $("#edit_oper_username").val(showData.data('username'));
+        $("#edit_oper_phone").val(showData.data('phone'));
+
+        layer.open({
+            type: 1,
+            content: $('.edit-layer'),
+            title: '编辑经销商',
+            btn: ['提交', '取消'],
+            shadowClose: true,
+            area: "500px",
+            yes: function(index) {
+
+                var shopUser={
+                    id: $("#edit_oper_id").val(),
+                    distributor_number: $("#edit_serialnum").val(),
+                    distributor_name: $("#edit_oper_name").val(),
+                    user_name: $("#edit_oper_username").val(),
+                    phone: $("#edit_oper_phone").val()
+                };
+
+                if (!shopUser.distributor_name) {
+                    layer.msg('经销商名称不能为空', {icon:2});
+                    return false;
+                }
+                if (!shopUser.distributor_number) {
+                    layer.msg('经销商编号不能为空', {icon:2});
+                    return false;
+                }
+                if (!shopUser.user_name) {
+                    layer.msg('经销商姓名不能为空', {icon:2});
+                    return false;
+                }
+
+                layer.load(3, {shade: [0.1, '#393D49']});
+                $.ajax({
+                    url: "/distributor/edit",
+                    type: 'POST',
+                    dataType: 'json',
+                    data: shopUser,
+                    success: function(result) {
+
+                        layer.msg(result.msg, {
+                            icon: 6,
+                            time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                        }, function() {
+                            layer.closeAll();
+                            location.reload();
+                        });
+                    },
+                    error: function(data) {
+                        layer.msg(data.responseJSON.msg, {
+                            icon: 2
+                        },function() {
+                            layer.closeAll();
+                        });
+                    }
+                });
+            }
+        });
+    }
+
+    /*经销渠道详情*/
+    $('.getDetail').on('click',function(){
+        $(".add-layer").addClass('input-hidden');
+        var id=$(this).data('id'),
+            distributor_name=$(this).data('name'),
+            distributor_number=$(this).data('number'),
+            username=$(this).data('username'),
+            phone=$(this).data('phone');
+
+        $("#oper_name").val(distributor_name);
+        $("#serialnum").val(distributor_number);
+        $("#oper_username").val(username);
+        $("#oper_phone").val(phone);
+
+        layer.open({
+            type: 1,
+            content: $('.add-layer'),
+            title: '经销商详情',
+            btn: '关闭',
+            btnAlign: 'cc',
+            shadowClose: true,
+            area: "500px",
+            yes: function(){
+                layer.closeAll();
+                $("#oper_name").val('');
+                $("#serialnum").val('');
+                $("#oper_username").val('');
+                $("#oper_phone").val('');
+            }
+        });
+    });
+
+</script>
+
+{/block}

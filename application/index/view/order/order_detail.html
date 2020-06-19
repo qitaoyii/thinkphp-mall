@@ -1,0 +1,580 @@
+{extend name="layout/base" /}
+
+{block name="seo"}
+<title>{$title|default="品牌厂家直供平台"}</title>
+{/block}
+
+{block name="style"}
+<style>
+
+.form-items{display: flex;justify-content: space-between;align-items: center;width: 150px;}
+.form-items .form-radio{
+    display: inline-flex;
+    align-items: center;
+}
+.bor-1{
+    width: auto;
+}
+.bor-2{
+    width: 270px;
+}
+</style>
+{/block}
+
+{block name="title"}
+<span>订单管理</span> /
+<span class="colorTit">订单详情</span>
+{/block}
+
+{block name="content"}
+<!-- 平台功能区 -->
+    <div class="ShopFrontPage-r-bot">
+        <div class="order-box cards">
+            <div class="order-state">
+                <div class="state-list">
+                    <!--待付款订单-->
+                    <div class="state-item" style="width: auto;">
+                        <span>订单状态:</span>
+                        {if 1 == $order->order_status}
+
+                        <img src="{:qiniu_domains()}/upload/e8/62b95b56c9887dbf76d22172d23a169cb119b7c29901ba2ab5117f08c38ff3.png?origin=待付款.png"
+                            alt="等待买家付款">
+                        <p class="text-o">等待买家付款</p>
+                        {/if}
+                        {if 2 == $order->order_status}
+                        <!--等待发货订单-->
+                        <img src="{:qiniu_domains()}/upload/3c/4ce2190d825828d249da76b47bd3fb8918fb17c56809e9b2297d1270b29df7.png?origin=待发货.png"
+                            alt="买家已付款">
+                        <p class="text-o">买家已付款,等待发货 </p>
+                        {/if}
+                        {if 3 == $order->order_status}
+                        <!--物流配送中-->
+                        <img src="{:qiniu_domains()}/upload/7e/5198d420f3dba18f6d73b6e8dd1f08fc61eed0bdc7445fab3c30d390073e9a.png?origin=配送中.png"
+                            alt="配送中">
+                        <p class="text-o">物流配送中</p>
+                        <a href="javascript:;" class="btn btn-o logistics" style="color:#FF8544;margin-left:20px;" data-id="{$order->order_id}">查看物流</a>
+                        {/if}
+                        {if 4 == $order->order_status}
+                        <!-- 交易完成 -->
+                        <img src="{:qiniu_domains()}/upload/5d/a73a2fe8e73a954abce5ab2ea8515b758f135d93873125c5489bec03f0fb5d.png?origin=交易完成1.png"
+                            alt="配送完成">
+                        <p class="text-o">已收货，交易完成</p>
+                        {/if}
+                        {if 5 == $order->order_status}
+                        <!-- 交易完成 -->
+                        <p class="text-o">订单已取消</p>
+                        {/if}
+                        {if 6 == $order->order_status}
+                        <!-- 交易完成 -->
+                        <p class="text-o">订单已关闭</p>
+                        {/if}
+                        {if in_array($order->refund_status, [1,2,3])}
+                        <p class="text-gray" style="color: #0091FF;margin-left: 20px;">
+                            ( {$order->refund_status_text} 退款原因：{$order->application_reason_text})
+                        </p>
+                        {/if}
+                    </div>
+                </div>
+                <div class="state-info">
+                        {if 3 > $order->order_status}
+                        <!--未发货-->
+                      <div class="info-list">
+                          <div class="info-item">
+                              <span>订单号：</span>
+                              <p>{$order->order_sn}</p>
+                          </div>
+                          <div class="info-item">
+                              <span>订单创建时间：</span>
+                              <p>{$order->create_time}</p>
+                          </div>
+                          {if !in_array($order->order_status, [5,6])}
+                              {if strlen($order->transaction_id) && $order->settlement_price != '0.00'}
+
+                              <div class="info-item"><span>支付金额：</span>
+                                  {if $order->settlement_price < 0}
+                                  <p>￥0.00</p>
+                                  {else /}
+                                  <p>￥{$order->settlement_price}</p>
+                                  {/if}
+                              </div>
+                              <div class="info-item"><span>支付方式：</span>
+                                  <p>{$order->pay_type_text}</p>
+                              </div>
+                              {else/}
+                              <!--<div class="info-item"><span>待支付金额：</span>-->
+                                  <!--{if $order->settlement_price < 0}-->
+                                  <!--<p>￥0.00</p>-->
+                                  <!--{else /}-->
+                                  <!--<p>￥{$order->settlement_price}</p>-->
+                                  <!--{/if}-->
+                              <!--</div>-->
+                              {/if}
+                          {/if}
+                      </div>
+                    {else /}
+                        <!--除未发货-->
+                        <ul class="info-list">
+                            <!--订单配送及已完成状态添加物流信息-->
+                            <li class="info-item">
+                                <span>订单号：</span>
+                                <p>{$order->order_sn}</p>
+                            </li>
+                            <li class="info-item">
+                                <span>订单创建时间：</span>
+                                <p>{$order->create_time}</p>
+                            </li>
+                            {if !in_array($order->order_status, [5,6])}
+                                <li class="info-item"><span>支付金额： </span>
+                                    {if $order->settlement_price < 0}
+                                    <p>￥0.00</p>
+                                    {else /}
+                                    <p>￥{$order->settlement_price}</p>
+                                    {/if}
+                                </li>
+                                <li class="info-item"><span>支付方式： </span>
+                                    <p>{$order->pay_type_text}</p>
+                                </li>
+                                <li class="info-item"><span>付款时间： </span>
+                                    <p>{$order->pay_time}</p>
+                                </li>
+                                <li class="info-item"><span>发货时间： </span>
+                                    <p>{$order->deliver_time}</p>
+                                </li>
+                                <li class="info-item">
+                                    <span>物流公司：</span>
+                                    <p>{:optional($express, '-')->express_name}</p>
+                                    {if $order->order_status == 3}
+                                    <a href="javascript:;" class="btn express-up" data-id="{$order->order_id}" style="color:#FF8544;margin-left:20px;">修改快递单号</a>
+                                    {/if}
+                                </li>
+                                <li class="info-item">
+                                    <span>物流单号：</span>
+                                    <p>{:optional($express, '-')->delivery_no}</p>
+                                </li>
+
+                                {if $order->confirm_receipt_time}
+                                <li class="info-item"><span>收货时间： </span>
+                                    <p>{$order->confirm_receipt_time}</p>
+                                </li>
+                                {/if}
+                            {/if}
+
+                        </ul>
+                    {/if}
+                </div>
+
+                    <div class="state-info">
+                            <div class="info-title">
+                                收货人信息
+                            </div>
+                            <div class="info-item">
+                                    <span>收货人：</span><p>{$order->consignee}（<span class="userphone">{$order->tel}</span>）</p>
+                            </div>
+                            <div class="info-item">
+                                    <span>收货地址：</span><p>{$order->full_address}</p>
+                            </div>
+
+                            </div>
+
+                            {if $order->order_virtual && $order->order_virtual->product_type}
+                            <div class="order-search order-delive-search state-info">
+                                    <div class="info-title" style="margin-bottom:20px;">
+                                    发货信息<span style="color: #54667a;font-size: 12px;"></span>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="form-items bor-0">
+                                                <label for="express_id">发货方式:</label>
+                                                <span>无物流发货</span>
+                                        </div>
+
+                                        <div class="form-items bor-1">
+                                                <label for="delivery_no">商品类型:</label>
+
+                                                {if $order->order_virtual->product_type == 1}
+                                                卡号和密码
+                                                {/if}
+                                                {if $order->order_virtual->product_type == 2}
+                                                激活码
+                                                {/if}
+                                                {if $order->order_virtual->product_type == 3}
+                                                其他
+                                                {/if}
+
+                                        </div>
+                                        <div class="form-items bor-2">
+                                                <label for="delivery_date">商品内容:</label>
+                                                <input type="text" name="account" placeholder="卡号" class='input-s' id="act" value="{$order->order_virtual->account}" readonly>
+                                                {if $order->order_virtual->product_type == 1}
+                                                <input type="text" name="password" placeholder="密码" class='input-s' id="pwd" value="{$order->order_virtual->password}" readonly>
+
+                                                {/if}
+
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                            {/if}
+
+
+                            <div class="state-info">
+                                <div class="info-title">商品信息</div>
+                <div class="order-table" style="margin-top: 50px">
+                    {if 2 == $order->order_status || 3 == $order->order_status || 4 == $order->order_status}
+                    <table class="order-tb">
+                        <tr class="tr-th" style="text-align: center;background: #fff">
+                            <td style="width: 30%">商品标题</td>
+                            <!--<td style="width: 20%">商品ID</td>-->
+                            <td style="width: 20%">售价（元）</td>
+                            <td style="width: 10%">积分 </td>
+                            <td style="width: 10% ">数量</td>
+                            <td style="width:10%">所获积分</td>
+                        </tr>
+                        <tbody>
+                            <tr class="tr-bd">
+                                <td colspan="6" style="position: relative">
+                                    {foreach $order->order_items as $orderItem}
+                                    <div class="goods-info">
+                                        <div class="goods-item" style="flex:3;min-width:0;-webkit-flex:3;-moz-flex:3;max-width: none;padding-right:0" >
+                                            {if $order->pre_sale == 1}
+                                            <img style="width:50px; position: absolute;top: 10px; left:-2px" src="{:qiniu_domains()}/upload/43/cf76a959e8696365d3575889943c1603587cd49b045c7996b8a20aa17b6aaa.png?attname=pre_sale.png">
+                                            {/if}
+                                            <div class="goods-img">
+                                                <img src="{:qiniu_domains().$orderItem->product_sku_img}" alt="商品图" width='60px' height="60px">
+                                            </div>
+                                            <div class="goods-title">
+                                                <p title="{$orderItem->product_name}">{:cut_str($orderItem->product_name,20)}</p>
+                                                <p class="text-gray">规格:{$orderItem->property_name}</p>
+                                                {if $order->pre_sale == 1}
+                                                <p style="color:#ff8544;font-size: 13px;">排号：{$orderItem->row_number}</p>
+                                                {/if}
+                                            </div>
+                                        </div>
+                                        <!--<div style="flex:2">{$orderItem->product_id}</div> -->
+                                        <div style="flex:2">
+                                            ￥{$orderItem->sell_price}
+                                        </div>
+                                        <div style="flex:1">{$orderItem->score}</div>
+                                        <div style="flex:1">{$orderItem->num}</div>
+                                        <div style="flex:1">{$orderItem->num*$orderItem->score}</div>
+
+                                    </div>
+                                    {/foreach}
+                                </td>
+
+                                <!-- <td>
+                                    <div class="goods-size">￥{$order->total_price}</div>
+                                </td>                                -->
+                                <!-- <td>
+                                    <div class="goods-size">￥{$order->freight_price}</div>
+                                </td> -->
+                                <!-- <td>  <p>￥{$order->total_price+$order->freight_price}</p>
+                                </td> -->
+                            </tr>
+
+                        </tbody>
+                    </table>
+                    <div class="info-list" style="display: flex;align-items: flex-end;flex-direction: column;">
+                            <div class="info-item" style="width:220px;justify-content: space-between;">
+                                    <span>订单金额：</span>
+                                <p>￥<?= get_price($order->total_price - $order->freight_price) ?></p>
+                                <!--<p>￥{$order->total_price}</p>-->
+                            </div>
+                            <div class="info-item" style="width: 220px;justify-content: space-between;">
+                                <!--<span>-->
+                                    <!--{if $order->red_packet_record_id > 0}-->
+                                        <!--红包：-->
+                                    <!--{else /}-->
+                                        <!--优惠券：-->
+                                    <!--{/if}-->
+                                <!--</span>-->
+                                <span>五谷优惠</span>
+                                <p>-￥{$order->discount_amount}</p>
+                            </div>
+                            <div class="info-item" style="width: 220px;justify-content: space-between;">
+                                    <span>运费金额：</span><p>￥{$order->freight_price}</p>
+                            </div>
+                            <div class="info-item" style="width: 220px;justify-content: space-between;border-top:1px solid #e8e8e8">
+                                {if 8 == $order->pay_type}
+                                    <span style="font-size: 16px">紫谷兑换：</span>
+                                    <p class="text-o" style="font-size:18px ">
+                                        ￥{:optional(optional($order->payment_order_item)->payment_order)->purple_price}
+                                    </p>
+                                {else /}
+                                    <span style="font-size: 16px">现金支付：</span>
+                                    <p class="text-o" style="font-size:18px ">
+                                        ￥{:optional(optional($order->payment_order_item)->payment_order)->channel_pay_price}
+                                    </p>
+                                {/if}
+
+                            </div>
+                    </div>
+                    {else /}
+                    <table class="order-tb">
+                        <tr class="tr-th" style="text-align: center;background: #fff">
+                            <td style="width: 30%">商品标题</td>
+                            <!--<td style="width: 20%">商品ID</td>-->
+                            <td style="width: 20%">售价（元）</td>
+                            <td style="width: 10%">积分 </td>
+                            <td style="width: 10% ">数量</td>
+                            <td style="width:10%">可获积分</td>
+                        </tr>
+                        <tbody>
+                            <tr class="tr-bd">
+                                <td colspan="6" style="position: relative">
+                                    {foreach $order->order_items as $orderItem}
+                                    <div class="goods-info">
+                                        <div class="goods-item" style="flex:3;min-width:0;-webkit-flex:3;-moz-flex:3;max-width: none;padding-right:0">
+                                            {if $order->pre_sale == 1}
+                                            <img style="width:50px; position: absolute;top: 10px; left:-2px" src="{:qiniu_domains()}/upload/43/cf76a959e8696365d3575889943c1603587cd49b045c7996b8a20aa17b6aaa.png?attname=pre_sale.png">
+                                            {/if}
+                                            <div class="goods-img">
+                                                <img src="{:qiniu_domains().$orderItem->product_sku_img}" alt="商品图" width='60px' height="60px">
+                                            </div>
+                                            <div class="goods-title">
+                                                <p title="{$orderItem->product_name}">{:cut_str($orderItem->product_name,20)}</p>
+                                                <p class="text-gray">规格:{$orderItem->property_name}</p>
+                                                {if $order->pre_sale == 1}
+                                                <p style="color:#ff8544;font-size: 13px;">排号：{$orderItem->row_number}</p>
+                                                {/if}
+                                            </div>
+                                        </div>
+                                        <!--<div style="flex:2">{$orderItem->product_id}</div>-->
+                                        <div style="flex:2">
+                                            ￥{$orderItem->sell_price}
+                                        </div>
+                                        <div style="flex:1">{$orderItem->score}</div>
+                                        <div style="flex:1">{$orderItem->num}</div>
+                                        <div style="flex:1">{$orderItem->num*$orderItem->score}</div>
+
+                                    </div>
+                                    {/foreach}
+                                </td>
+
+                                <!-- <td>
+                                        <div class="goods-size">￥{$order->total_price}</div>
+                                    </td>                                -->
+                                <!-- <td>
+                                        <div class="goods-size">￥{$order->freight_price}</div>
+                                    </td> -->
+                                <!-- <td>  <p>￥{$order->total_price+$order->freight_price}</p>
+                                    </td> -->
+                            </tr>
+
+                        </tbody>
+                    </table>
+                    <div class="info-list" style="display: flex;align-items: flex-end;flex-direction: column;">
+                        <div class="info-item" style="width:220px;justify-content: space-between;">
+                            <span>订单金额：</span>
+                            <p>￥<?= $order->total_price - $order->freight_price ?></p>
+                        </div>
+                        <div class="info-item" style="width: 220px;justify-content: space-between;">
+                            <!--<span>-->
+                                <!--{if $order->red_packet_record_id > 0}-->
+                                    <!--红包：-->
+                                <!--{else /}-->
+                                    <!--优惠券：-->
+                                <!--{/if}-->
+                            <!--</span>-->
+                            <span>
+                                五谷优惠
+                            </span>
+                            <p>-￥{$order->discount_amount}</p>
+                        </div>
+                        <div class="info-item" style="width: 220px;justify-content: space-between;">
+                            <span>运费金额：</span>
+                            <p>￥{$order->freight_price}</p>
+                        </div>
+                        <div class="info-item"
+                            style="width: 220px;justify-content: space-between;border-top:1px solid #e8e8e8">
+                            <span style="font-size: 16px">待支付金额：</span>
+                            {if $order->settlement_price < 0}
+                            <p class="text-o" style="font-size:18px ">￥0.00
+                            {else /}
+                            <p class="text-o" style="font-size:18px ">￥{$order->settlement_price}
+                            {/if}
+                            </p>
+                        </div>
+                    </div>
+
+                    {/if}
+                    </div>
+                    </div>
+                <div class="btn-group">
+                    <a href="javascript:;" class="btn btn-o btn-lg back">关闭</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="deliveryList" style="display:none;margin-top:20px;width:95%;"></div>
+
+    <div id="express-list" class="add-layer" style="display:none;margin-top:20px;width:95%;">
+        <center>
+            <p style="width: 370px;">
+                <label>物流公司名称：</label>
+                <span style="margin: 0 20px;display: block">
+                    <select name="express_id" id="express_id" class="input-sm" style="width:220px">
+                        <option value="0" selected="">请选择物流公司</option>
+                        {foreach \app\index\model\Express::allArr() as $express}
+                        <option value="{$express->express_id}">{$express->express_name}</option>
+                        {/foreach}
+                    </select>
+                </span>
+            </p>
+            <p style="width: 370px;">
+                <label>物流单号：</label>
+                <input type="text" class="input-sm" placeholder="请输入物流单号" oninput="value=value.replace(/[^\w]/ig,'')" name="delivery_no" id="delivery_no">
+            </p>
+        </center>
+    </div>
+
+{/block}
+
+{block name='js'}
+    <script src="{:qiniu_domains()}/upload/67/1d2d0ecc6ad56a71cece7cda0231343a469f2ab75b54529407c4293896a914.js?origin=template.js"></script>
+    <script id="delivery-list" type="text/html">
+        <table class="order-tb">
+            <thead>
+            <tr class="tr-th">
+                <th style="width:200px;">时间</th>
+                <th>跟踪详情</th>
+            </tr>
+            </thead>
+            <tbody>
+            <%for (var i = 0; i < deliveryList.length; i++) {%>
+            <tr class="tr-bd">
+                <td>
+                    <%:=deliveryList[i].ftime%>
+                </td>
+                <td style="text-align: left;padding-left:20px;">
+                    <%:=deliveryList[i].context%>
+                </td>
+            </tr>
+            <%}%>
+            </tbody>
+        </table>
+    </script>
+    <script>
+        (function userphone(obj) {
+            var phoneNum = obj.text();
+            obj.html(phoneNum.replace(/(?=(\d{4})+$)/g, " "));
+        })($(".userphone"));
+
+        $(".back").click(function () {
+            window.history.go(-1);
+        });
+
+        // 查看物流信息
+        $(".logistics").click(function () {
+            var order_id = $(this).attr('data-id');
+            // 增加加载层
+            var load = layer.load(0, {
+                shade: [0.1,'black'] //0.1透明度的白色背景
+            });
+            $.ajax({
+                url: '/order/delivery-detail',
+                type: 'GET',
+                data:  {order_id: order_id},
+                dataType: 'json',
+                success: function (data) {
+
+                    getDeliveryList(data);
+                    layer.close(load);
+                    // 遍历数据
+                    layer.open({
+                        type: '1',
+                        btn: [],
+                        btnAlign: 'c',
+                        content: $("#deliveryList"),
+                        area:['800px', '600px'],
+                        title: "查看物流详情",
+                        yes: function (index) {
+                            layer.closeAll();
+                        },
+                        btn2: function () {
+
+                        },
+                        cancel: function () {
+
+                        }
+                    });
+                    $(".layui-layer-content").css('text-align', '-webkit-center');
+                },
+                error: function (data) {
+                    layer.msg(data.responseJSON.msg, {icon: 2}, function () {
+                        layer.closeAll();
+                    });
+                }
+            });
+        });
+
+        function getDeliveryList(data){
+            let html = template(document.getElementById('delivery-list').innerHTML, {deliveryList:data.data.data.list});
+            $('#deliveryList').html(html);
+        }
+
+        // 修改物流单号
+        $(".express-up").click(function () {
+            var order_id = $(this).attr('data-id');
+            if (!order_id) {
+                layer.msg("订单ID不能为空", {icon: 2}, function () {});
+                return false;
+            }
+            // 遍历数据
+            layer.open({
+                type: '1',
+                btn: ["确定", "取消"],
+                btnAlign: 'c',
+                content: $("#express-list"),
+                area:['500px', '350px'],
+                title: "修改快递单号",
+                yes: function (index) {
+                    // 执行修改操作
+                    var express_id = $("#express_id").val();
+                    var delivery_no = $("#delivery_no").val();
+
+                    if (!express_id) {
+                        layer.msg("请选择物流公司", {icon: 2}, function () {});
+                        return false;
+                    }
+                    if (!delivery_no) {
+                        layer.msg("请填写物流单号", {icon: 2}, function () {});
+                        return false;
+                    }
+
+                    // 增加加载层
+                    layer.load(0, {
+                        shade: [0.1,'black'] //0.1透明度的白色背景
+                    });
+                    $.ajax({
+                        url: '/order/express-up',
+                        type: 'POST',
+                        data: {order_id: order_id, express_id: express_id, delivery_no: delivery_no},
+                        dataType: 'json',
+                        success: function (data) {
+                            layer.msg(data.msg, {
+                                icon: 6,
+                                time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                            }, function () {
+                                layer.closeAll();
+                                location.reload();
+                            });
+                        },
+                        error: function (data) {
+                            layer.msg(data.responseJSON.msg, {icon: 2}, function () {
+                                layer.closeAll();
+                            });
+                        }
+                    });
+                },
+                btn2: function () {
+
+                },
+                cancel: function () {
+
+                }
+            });
+        });
+    </script>
+{/block}

@@ -1,0 +1,182 @@
+{extend name="layout/base" /}
+
+{block name="seo"}
+<title>{$title|default="品牌厂家直供平台"}</title>
+<meta name="keywords" content="{$keywords|default='网站关键字'}">
+<meta name="description" content="{$desc|default='网站描述'}">
+{/block}
+{block name="style"}
+<style>
+.copy-right{
+        cursor: pointer;
+        color:blue;
+    }
+
+</style>
+{/block}
+
+{block name="title"}
+<span>厂家账户</span> /
+    <span class="colorTit">冻结金额</span>
+{/block}
+
+
+{block name="content"}
+
+<!-- 平台功能区 -->
+<div class="ShopFrontPage-r-bot">
+    <div class="order-box cards">
+        <div class="choose-list">
+            <div class="choose-item {if $type == 1} active {/if}" data-type="1"><a href="/withdrawal/forbidden?type=1">第三方支付渠道冻结金额</a></div>
+            <div class="choose-item {if $type == 2} active {/if}" data-type="2"><a href="/withdrawal/forbidden?type=2">分红冻结金额</a></div>
+        </div>
+        {if $type == 1}
+        <form action="/withdrawal/forbidden?type=1" method="get" id="myform-one">
+            <div class="form-group justify-l">
+                <input name="type" value="{$type}" hidden>
+                <div class="form-item">
+                    <label for="create_time">交易时间</label>
+                    <input type="text" readonly placeholder="请选择日期" autocomplete="off" name="pay_time" value="{$pay_time}" id="date">
+                    <i></i>
+                </div>
+
+                <div class="form-item">
+                    <label for="product_name">交易订单号</label>
+                    <input type="text" placeholder="请输入交易订单号" name="channel_number" id="channel_number" value="{$channel_number}">
+                    <i></i>
+                </div>
+
+                <div class="form-item-btn">
+                    <input type="submit" value="查询" class="btn btn-fill">
+                </div>
+            </div>
+            {if $type == 1}
+            <div class="form-group">
+                <div class="text-left" style="margin-left:15px;">
+                    共<span class="text-blue"> {$count} </span> 笔订单&nbsp;&nbsp;<br><br>
+                    冻结总金额(元)：
+                    <span class="text-o">{$total_price}</span>
+                </div>
+            </div>
+            {/if}
+        </form>
+        {else /}
+        <!-- 分红冻结金额查询 -->
+        <form action="/withdrawal/forbidden?type=2" method="get" id="myform-two">
+            <div class="form-group justify-l">
+                <input name="type" value="{$type}" hidden>
+                <div class="form-item">
+                    <label for="create_time">分红时间</label>
+                    <input type="text" readonly placeholder="请选择日期" autocomplete="off" name="pay_time" value="{$pay_time}" id="date">
+                    <i></i>
+                </div>
+                <div class="form-item-btn">
+                    <input type="submit" value="查询" class="btn btn-fill">
+                </div>
+            </div>
+            {if $type == 2}
+            <div class="form-group">
+                <div class="text-left" style="margin-left:15px;">
+                    共<span class="text-blue"> {$count}</span> 笔分红&nbsp;&nbsp;<br><br>
+                    分红总金额(元)：
+                    <span class="text-o">￥{$total_price}</span>
+                </div>
+            </div>
+            {/if}
+        </form>
+        {/if}
+
+        <div class="order-table">
+            {if $type == 1}
+            <table class="order-tb" id="table-one">
+                <thead>
+                    <tr class="tr-th">
+                        <!--<th>序号</th>-->
+                        <th>交易时间</th>
+                        <th>订单号</th>
+                        <th>交易订单号</th>
+                        <th>支付金额（元）</th>
+                        <th>运费金额（元）</th>
+                        <th>可提现时间</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {foreach name='list' item='val'}
+                <tr class="tr-bd">
+                    <!--<td>{$list->num++}</td>-->
+                    <td>{$val->pay_time}</td>
+                    <td>{$val->order_sn}</td>
+                    <td>{:optional(optional($val->paymentOrderItem)->paymentOrder)->channel_number}</td>
+                    <td>{$val->supply_price_text}</td>
+                    <td>{$val->freight_price}</td>
+                    <td>{$val->freeze_end_time_text}</td>
+                    <!--<td>{:optional($val->commission_order_info, '——')->freeze_end_time}</td>-->
+                </tr>
+                {/foreach}
+                </tbody>
+            </table>
+            {else /}
+            <!-- 分红列表 -->
+            <table class="order-tb" id="table-two">
+                <thead>
+                    <tr class="tr-th">
+                        <th>序号</th>
+                        <th style="width:25%">版谷</th>
+                        <th>版权作品</th>
+                        <th>分红金额（元）</th>
+                        <th>分红时间</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {foreach $list as $val}
+                    <tr class="tr-bd">
+
+                        <td>{$list->num++}</td>
+                        <td>
+                            <span data-id="1" class="copy-right">{:optional($val->copyright)->serial}</span>
+                            <span data-id="2" class="copy-right" style="display:none;">{$val->copy_code}</span>
+                            <span data-id="3" class="copy-right" style="display:none;">{:optional($val->copyright)->ranking}</span>
+                        </td>
+                        <td>
+                            {if $val->works_id}
+                            《{:optional($val->work)->works_name}》
+                            {else /}
+                            --
+                            {/if}
+                        </td>
+                        <td>
+                            ￥{$val->share_price}
+                        </td>
+                        <td>
+                            {$val->pay_time}
+                        </td>
+                    </tr>
+                {/foreach}
+                </tbody>
+            </table>
+            {/if}
+        </div>
+        <!--分页-->
+        <div class="pragination-group" id="pageToolbar">
+            {$list->render()|raw}
+        </div>
+        <div class="btn-group">
+            <a href="javascript:;" class="btn btn-o btn-lg" onclick="window.history.back()">关闭</a>
+        </div>
+    </div>
+</div>
+
+{/block}
+
+{block name='js'}
+<script>
+    $(".copy-right").on('click', function () {
+        var index = $(this).attr('data-id');
+        if (index == 3) {
+            $(this).parents('td').find('.copy-right').eq(0).show().siblings().hide();
+        } else {
+            $(this).next().show().siblings().hide();
+        }
+    });
+</script>
+{/block}

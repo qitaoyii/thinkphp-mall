@@ -1,0 +1,328 @@
+{extend name="layout/base" /}
+
+{block name="seo"}
+<title>{$title|default="画版商户后台管理系统"}</title>
+{/block}
+
+{block name="style"}
+<link rel="stylesheet" href="__STATIC__/style/freight.css?{:config('huaban.css_version.version')}">
+<link rel="stylesheet" href="__STATIC__/style/newAgent.css?{:config('huaban.css_version.version')}">
+{/block}
+
+{block name="title"}
+<span>渠道管理</span> /
+<span class="colorTit">所有代理</span>
+{/block}
+
+<!-- 平台功能区 -->
+{block name="content"}
+<div class="ShopFrontPage-r-bot">
+    <div class="cards">
+        <!--<form action="" type="post">-->
+        <div class="tpl-box" id="main-box">
+            <!-- 创建新代理 -->
+            <div class="tpl-title">创建新代理</div>
+            <div class="tpl-content">
+                <div class="agent-item">
+                    <label>代理手机号：</label><span class="text-red">*</span>
+                    <input type="text" maxlength="11" value="" placeholder="请输入代理用户手机号" class="input-a phone-check" name="phone_number" id="phone_number" onkeyup="dataBander($(this),$('#phone'))">
+                </div>
+                <div class="agent-item">
+                    <label>分成比例：</label><span class="text-red">*</span>
+                    <input style="margin-left: 35px;" type="text" placeholder="请设置分成比例" class="input-a portion one-inp" name="proportion" id="proportion" onkeyup="dataBander($(this),$('#pro'))"><span>%</span>
+                    <input style="margin-left: 50px;" type="button" value="添加分成用户" class="btn btn-fill" id="add">
+                </div>
+            </div>
+        </div>
+        <div class="tpl-box freight-box" style="display: none" id="others-box">
+            <input type="hidden" id="shop_agent_id">
+            <div class="freight-table">
+                <table class="freight-tb">
+                    <thead>
+                        <tr>
+                            <td colspan="2" style="text-align: justify">
+                                <div class="current1">
+                                    <i>说明：所有用户的分成比例之和必须为100%;</i>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="tr-th">
+                            <td>代理手机号</td>
+                            <td>代理分成比例</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <input type="hidden" value="">
+                            <td id="phone"></td>
+                            <td><input type="text" id="pro" onkeyup="dataBander($(this),$('#proportion'))" class="input-s one-inp"><span>%</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="freight-table">
+                <div class="tpl-title flex">
+                    <p>其他分成用户</p><input type="button" value="添加分成用户" class="btn btn-fill" id="addothers">
+                </div>
+                <table class="freight-tb">
+                    <thead>
+                        <tr class="tr-th">
+                            <td>代理手机号</td>
+                            <td>代理分成比例</td>
+                            <td>操作</td>
+                        </tr>
+                    </thead>
+                    <tbody id="freight-tb">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="tpl-btn">
+            <input type="button" value="取消" class="btn btn-o btn-lg" onclick="cancel()">
+            <input type="button" value="提交" class="btn btn-fill btn-lg" id="creat">
+        </div>
+        <!-- </form>-->
+    </div>
+</div>
+{/block}
+
+{block name='js'}
+<script src="{:qiniu_domains()}/upload/67/1d2d0ecc6ad56a71cece7cda0231343a469f2ab75b54529407c4293896a914.js?origin=template.js"></script>
+
+<script id="add-others" type="text/html">
+    <tr class="others">
+        <input type="hidden" name='' value="" class="data-id">
+        <td><input type="text" maxlength="11" class="input-sm phone-check" placeholder="请输入代理手机号"></td>
+        <td><input type="text" class="input-sm portion" placeholder="请设置分成比例"><span>%</span></td>
+        <td>
+            <div class="operate">
+                <div class="operate-item" onclick="delItem($(this))"><a href="javascript:;" class="others_del"><i class="icon icon-detel"></i>删除</a></div>
+            </div>
+        </td>
+    </tr>
+</script>
+
+<script id="create-others" type="text/html">
+    <%for (var k = 0; k < others.length; k++) {%>
+    <tr class="others">
+        <input type="hidden" name='' value="<%:=others[k].id%>" class="data-id">
+        <td><input type="text" maxlength="11" class="input-sm phone-check" placeholder="请输入代理手机号" value="<%:=others[k].phone%>" disabled></td>
+        <td><input type="text" class="input-sm portion" placeholder="请设置分成比例" value="<%:=others[k].ratio%>"><span>%</span></td>
+        <td>
+            <div class="operate">
+                <div class="operate-item" onclick="delItem($(this))"><a href="javascript:;" class="others_del"><i class="icon icon-detel"></i>删除</a></div>
+            </div>
+        </td>
+    </tr>
+    <%}%>
+</script>
+
+<script>
+    var obj = {$agentData|raw};
+
+    if (obj.shop_agent_id){
+        $("#shop_agent_id").val(obj.shop_agent_id);
+        // 一级代理
+        if (obj.main) {
+            $("#main-box").hide();
+            $('#proportion').val(obj.main.ratio);
+            $("#phone").prev().val(obj.main.id);
+            $("#phone").text(obj.main.phone);
+            $("#pro").val(obj.main.ratio);
+            $("#others-box").show();
+        }
+        // 其他代理
+        if (obj.others.length) {
+            createOthers();
+        }
+    }
+
+    // 执行添加其他分成用户
+    $("#addothers").click(function() {
+        addOthers();
+    });
+
+    // 删除其他分成用户方法
+    function delItem(o){
+        o.parents("tr").detach();
+        obj.num--;        
+        if(obj.num<=0 && obj.edit == false){
+            $("#others-box").hide();
+            $("#add").show();
+        }
+    }
+
+    // 添加其他分成用户方法
+    function addOthers() {
+        obj.num++;
+        let html = template(document.getElementById('add-others').innerHTML);
+        $('#freight-tb').append(html);
+    }
+    function createOthers(){
+        let html = template(document.getElementById('create-others').innerHTML, {others:obj.others});
+        $('#freight-tb').html(html);
+    }
+    // 分成比例验证 1-100
+    $(document).on("input",".portion",function(){
+        var limitNum = $(this).val().replace(/[^0-9.%]+/g, "");
+        if(limitNum > 0 && limitNum <= 100){
+            $(this).val(limitNum);
+        }else if(limitNum > 100){
+            $(this).val("100");
+        }else{
+            $(this).val("");
+        }
+    });
+
+    // 手机号输入框失去焦点事件
+    $(document).on('change', '.phone-check', function () {
+        var phone = $(this).val();
+        var that = $(this);
+        if (phone.length == 11) {
+            upperCase(phone, that);
+        } else {
+            layer.msg('手机号码格式有误，请重填',{icon: 2}, function () {
+                that.trigger('focus');
+            });
+        }
+    });
+
+    // 验证手机号方法
+    function upperCase(phone, that) {
+        if(!(/^1[1-9]\d{9}$/.test(phone))){
+            layer.msg('手机号码格式有误，请重填',{icon: 2}, function () {
+                that.trigger('focus');
+            });
+            return false;
+        }
+    }
+
+    function dataBander(obj, o) {
+        var $source = obj.val();
+        o.val($source);
+        o.text($source);
+    }
+
+    function cancel() {
+        layer.confirm('是否要取消创建？', {
+            btn: ['立即取消', '再想想'],
+            btnAlign: 'c',
+        }, function(index) {
+            location.href = '/agent/index'; //返回首页
+        }, function(index) {
+            layer.close(index);
+        })
+    }
+
+    $("#add").click(function() {
+        var phone = $("#phone_number").val(),
+            pro = $("#proportion").val();
+        if (!phone) {
+            layer.msg('请输入代理人手机号！', {
+                icon: 2
+            }, function() {
+                $("#phone_number").trigger('focus');
+            });
+            return false;
+        }
+        if (!pro) {
+            layer.msg('请设置代理人分成比例！', {
+                icon: 2
+            }, function() {
+                $("#proportion").trigger('focus');
+            });
+            return false;
+        }
+        $(".freight-box").show();
+        if(obj.num==0){
+           addOthers(); 
+        }
+        $(this).hide();
+    });
+
+    // 进行提交
+    $("#creat").click(function () {
+
+        // 获取数据
+        var mainObj = {
+            'id': $("#phone").prev().val(),
+            'phone': $("#phone").text(),
+            'ratio': $("#pro").val()
+        };
+
+        var otherArr = [];
+
+        $(".others").each(function () {
+            var otherObj = {
+                'id': $(this).find('.data-id').val(),
+                'phone': $(this).find('.phone-check').val(),
+                'ratio': $(this).find('.portion').val()
+            };
+            otherArr.push(otherObj);
+        });
+
+        // 验证手机号码不能重复
+        var $input = $(".phone-check");
+        var all = $input.map(function() { return $(this).val(); }).toArray().sort();
+        for (var i = 1; i < all.length; i++) {
+            if (all[i] === all[i - 1] && all[i] != "") {
+                layer.msg('手机号码不能重复', {icon: 2});
+                return false;
+            }
+        }
+
+        // 获取分成比例合计是100%
+        var count = 0;
+        var next = true;
+
+        $('.portion').each(function () {
+            var value = $(this).val();
+            if (value == '') {
+                next = false;
+            }
+            count += value*1;
+        });
+
+        if (false == next) {
+            layer.msg('用户的分成比例不能为空！', {icon: 2});
+            return false;
+        }
+
+        if (count !== 100) {
+            layer.msg('所有用户的分成比例之和必须为100%，请重新调整！', {icon: 2});
+            return false;
+        }
+
+        var data = {
+            'shop_agent_id': $("#shop_agent_id").val(),
+            'main': mainObj,
+            'others': otherArr
+        };
+
+        // 加载层
+        layer.load(0, {
+            shade: [0.1,'black'] //0.1透明度的白色背景
+        });
+        $.ajax({
+            url: '/agent/insert',
+            type: 'POST',
+            data: data,
+            dataType: 'json',
+            success: function (data) {
+                layer.msg(data.msg, {
+                    icon: 6,
+                    time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                }, function () {
+                    layer.closeAll();
+                    window.location.href = '/agent/index';
+                });
+            },
+            error: function (data) {
+                layer.msg(data.responseJSON.msg, {icon: 2}, function () {
+                    layer.closeAll();
+                });
+            }
+        });
+    });
+</script>
+{/block}

@@ -1,0 +1,875 @@
+{extend name="layout/base" /}
+
+{block name="seo"}
+    <title>{$title|default="品牌厂家直供平台"}</title>
+    <meta name="keywords" content="{$keywords|default='网站关键字'}">
+    <meta name="description" content="{$desc|default='网站描述'}">
+{/block}
+
+{block name="style"}
+    <link rel="stylesheet" href="__STATIC__/style/freight.css?{:config('huaban.css_version.version')}">
+{/block}
+
+{block name="title"}
+    <span>订单管理</span> /
+    <span>运费模板</span>/
+    <span class="colorTit">新建运费模板</span>
+{/block}
+
+{block name="content"}
+    <!-- 平台功能区 -->
+    <div class="ShopFrontPage-r-bot">
+        <div class="cards">
+            <!--<form action="" type="post">-->
+            <div class="tpl-box">
+                <div class="tpl-title">模板基础信息</div>
+                <div class="tpl-content">
+                    <div class="tpl-item flex">
+                        <span>模板名称</span>
+                        <p>
+                            <input type="text" placeholder="请输入模板名称" maxlength="50" id='tplName'><span>限制50字以内</span>
+                        </p>
+                    </div>
+                    <div class="tpl-item" style="margin-top:15px;">
+                        <span>包邮范围</span>
+                        <div class="form-radio">
+                            <label>
+                                <input type="radio" class="item-check" name="tplType" value="0" id="allcheck" checked>
+                                <span></span>全国包邮
+                            </label>
+                        </div>
+                        <div class="form-radio">
+                            <label>
+                                <input type="radio" class="item-check" name="tplType" value="1" id="cus">
+                                <span></span>自定义
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="tpl-title">商品包邮配送区域</div>
+                <div class="tpl-content" style="margin-top:15px;">
+                    <div class="tpl-item">
+                        <span>选择区域</span>
+                        <div class="tpl-area" id="free" style="display: block"></div>
+                        <div class="tpl-area" id="freeCus" style="display: none"></div>
+                        <div class="btn-group flex " style="justify-content: flex-start;">
+                            <p>已选择
+                                <b id='checknum' class="text-o"></b>
+                                区域
+                            </p>
+                            <input type="button" value="全选" class="btn btn-o" id="all">
+                            <input type="button" value="反选" class="btn btn-o" id="reverse">
+                        </div>
+                    </div>
+                </div>
+                <div class="type-box">
+                    <div class="tpl-title">需要买家付邮费的区域</div>
+                    <div class="tpl-content" style="margin-top:15px;">
+                        <div class="tpl-item">
+                            <span>计费方式</span>
+                            <div class="form-radio">
+                                <label>
+                                    <input type="radio" class="item-check charge_flag" name="tplCharge" value="0" checked>
+                                    <span></span>按件数计费
+                                </label>
+                            </div>
+                            <div class="form-radio">
+                                <label>
+                                    <input type="radio" class="item-check charge_flag" name="tplCharge" value="1">
+                                    <span></span>按重量计费
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tpl-content">
+                        <div class="charge">
+                            <div class="btn-group" style="justify-content: flex-start;">
+                                <input type="button" class="btn btn-fill" value="添加可配送区域及运费" id="group-add">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tpl-title">不配送的区域<span class="text-gray">（不配送区域的买家将无法购买该模板绑定的商品）</span></div>
+                    <div class="tpl-content" id="cant-area" style="margin-top:15px;"></div>
+                </div>
+                <!-- </form>-->
+            </div>
+            <div class="tpl-btn">
+                <input type="button" value="取消" class="btn btn-o btn-lg" onclick="cancel()">
+                <input type="button" value="提交" class="btn btn-fill btn-lg" id="creat">
+            </div>
+        </div>
+
+        <div id="layer-addArea" style="display: none"></div>
+    </div>
+{/block}
+
+{block name='js'}
+<script src="{:qiniu_domains()}/upload/67/1d2d0ecc6ad56a71cece7cda0231343a469f2ab75b54529407c4293896a914.js?origin=template.js"></script>
+
+<script id="none-delivery-tpl" type="text/html">
+    <%for (var i = 0; i < free_area.length; i++) {%>
+        <%if (free_area[i].type == 3){%>
+            <div class="area-check">
+                <input type="checkbox" value="<%:=free_area[i].area_id%>" data-name="<%:=free_area[i].short_name%>" name="cant-area" disabled="disabled" checked="checked">
+                <span><%:=free_area[i].short_name%></span>
+            </div>
+        <%}%>
+    <%}%>
+</script>
+
+<script id="select_area" type="text/html">
+    <%for (var l = 0; l < free_area.length; l++) {%>
+    <%if (free_area[l].type == 3){%>
+    <div class="area-check">
+        <input type="checkbox" add-area="1" value="<%:=free_area[l].area_id%>" data-name="<%:=free_area[l].short_name%>" name="cant-area">
+        <span><%:=free_area[l].short_name%></span>
+    </div>
+    <%}%>
+    <%}%>
+</script>
+
+<script id="group_area_add" type="text/html">
+    <%for (var l = 0; l < add_area.length; l++) {%>
+    <div class="area-check">
+        <input type="checkbox" value="<%:=add_area[l].area_id%>" data-name="<%:=add_area[l].short_name%>" name="add-area" checked="checked">
+        <span><%:=add_area[l].short_name%></span>
+    </div>
+    <%}%>
+</script>
+
+<script id="free-delivery-tpl" type="text/html">
+    <%for (var j = 0; j < free_area.length; j++) {%>
+        <%if (free_area[j].type == 1){%>
+            <div class="area-check">
+                <input type="checkbox" add-area="2" value="<%:=free_area[j].area_id%>" data-name="<%:=free_area[j].short_name%>" name="cant-area" checked="checked">
+                <span><%:=free_area[j].short_name%></span>
+            </div>
+        <%}else if(free_area[j].type == 2){%>
+            <div class="area-check" disabled="disabled">
+                <input type="checkbox" value="<%:=free_area[j].area_id%>" data-name="<%:=free_area[j].short_name%>" name="cant-area" disabled="disabled">
+                <span><%:=free_area[j].short_name%></span>
+            </div>
+        <%}else if(free_area[j].type == 3){%>
+            <div class="area-check">
+                <input type="checkbox" add-area="2" value="<%:=free_area[j].area_id%>" data-name="<%:=free_area[j].short_name%>" name="cant-area">
+                <span><%:=free_area[j].short_name%></span>
+            </div>
+        <%}%>
+    <%}%>
+</script>
+
+<script id="all_area" type="text/html">
+    <%for (var k = 0; k < free_area.length; k++) {%>
+        <div class="area-check">
+            <input type="checkbox" value="<%:=free_area[k].area_id%>" data-name="<%:=free_area[k].short_name%>" name="cant-area" disabled="disabled" checked="checked">
+            <span><%:=free_area[k].short_name%></span>
+        </div>
+    <%}%>
+</script>
+
+<script id="group" type="text/html">
+    <div class="area_box" style="width:calc(100% + 100px);">
+        <div class="tpl-item">
+            <span>配送区域</span>
+            <div class="tpl-area add_area">
+            </div>
+            <div class="btn-group" style="justify-content:flex-start;display:block;">
+                <input type="button" groupid="<%:=group_id%>" class="btn btn-fill" value="添加可配送区域" onclick="addarea($(this))">
+            </div>
+        </div>
+        <div class="tpl-item">
+            <span>配送运费</span>
+            <div class="tpl-info tplcharge">
+                <form>
+                    <p>
+                        <span>首<i class="tpl0">件</i><i class="tpl1" style="display:none;">重</i><input type="text" oninput="clearNoNum(this)" class="input-s" name="first_num" value=""><i class="tpl0">件</i><i class="tpl1" style="display:none;">克（g）</i></span>
+                        <span>首费<input type="text" oninput="clearNoNum(this)" class="input-s" name="first_p" value="">元</span>
+                        <span>续<i class="tpl0">件</i><i class="tpl1" style="display:none;">重</i><input type="text" oninput="clearNoNum(this)" class="input-s" name="add_num" value=""><i class="tpl0">件</i><i class="tpl1" style="display:none;">克（g）</i></span>
+                        <span>续费<input type="text" oninput="clearNoNum(this)" class="input-s" name="add_p" value="">元</span>
+                    </p>
+                    <div class="flex">
+                        <div class="form-checkbox">
+                            <label>
+                                <input type="checkbox" class="item-check condition_postage" name="condition" value="number">
+                                <span></span>指定条件包邮
+                            </label>
+                        </div>
+                        <div class="condition_num" style="display:none;">
+                            <select name="select" class="input-s select">
+                                <option value="1" selected="" class="one">
+                                    <%if (type == 0){%> 件数 <%}%>
+                                    <%if (type == 1){%>
+                                    重量
+                                    <%}%>
+                                </option>
+                                <option value="2">价格</option>
+                            </select>
+                        </div>
+                        <div class="condition_num" style="display:none;">
+                            <p data-id="1">满
+                                <input type="text" name="num" oninput="clearNoNum(this)" class="input-s" value=""><i class="tpl_name">
+                                    <%if (type == 0){%>
+                                    件
+                                    <%}%>
+                                    <%if (type == 1){%>
+                                    克（g）
+                                    <%}%>
+                                </i>包邮
+                            </p>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <a href="javascript:;" class="text-blue" groupid="<%:=group_id%>" onclick="del($(this))">删除</a>
+    </div>
+</script>
+
+<script id="group_html" type="text/html">
+    <%for (var l = 0; l < group.length; l++) {%>
+        <div class="area_box" style="width:calc(100% + 100px);">
+            <div class="tpl-item">
+                <span>配送区域</span>
+                <div class="tpl-area add_area">
+                    <%for (var v = 0; v < group[l].area_name.length; v++) {%>
+                        <div class="area-check">
+                            <input type="checkbox" value="<%:=group[l].area_name[v].area_id%>" data-name="<%:=group[l].area_name[v].short_name%>" name="add-area" checked="checked">
+                            <span><%:=group[l].area_name[v].short_name%></span>
+                        </div>
+                    <%}%>
+                </div>
+                <div class="btn-group" style="justify-content:flex-start;display:block;">
+                    <input type="button" groupid="<%:=group_id%>" class="btn btn-fill" value="添加可配送区域" onclick="addarea($(this))">
+                </div>
+            </div>
+            <div class="tpl-item">
+                <span>配送运费</span>
+                <div class="tpl-info tplcharge">
+                    <form>
+                        <p>
+                            <span>首<i class="tpl0">件</i><i class="tpl1" style="display:none;">重</i>
+                                <input type="text" oninput="clearNoNum(this)" class="input-s" name="first_num" value="<%:=group[l].first_weight%>">
+                                <i class="tpl0">件</i><i class="tpl1" style="display:none;">克（g）</i>
+                            </span>
+                            <span>首费<input type="text" oninput="clearNoNum(this)" class="input-s" name="first_p" value="<%:=group[l].first_price%>">元</span>
+                            <span>续<i class="tpl0">件</i><i class="tpl1" style="display:none;">重</i>
+                                <input type="text" oninput="clearNoNum(this)" class="input-s" name="add_num" value="<%:=group[l].continue_weight%>">
+                                <i class="tpl0">件</i><i class="tpl1" style="display:none;">克（g）</i>
+                            </span>
+                            <span>续费<input type="text" oninput="clearNoNum(this)" class="input-s" name="add_p" value="<%:=group[l].continue_price%>">元</span>
+                        </p>
+                        <div class="flex">
+                            <div class="form-checkbox">
+                                <label>
+                                    <input type="checkbox" class="item-check condition_postage" name="condition" value="number" <%if (group[l].condition_postage != 0){%>checked<%}%>>
+                                    <span></span>指定条件包邮
+                                </label>
+                            </div>
+                            <div class="condition_num" style="display:none;">
+                                <select name="select" class="input-s select">
+                                    <option value="1" selected="" class="one" <%if (group[l].condition_postage == 1){%> selected <%}%>> 件数</option>
+                                    <option value="2" <%if (group[l].condition_postage == 2){%> selected <%}%>> 价格</option>
+                                </select>
+                            </div>
+                            <div class="condition_num" style="display:none;">
+                                <p data-id="1">满
+                                    <input type="text" name="num" oninput="clearNoNum(this)" class="input-s" value="<%:=group[l].full_num%>"><i class="tpl_name">件</i>包邮
+                                </p>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <a href="javascript:;" class="text-blue" groupid="<%:=group_id%>" onclick="del($(this))">删除</a>
+        </div>
+    <%}%>
+</script>
+<script>
+    
+
+    var obj = {$templateData|raw};
+
+    // 模板名称
+    $("#tplName").blur(function () {
+        obj.template_name = $(this).val();
+    });
+    // 是否包邮选择 首次进入页面时
+    $("#free").show();
+    $("#all").attr('disabled','disabled');
+    $("#reverse").attr('disabled','disabled');
+    $("#checknum").html(obj.free_area.length);
+    getAllArea();  // 渲染全国包邮的地区
+    getFreeArea(); // 获取自定义包邮的地区
+
+    // 是否包邮切换时
+    $("input[name='tplType']").change(function () {
+        if ($(this).val() == 0) {
+            $("#free").show();
+            $("#freeCus").hide();
+            $("#all").attr('disabled','disabled');
+            $("#reverse").attr('disabled','disabled');
+            $(".type-box").hide();
+            $("#checknum").html(obj.free_area.length);
+        }else{
+            $("#free").hide();
+            $("#freeCus").show();
+            $("#all").attr('disabled',false);
+            $("#reverse").attr('disabled',false);
+            $(".type-box").show();
+            $("#checknum").html(getAreaNum(1));
+            getNoArea();
+        }
+        obj.is_free_postage = $(this).val()*1;
+        $("#checknum").html(getAreaNum(1));
+    });
+
+    // 添加可配送区域及运费组
+    var group_id = 0;
+    $("#group-add").on('click', function () {
+        // 判断选择的地区是否为空 为空时就提示
+        group_id++;
+        if (getAreaNum(3) == 0) {
+            layer.msg('已无可选择区域', {
+                "icon": 0
+            });
+            return false;
+        }
+
+        addGroup($(this), group_id, obj.charge_flag);
+       
+        // 重新渲染一下tpl0 和tpl1
+        if (obj.charge_flag == 0) {
+            $(".tpl0").show();
+            $(".tpl1").hide();
+            $(".select").find('.one').html('件数');
+        }else{
+            $(".tpl0").hide();
+            $(".tpl1").show();
+            $(".select").find('.one').html('重量');
+        }
+    });
+
+    // 编辑状态
+    if (obj.id) {
+        $(".colorTit").html('修改运费模板');
+
+        // 解除禁用
+        $("#all").attr('disabled',false);
+        $("#reverse").attr('disabled',false);
+
+        // 模板名称赋值
+        $("#tplName").val(obj.template_name);
+
+        // 是否包邮
+        $("input[name='tplType']").each(function(){
+            if($(this).val() == obj.is_free_postage){
+                $(this).attr('checked',true);
+            }
+        });
+
+        if (obj.is_free_postage == 1) {  // 自定义包邮
+            // 包邮地区渲染
+            $("#free").hide();
+            $("#freeCus").show();
+            $("#checknum").html(getAreaNum(1));
+        }else{
+            $("#all").attr('disabled','disabled');
+            $("#reverse").attr('disabled','disabled');
+        }
+
+        // 自定义的显示买家付邮费信息
+        if (obj.is_free_postage == 1) {
+            $(".type-box").show();
+            $("#freeCus").show();
+        }
+        // 计费方式
+        $("input[name='tplCharge']").each(function(){
+            if($(this).val() == obj.charge_flag){
+                $(this).prop('checked',true);
+            }
+        });
+
+        // 买家付邮费区域渲染
+        if (obj.group.length > 0) {
+            groupAreaHtml();  // 渲染数据
+            if (obj.charge_flag == 0) {
+                $('.tpl0').show();
+                $('.tpl1').hide();
+                $(".select").find('.one').html('件数');
+            } else {
+                $('.tpl0').hide();
+                $('.tpl1').show();
+                $(".select").find('.one').html('重量');
+            }
+        }
+        // 指定条件包邮自动选择
+        $(".condition_postage").each(function () {
+            if ($(this).is(":checked")) {
+                $(this).parents('form').find('.condition_num').show();
+            } else {
+                $(this).parents('form').find('.condition_num').hide();
+            }
+        });
+
+        // 不配送的地区渲染
+        getNoArea();
+    }
+
+    // 点击地区时改变状态
+    var addArr=[];
+    $(document).on('change', '.area-check input[name="cant-area"]', function () {
+        var area_id = $(this).val();
+        var short_name = $(this).attr('data-name');
+        var add_area_value = $(this).attr('add-area');
+        if (add_area_value == 2) {
+            if($(this).is(':checked')) {
+                setArea(area_id, 1);
+            }else{
+                setArea(area_id, 3);
+            }
+        }else{ // 添加地区选择的处理
+            if($(this).is(':checked')) {
+                addArr.push({'area_id':area_id, 'short_name':short_name});
+                setArea(area_id, 2);
+            }else{
+                for (var k=0; k<addArr.length; k++) {
+                    if (addArr[k].area_id == area_id) {
+                        addArr.splice(k,1);
+                    }
+                }
+                setArea(area_id, 3);
+            }
+        }
+        getJump();
+        $("#checknum").html(getAreaNum(1));
+    });
+
+    // 配送区域的点击进行删除
+    $(document).on('change', '.area-check input[name="add-area"]', function () {
+        var area_id = $(this).val();
+        setArea(area_id, 3);
+        $(this).parent().remove();
+    });
+    // 点击全选
+    $("#all").on('click', function () {
+        // 循环地区里面没有选中 type=3 的数据 进行选中
+        for (var b=0; b<obj.free_area.length; b++) {
+            if (obj.free_area[b].type == 3) {
+                obj.free_area[b].type = 1;
+            }
+        }
+        getFreeArea(); // 改变不配送的区域
+        getNoArea(); // 改变不配送的区域
+        getJump();
+        $("#checknum").html(getAreaNum(1));
+    });
+
+    // 如果是全选就跳转到全国包邮
+    function getJump(){
+        var count = 0;
+        for (var b=0; b<obj.free_area.length; b++) {
+            if (obj.free_area[b].type == 1) {
+                count++;
+            }
+        }
+        if (count == obj.free_area.length) {
+            $("#allcheck").trigger('click');
+        }
+    }
+
+    // 点击反选
+    $("#reverse").on('click', function () {
+        for (var b=0; b<obj.free_area.length; b++) {
+            if (obj.free_area[b].type == 1) {
+                obj.free_area[b].type = 3;
+            }else if(obj.free_area[b].type == 3){
+                obj.free_area[b].type = 1;
+            }
+        }
+        getFreeArea(); // 改变不配送的区域
+        getNoArea(); // 改变不配送的区域
+        getJump();
+        $("#checknum").html(getAreaNum(1));
+    });
+
+    //买家付邮费区域删除组
+    function del(obj) {
+        layer.confirm('是否要删除该可配送区域的设置？', {
+            btn: ['立即删除', '再想想'],
+            btnAlign: 'c',
+        }, function (index) {
+            // 循环 判断进行删除
+            obj.parent().find('.area-check').each(function () {
+                setArea($(this).find("input").val(), 3);
+            });
+            obj.parent().detach();
+            layer.close(index);
+        });
+    }
+
+    // 添加可配送区域
+    function addarea(obj){
+        if (getAreaNum(3) == 0) {
+            layer.msg('已无可选择区域', {
+                "icon": 0
+            });
+            return false;
+        }
+        selectArea();
+        layer.open({
+            type: '1',
+            btn: ["确定", "取消"],
+            btnAlign: 'c',
+            content: $("#layer-addArea"),
+            area:['370px'],
+            title: "请选择付邮费区域",
+            yes: function (index) {
+                // 把选中的地区展示
+                addGroupArea(obj);
+                addArr=[];  // 清空
+                layer.close(index)
+            },
+            btn2: function () {
+                // 进行还原
+                addAreaBack();
+            },
+            cancel: function () {
+                // 进行还原
+                addAreaBack();
+            }
+        });
+    }
+
+    // 还原数据
+    function addAreaBack(){
+        // 进行还原
+        for (var m=0; m<addArr.length; m++) {
+            setArea(addArr[m].area_id, 3);
+        }
+        addArr=[];  // 清空
+    }
+
+    // 指定配送地区的渲染
+    function addGroupArea(that){
+        let add_group_html = template(document.getElementById('group_area_add').innerHTML, {add_area:addArr});
+        that.parent().prev('.tpl-area').append(add_group_html);
+    }
+
+    // 修改地区的类别  //type 1=> 选中  2=> 禁用 3=》普通
+    function setArea(area_id, type) {
+        for (var a=0; a<obj.free_area.length; a++) {
+            if (obj.free_area[a].area_id == area_id) {
+                obj.free_area[a].type = type;
+            }
+        }
+        getFreeArea(); // 改变不配送的区域
+        getNoArea(); // 改变不配送的区域
+    }
+
+    // 模板渲染方法封装
+    // 不配送的区域
+    function getNoArea(){
+        let html = template(document.getElementById('none-delivery-tpl').innerHTML, {free_area:obj.free_area});
+        $('#cant-area').html(html);
+    }
+
+    // 免邮的区域
+    function getFreeArea(){
+        let free_html = template(document.getElementById('free-delivery-tpl').innerHTML, {free_area:obj.free_area});
+        $('#freeCus').html(free_html);
+    }
+
+    // 全国包邮的地区
+    function getAllArea() {
+        let All_html = template(document.getElementById('all_area').innerHTML, {free_area:obj.free_area});
+        $('#free').html(All_html);
+    }
+
+    // 付邮费区域的添加
+    function addGroup(that, group_id, type){
+        let All_html = template(document.getElementById('group').innerHTML, {group_id:group_id, type:type});
+        that.parents('.btn-group').before(All_html);
+    }
+
+    // 选择地区
+    function selectArea() {
+        let select_html = template(document.getElementById('select_area').innerHTML, {free_area:obj.free_area});
+        $('#layer-addArea').html(select_html);
+    }
+
+    // 付邮费地区组渲染
+    function groupAreaHtml() {
+        let groups_html = template(document.getElementById('group_html').innerHTML, {group:obj.group});
+        $('.charge').find('.btn-group').before(groups_html);
+    }
+
+    // 获取地区的长度
+    function getAreaNum(type) {
+        var num = 0;
+        for (var a=0; a<obj.free_area.length; a++) {
+            if (obj.free_area[a].type == type) {
+                num++;
+            }
+        }
+        return num;
+    }
+
+    // 提交进行保存
+    $("#creat").click(function () {
+        // 运费模板名称
+        var tplName=$("#tplName");
+        if (obj.template_name == '') {
+            layer.msg('请填写运费模板名称', {icon: 2},function(){
+                tplName.trigger("focus");
+                tplName.parent("p").css("box-shadow","0 0 2px 1px #be150f");
+            });
+            return false;
+        }
+        // 自定义包邮地区
+        var freeId = [];
+        for (var p=0; p< obj.free_area.length; p++) {
+            if (obj.free_area[p].type == 1) {
+                freeId.push(obj.free_area[p].area_id);
+            }
+        }
+
+        obj.freeC_area = freeId.join(',');
+        var group = {};
+        var j = 1;
+        if (obj.is_free_postage == 1) {
+            // 买家付邮费的区域设置
+
+            var i = 0;
+
+            $(".area_box").each(function (indexs) {
+                i++;
+                var area = [];
+                var item = {};
+                var _this=$(this);
+                $(this).find('.area-check').each(function (index) {
+                    area[index] = $(this).find('input').val();
+                    item['area_id'] = area.join(','); // 指定地区
+                });
+
+                if (area.length == 0) {
+                    j = 0;
+                    layer.msg('请选择 配送区域！', {icon: 2},function(){
+                        _this.find("input.btn").trigger('click');
+                    });
+                    return false;
+                }
+
+                item['first_weight'] = $(this).find('input[name=first_num]').val(); // 首件/重
+                if (!item['first_weight']) {
+                    j = 0;
+                    if (obj.charge_flag == 0) {
+                        layer.msg('请填写 首件 件数！', {icon: 2},function(){
+                            _this.find('input[name=first_num]').trigger('focus');
+                        });
+                    } else {
+                        layer.msg('请填写 首重 重量！', {icon: 2},function(){
+                            _this.find('input[name=first_num]').trigger('focus');
+                        });
+                    }
+                    return false;
+                }
+
+                item['first_price'] = $(this).find('input[name=first_p]').val(); // 首费
+                if (!item['first_price']) {
+                    j = 0;
+                    layer.msg('请填写 首费 金额！', {icon: 2},function(){
+                        _this.find('input[name=first_p]').trigger('focus');
+                    });
+                    return false;
+                }
+
+                item['continue_weight'] = $(this).find('input[name=add_num]').val(); // 续件/重
+                if (!item['continue_weight']) {
+                    j = 0;
+                    if (obj.charge_flag == 0) {
+                        layer.msg('请填写 续件 件数！', {icon: 2},function(){
+                            _this.find('input[name=add_num]').trigger('focus');
+                        });
+                    } else {
+                        layer.msg('请填写 续重 重量！', {icon: 2},function(){
+                            _this.find('input[name=add_num]').trigger('focus');
+                        });
+                    }
+                    return false;
+                }
+
+                item['continue_price'] = $(this).find('input[name=add_p]').val(); // 续费
+                if (!item['continue_price']) {
+                    j = 0;
+                    layer.msg('请填写 续费 金额！', {icon: 2},function(){
+                            _this.find('input[name=add_p]').trigger('focus');
+                        });
+                    return false;
+                }
+
+                // 指定条件包邮
+                if ($(this).find('input[name=condition]').is(":checked")) {
+                    item['condition_postage'] = $(this).find('.select').val(); // 按件数/重量/价格
+                    item['full_num'] = $(this).find('input[name=num]').val();// 满多少件/g/元
+
+                    if (!item['full_num']) {
+                        j = 0;
+                        if (obj.charge_flag == 0 && $(this).find('.select').val() == 1) {
+                            layer.msg('请填写 满件 条件！', {icon: 2},function(){
+                            _this.find('input[name=num]').trigger('focus');
+                        });
+                        } else if (obj.charge_flag == 1 && $(this).find('.select').val() == 1) {
+                            layer.msg('请填写 满重 条件！', {icon: 2},function(){
+                            _this.find('input[name=num]').trigger('focus');
+                        });
+                        } else {
+                            layer.msg('请填写 满元 条件！', {icon: 2},function(){
+                            _this.find('input[name=num]').trigger('focus');
+                        });
+                        }
+                        return false;
+                    }
+
+                } else {
+                    item['full_num'] = 0;
+                    item['condition_postage'] = 0; // 按件数/重量/价格
+                }
+                group[indexs] = item;
+            });
+
+            // 买家付邮费设置
+            // if (i == 0) {
+            //     layer.msg('请至少添加一个可配送区域及运费', {icon: 2},function(){
+            //                 $("#group-add").trigger('click');
+            //             });
+            //     return false;
+            // }
+        }
+        obj.group = group;
+
+       if(j){
+           // 增加加载层
+           layer.load(0, {
+               shade: [0.1,'black'] //0.1透明度的白色背景
+           });
+           $.ajax({
+               url: '/order/template-insert',
+               type: 'POST',
+               data: obj,
+               dataType: 'json',
+               success: function (data) {
+                   layer.msg(data.msg, {
+                       icon: 6,
+                       time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                   }, function () {
+                       layer.closeAll();
+                       // location.reload();
+                       window.location.href = '/order/templates';
+                   });
+               },
+               error: function (data) {
+                   layer.msg(data.responseJSON.msg, {icon: 2}, function () {
+                       layer.closeAll();
+                   });
+               }
+           });
+       }
+
+    });
+    //模板名称失去焦点时，取消父级元素边框
+    $("#tplName").on("blur",function(){
+        $(this).parent("p").css("box-shadow","");
+    })
+</script>
+
+<script>
+    // 切换件数和重量
+    $(".charge_flag").change(function () {
+        if ($(this).is(':checked') && $(this).val() == 0) {
+            $('.tpl0').show();
+            $('.tpl1').hide();
+            $(".select").find('.one').html('件数');
+            $(".area_box").each(function(ind, item) {
+                var sel = $(item).find('.select').val();
+                if (sel == 1) {
+                    $(item).find('.tpl_name').html('件');
+                }else if (sel == 2) {
+                    $(item).find('.tpl_name').html('元');
+                }
+            });
+        } else {
+            $('.tpl0').hide();
+            $('.tpl1').show();
+            $(".select").find('.one').html('重量');
+            $(".area_box").each(function(ind, item) {
+                var sel = $(item).find('.select').val();
+                if (sel == 1) {
+                    $(item).find('.tpl_name').html('克（g）');
+                }else if (sel == 2) {
+                    $(item).find('.tpl_name').html('元');
+                }
+            });
+        }
+
+        obj.charge_flag = $(this).val()*1;
+    });
+
+    // 指定条件 切换
+    $('.charge').on('click', '.condition_postage', function () {
+        if ($(this).is(":checked")) {
+
+            $(this).parents('form').find('.condition_num').show();
+        } else {
+            $(this).parents('form').find('.condition_num').hide();
+        }
+
+    });
+
+    // 选择 件数价格重量进行切换
+    $(document).on('change', '.select', function () {
+        var ss = $(this).val();
+        var name = '';
+        if (ss == 2) {
+            name = '元';
+        }else{
+            if (obj.charge_flag == 0) {
+                name = '件';
+            } else {
+                name = '克（g）';
+            }
+        }
+        $(this).parents('form').find('.tpl_name').html(name);
+    });
+
+    $("select.select").each(function () {
+        var ss = $(this).val();
+        var name = '';
+        if (ss == 2) {
+            name = '元';
+        }else{
+            if (obj.charge_flag == 0) {
+                name = '件';
+            } else {
+                name = '克（g）';
+            }
+        }
+        $(this).parents('form').find('.tpl_name').html(name);
+    });
+
+    // 验证规则
+    function clearNoNum(obj) {
+        obj.value = obj.value.replace(/[^\d.]/g, ""); //清除“数字”和“.”以外的字符
+        obj.value = obj.value.replace(/\.{2,}/g, "."); //只保留第一个. 清除多余的
+        obj.value = obj.value.replace(".", "$#$").replace(/\./g, "").replace("$#$", ".");
+        obj.value = obj.value.replace(/^(\-)*(\d+)\.(\d\d).*$/, '$1$2.$3'); //只能输入两个小数
+        if (obj.value.indexOf(".") < 0 && obj.value != "") {
+            obj.value = parseFloat(obj.value);
+        }
+    }
+
+    // 点击返回
+    function cancel(){
+        window.history.back(-1);
+    }
+</script>
+{/block}

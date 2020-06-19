@@ -1,0 +1,299 @@
+{extend name="layout/base" /}
+
+{block name="seo"}
+<title>{$title|default="品牌厂家直供平台"}</title>
+{/block}
+
+{block name="style"}
+<style></style>
+{/block}
+
+{block name="title"}
+<span>基本信息</span> /
+<span class="colorTit">操作员管理</span>
+{/block}
+
+<!-- 平台功能区 -->
+{block name="content"}
+<div class="ShopFrontPage-r-bot">
+    <div class="order-box cards">
+        <div class="order-search">
+            <div class="form-group">
+                <div >
+                    <input type="button" value="新增角色" class="btn btn-fill" onclick="addrole()">
+                    <i></i>
+                </div>
+            </div>
+        </div>
+        <div class="order-table">
+            <table class="order-tb">
+                <thead>
+                <tr class="tr-th">
+                    <th>角色名称</th>
+                    <th>创建时间</th>
+                    <th>操作</th>
+                </tr>
+                </thead>
+                <tbody>
+                {foreach name='roles' item='role'}
+                <tr class="tr-bd">
+                    <td>{$role['name']}</td>
+                    <td>
+                        {$role['create_time']}
+                    </td>
+                    <td>
+                        <?php
+                        $permissionIds = [];
+                        foreach ($role->permissions as $permission) {
+                            $permissionIds[] = $permission->id;
+                        }
+                        $permissionIds = json_encode($permissionIds);
+                        ?>
+                        <div class="operate" data-id="{$role['id']}" data-name="{$role['name']}" data-permission-ids="<?=$permissionIds?>">
+                            <p class="operate-item" onclick="editrole($(this))">
+                                <a href="javascript:;"><i class="icon icon-mod"></i>修改</a>
+                            </p>
+                            <p class="operate-item" onclick="deletem($(this))">
+                                <a href="javascript:;"><i class="icon icon-detel"></i>删除</a>
+                            </p>
+                        </div>
+                    </td>
+                </tr>
+                {/foreach}
+                </tbody>
+            </table>
+        </div>
+        <!--分页-->
+        <div class="pragination-group" id="pageToolbar">
+            {$roles->render()|raw}
+        </div>
+    </div>
+</div>
+<div class="layer-add" style="display:none">
+
+</div>
+{/block}
+
+{block name='js'}
+
+
+<script src="{:qiniu_domains()}/upload/67/1d2d0ecc6ad56a71cece7cda0231343a469f2ab75b54529407c4293896a914.js?origin=template.js"></script>
+
+<script id="group-tpl" type="text/html">
+    <form id="layer-list">
+        <ul class="layer-list">
+            <li class="item">
+                角色名称：
+                <input type="hidden" name="role_id" value="<%:= role_id %>">
+                <input type="text" name="role_name" maxlength="20"  placeholder="请输入添加的角色名称" class="input-c" value="<%:= role_name %>">
+            </li>
+            <li class="item">
+                角色权限配置：
+                <div class="item-access">
+                    <%for(var i = 0; i < groups.length; i++) {%>
+                    <dl>
+                        <dt>
+                            <div class="form-checkbox">
+                                <label>
+                                    <input type="checkbox" class="allcheck" data-id="<%:=groups[i].id%>">
+                                    <i>&nbsp;&nbsp;</i><%:=groups[i].name%>
+                                </label>
+                            </div>
+                        </dt>
+                        <%for(var j = 0; j < groups[i].permissions.length; j++) {%>
+                        <dd>
+                            <div class="form-checkbox">
+                                <label>
+                                    <input type="checkbox" class="item-check" name="permission_id[<%:= groups[i].permissions[j].id %>]" data-id="<%:= groups[i].permissions[j].id %>" data-depend-id="<%:= groups[i].permissions[j].depend_id %>"
+                                    <%
+                                    let str = '';
+                                    let id = groups[i].permissions[j].id;
+                                    let index = $.inArray(id, permission_ids);
+                                    if (index >= 0) {
+                                        str = 'checked';
+                                    }
+                                    %> <%:= str %>
+                                    >
+                                    <span></span><%:= groups[i].permissions[j].name %>
+                                </label>
+                            </div>
+                        </dd>
+                        <%}%>
+                    </dl>
+                    <%}%>
+                </div>
+            </li>
+        </ul>
+    </form>
+</script>
+
+<script>
+    let groups = <?= json_encode($groups)?>;
+
+    function addrole() {
+        let layer_add = $(".layer-add");
+        let tpl = document.getElementById('group-tpl').innerHTML;
+        layer_add.html(template(tpl, {groups: groups, role_id: 0, role_name: "", permission_ids: []}));
+        layer.open({
+            type: '1',
+            content: layer_add,
+            area: ['550px', '60%'],
+            btn: ['提交', '取消'],
+            title: '新增角色',
+            btnAlign: 'c',
+            yes: function (index) {
+                var num = 0;
+                $(".item-check").each(function () {
+                    if ($(this).is(':checked')) {
+                        num++;
+                    }
+                });
+                if (num == 0) {
+                    layer.msg('请勾选角色权限配置！', {icon: 2});
+                    return false;
+                }
+
+                var value= $("input[name='role_name']").val();
+                if (value == '') {
+                    layer.msg('请填写角色名称！', {icon: 2});
+                    return false;
+                }
+                var re = /^(?!_)(?!.*?_$)[a-zA-Z0-9_\u4e00-\u9fa5\.\_]+$/;
+                if (!re.test(value)) {
+                    layer.msg('不能含有特殊字符！', {icon: 2});
+                    return false;
+                }
+                // 执行提交
+                layer.load(0, {
+                    shade: [0.1,'black'] //0.1透明度的白色背景
+                });
+                $.ajax({
+                    url: '/operator/save-role',
+                    type: 'POST',
+                    data: $('#layer-list').serialize(),
+                    dataType: 'json',
+                    success: function (json) {
+                        layer.msg(json.msg, {
+                            icon: 6,
+                            time: 2000
+                        }, function () {
+                            layer.closeAll();
+                            window.location.reload();
+                        });
+                    },
+                    error: function (data) {
+                        layer.msg(data.responseJSON.msg, {icon: 2}, function () {
+                            layer.closeAll();
+                        });
+                    }
+                });
+            }
+        });
+    }
+
+    function editrole(obj) {
+        let data = obj.parents('.operate').data();
+        let layer_add = $(".layer-add");
+        let tpl = document.getElementById('group-tpl').innerHTML;
+        layer_add.html(template(tpl, {groups: groups, role_id: data.id, role_name: data.name, permission_ids: data.permissionIds}));
+
+        layer.open({
+            type: '1',
+            content: layer_add,
+            area: ['550px', '60%'],
+            btn: ['提交', '取消'],
+            title: '修改角色',
+            btnAlign: 'c',
+            yes: function (index) {
+                var num = 0;
+                $(".item-check").each(function () {
+                    if ($(this).is(':checked')) {
+                        num++;
+                    }
+                });
+                if (num == 0) {
+                    layer.msg('请勾选角色权限配置！', {icon: 2});
+                    return false;
+                }
+                var value= $("input[name='role_name']").val();
+                if (value == '') {
+                    layer.msg('请填写角色名称！', {icon: 2});
+                    return false;
+                }
+                var re = /^(?!_)(?!.*?_$)[a-zA-Z0-9_\u4e00-\u9fa5\.\_]+$/;
+                if (!re.test(value)) {
+                    layer.msg('不能含有特殊字符！', {icon: 2});
+                    return false;
+                }
+
+                // 执行提交
+                layer.load(0, {
+                    shade: [0.1,'black'] //0.1透明度的白色背景
+                });
+                $.ajax({
+                    url: '/operator/save-role',
+                    type: 'POST',
+                    data: $('#layer-list').serialize(),
+                    dataType: 'json',
+                    success: function (json) {
+                        layer.msg(json.msg, {
+                            icon: 6,
+                            time: 2000
+                        }, function () {
+                            layer.closeAll();
+                            window.location.reload();
+                        });
+                    },
+                    error: function (data) {
+                        layer.msg(data.responseJSON.msg, {icon: 2}, function () {
+                            layer.closeAll();
+                        });
+                    }
+                });
+            }
+        });
+    }
+
+    function deletem(obj) {
+        var par = obj.parents('.operate');
+        var role_id = par.data("id");
+        layer.confirm('是否要删除该角色？', {
+            btn: ["立即删除", "取消"],
+            title:"删除角色",
+            btnAlign:'c',
+            yes: function (index) {
+                // 执行提交
+                layer.load(0, {
+                    shade: [0.1,'black'] //0.1透明度的白色背景
+                });
+                $.ajax({
+                    url: "/operator/delete-role",
+                    type: 'POST',
+                    dataType: 'json',
+                    data: {'role_id': role_id},
+                    success: function (result) {
+                        layer.msg(result.msg, {
+                            icon: 6,
+                            time: 2000
+                        }, function(){
+                            layer.closeAll();
+                            location.reload();
+                        });
+                    },error: function (data) {
+                        layer.msg(data.responseJSON.msg, {icon: 2}, function () {
+                            layer.closeAll();
+                        });
+                    }
+                });
+            }
+        });
+    }
+
+    $(document).on("change", ".allcheck", function () {
+        let checked = $(this).is(':checked');
+        let dl = $(this).parents('dl');
+        dl.find('input:checkbox').prop("checked", checked);
+    });
+
+</script>
+{/block}

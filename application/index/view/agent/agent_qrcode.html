@@ -1,0 +1,216 @@
+{extend name="layout/base" /}
+
+{block name="seo"}
+<title>{$title|default="画版商户后台管理系统"}</title>
+{/block}
+
+{block name="style"}
+{/block}
+
+{block name="title"}
+<span>渠道管理</span> /<span>所有代理</span> /
+<span class="colorTit">推广二维码</span>
+{/block}
+
+<!-- 平台功能区 -->
+{block name="content"}
+    <div class="ShopFrontPage-r-bot">
+        <div class="order-box cards">
+            <form action="/agent/qrcode" method="get">
+                <input type="hidden" id="agent_id" name="id" value="{$shop_agent_id}">
+                <div class="order-search">
+                    <div class="form-group">
+                        <div class="form-item">
+                            <label>商品标题</label>
+                            <input type="text" autocomplete="off" placeholder="请选择日期" name="create_time" id="date" value="{$create_time}">
+                            <i></i>
+                        </div>
+                        <div class="form-item">
+                            <label>商品ID</label>
+                            <input type="text" placeholder="请输入商品ID" name="product_id" id="goods_id" value="{$product_id}">
+                            <i></i>
+                        </div>
+                        <div class="form-item-btn right">
+                            <input type="submit" class="btn btn-fill" value="查询">
+
+                            <input type="button" id="export" value="一键导出" class="btn btn-o">
+                        </div>
+                    </div>
+                </div>
+            </form>
+
+            <div class="order-table">
+                <table class="order-tb tb-flex">
+                    <thead>
+                    <tr class='tr-th'>
+                        <th>商品ID</th>
+                        <th>商品标题</th>
+                        <th>推广二维码</th>
+                        <th>操作</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {foreach $productList as $key=>$val}
+                    <tr class="tr-bd">
+                        <td id="product_id_{$key}">{$val->product_id}</td>
+                        <td>
+                            <div class="goods-title">{$val->product_name}</div>
+                        </td>
+                        <td>
+                            <span onclick="showQr($(this))" class="qrcode">
+                                <span id="divOne_{$key}"></span>
+                                <img id="imgOne_{$key}" src="" width="60px">
+                            </span>
+                        </td>
+                        <td>
+                            <div class="operate" product-id="{$val->product_id}" product-name="{$val->product_name}">
+                                <p class="operate-item">
+                                    <a href="javascript:;">
+                                        <i class="icon icon-down"></i>
+                                        保存二维码至本地
+                                    </a>
+                                </p>
+                            </div>
+                        </td>
+                    </tr>
+                    {/foreach}
+                    </tbody>
+                </table>
+            </div>
+            {$productList->render()|raw}
+        </div>
+    </div>
+
+<div id="divMore"></div>
+
+{/block}
+
+{block name='js'}
+<script src="__STATIC__/jsqrcode/jquery.qrcode.min.js?{:config('huaban.css_version.version')}"></script>
+<script src="__STATIC__/jsqrcode/jszip.js?{:config('huaban.css_version.version')}"></script>
+<script type="text/javascript" src="__STATIC__/jsqrcode/jszip-utils.js?{:config('huaban.css_version.version')}"></script>
+<script src="__STATIC__/jsqrcode/FileSaver.js?{:config('huaban.css_version.version')}"></script>
+<script>
+    // js 生成图片二维码
+    var url = "{:shop_domain()}";
+    for(var i=0; i<$(".tr-bd").length; i++) {
+        var product_id = $("#product_id_"+i).text();
+        var qrcode= $('#divOne_'+i).qrcode({
+            width:200,
+            height:200,
+            text: url+"/p/"+product_id+'/a/{$shop_agent_id}'
+        }).hide();
+        var canvas=qrcode.find('canvas').get(0);
+        $('#imgOne_'+i).attr('src',canvas.toDataURL('image/jpg'));
+    }
+
+    //保存二维码到本地单张
+    $(".operate").click(function () {
+        // 获取二维码base64
+        var imgsrc = $(this).parents('tr').find('.qrcode').find('img').attr('src');
+        var product_id = $(this).attr('product-id');
+        var product_name = $(this).attr('product-name');
+        var myDate = new Date();
+        var zip = new JSZip();//*****创建实例，zip是对象实例
+        var file_name = 'product_qrcode'+myDate.getSeconds()+'.zip';
+
+        //对获取的图片base64数据进行处理
+        var img_arr = imgsrc.split(',');
+        // console.log(img_arr)
+        zip.file(product_id+'_'+product_name.toString().replace("/", " ")+'.jpg',img_arr[1],{base64: true});//根据base64数据在压缩包中生成jpg数据
+        zip.generateAsync({type:"blob"})
+            .then(function (content) {
+                saveAs(content, file_name);
+            });
+    });
+
+    // 批量导出二维码图片
+    $("#export").click(function () {
+        // 获取代理的id
+        var agent_id = $("#agent_id").val();
+        $.ajax({
+            url: '/agent/get-product',
+            type: 'get',
+            data: {'shop_agent_id': agent_id},
+            dataType: 'json',
+            success: function (data) {
+                console.log(data);
+                var arr = data.data;
+                var myDate = new Date();
+                var zip = new JSZip();//*****创建实例，zip是对象实例
+                var file_name = 'qrcode'+myDate.getSeconds()+'.zip';
+
+                var len=function(arr){
+                    var l = 0;
+                    for(var key in arr){
+                        l++;
+                    }
+                    return l;
+                };
+
+                for(let i=0;i<arr.length;i++) {
+                    var dataArr = arr[i].split('#');
+                    var id = dataArr[0];
+                    var name = dataArr[1];
+
+                    $("#divMore").html('<div id="divMore_'+i+'"></div>');
+                    // 获取二维码base64
+                    var qrcode= $('#divMore_'+i).qrcode({
+                        width:200,
+                        height:200,
+                        text: dataArr[2]
+                    }).hide();
+                    var canvas=qrcode.find('canvas').get(0);
+                    var imgsrc = canvas.toDataURL('image/jpg');
+
+                    //对获取的图片base64数据进行处理
+                    var img_arr = imgsrc.split(',');
+                    // console.log(img_arr)
+                    zip.file(id + '_' + name.toString().replace("/", " ") + '.jpg', img_arr[1], {base64: true});
+                    var ziplength = len(zip.files);
+                    if(ziplength == arr.length){
+                        zip.generateAsync({type: "blob"})
+                            .then(function (content) {
+                                saveAs(content, file_name);
+                            });
+                    }
+                }
+            },
+            error: function (data) {
+                layer.msg(data.responseJSON.msg, {icon: 2});
+            }
+        });
+    });
+</script>
+<script>
+    /*手机号分割显示*/
+    (function userphone(obj) {
+        obj.each(function () {
+            var phoneNum = $(this).text();
+            $(this).html(phoneNum.replace(/(?=(\d{4})+$)/g, " "));
+        });
+    })($(".userphone"));
+    laydate.render({
+        elem:"#date",
+        range:true,
+        change: function (value, date, endDate) {
+            console.log(value); //得到日期生成的值，如：2017-08-18
+            console.log(date); //得到日期时间对象：{year: 2017, month: 8, date: 18, hours: 0, minutes: 0, seconds: 0}
+            console.log(endDate); //得结束的日期时间对象，开启范围选择（range: true）才会返回。对象成员同上。
+        }
+    });
+    function showQr(obj){
+        var src = obj.find('img').attr('src');
+        var img = '<div style="background: #fff;padding: 15px;width:300px;height:300px;">';
+        img += '<img src="'+src+'" style="widht:100%;height:100%;">';
+        img += '</div>';
+        layer.open({
+            type:1,
+            title:false,
+            content:img,
+            closeBtn: 0,
+            shadeClose:true,//开启点击遮罩层关闭
+        });
+    }
+</script>
+{/block}

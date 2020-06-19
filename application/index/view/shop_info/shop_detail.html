@@ -1,0 +1,786 @@
+{extend name="layout/base" /}
+
+{block name="seo"}
+<title>{$title|default="品牌厂家直供平台"}</title>
+{/block}
+
+{block name="style"}
+<link rel="stylesheet" href="__STATIC__/style/index-Store-information.css?{:config('huaban.css_version.version')}">
+{/block}
+
+{block name="title"}
+<span>基本信息</span> /
+<span class="colorTit">品牌馆信息</span>
+{/block}
+
+<!-- 平台功能区 -->
+{block name="content"}
+<div class="store-info-wrap">
+<div class="store-info-box">
+<!-- 头部logo -->
+<div class="store-info-logo-box">
+    <div class="store-info-logo">
+        <img id="logo" src='{:qiniu_domains().session("shop.shop_logo")}' alt="">
+        {haspermission:close key="edit-shop-logo"}
+        <a href="#" class="store-info-logo-btn">更换logo</a>
+        {/haspermission:close}
+    </div>
+    <div class="store-info-phone">
+        <div class="store-info-logo-phone">
+            绑定手机号 :
+            <span>{:session('shop_user.phone')}</span>
+        </div>
+        <p>该手机号能让您更快速的找回密码、获取交易即时提醒,保障账号的安全</p>
+        {haspermission:close key="edit-login-pwd"}
+        <button class="store-info-logo-pass-btn">修改登录密码</button>
+        {/haspermission:close}
+    </div>
+
+</div>
+<!-- 店铺基础信息 -->
+<div class="login-store-add-cont-box">
+    <div class="login-store-add-cont-box-tit">
+        <img src="{:qiniu_domains()}/upload/66/82079045e7715e528792c8bd9488ef48fc78cb3509eb0663ba93d7a47293cd.png?origin=Log in_dianpu.png"
+            alt="">
+        <h2>基础信息</h2>
+    </div>
+    <!-- 品牌名称/入驻类型/店铺名称 -->
+    <div class="login-store-add-reject-box-list">
+        <!-- 品牌名称 -->
+        <div class="login-store-add-reject-list">
+            <div class="login-store-add-cont-box-list-tit">
+                品牌名称
+            </div>
+            <p class="text login-store-add-cont-box-list-name-text">
+                {:optional(optional(optional(optional($shopData)->shop)->shop_brand)->brand, '-')->brand_name}
+            </p>
+        </div>
+        <!--&lt;!&ndash; 入驻类型 &ndash;&gt;-->
+        <!--<div class="login-store-add-reject-list" style="margin-right:80px;">-->
+        <!--<div class="login-store-add-cont-box-list-tit">-->
+        <!--入驻类型-->
+        <!--</div>-->
+        <!--<p class="text login-store-add-cont-box-list-shoptype-text">-->
+        <!--&lt;!&ndash;{if session('shop.shop_type') == 1}旗舰店{/if}&ndash;&gt;-->
+        <!--&lt;!&ndash;{if session('shop.shop_type') == 2}专营店{/if}&ndash;&gt;-->
+        <!--&lt;!&ndash;{if session('shop.shop_type') == 3}专卖店{/if}&ndash;&gt;-->
+        <!--&lt;!&ndash;{if session('shop.shop_type') == 4}普通店{/if}&ndash;&gt;-->
+        <!--厂家直供-->
+        <!--</p>-->
+        <!--</div>-->
+
+        <!-- 店铺名称 -->
+        <div class="login-store-add-reject-list">
+            <div class="login-store-add-cont-box-list-tit">
+                品牌馆名称
+            </div>
+            <p class="text login-store-add-cont-box-list-phone-text">{:session('shop.shop_name')}</p>
+        </div>
+        <!-- 店铺简称 -->
+        <div class="login-store-add-reject-list">
+            <div class="login-store-add-cont-box-list-tit">
+                品牌馆简称
+            </div>
+            <p class="text login-store-add-cont-box-list-phone-text">{:optional($shopData->shop)->shop_short_name}</p>
+            {if optional($shopData->shop)->shop_short_name == ''}
+            <span style="cursor: pointer;" class="shop-supplement" data-name="shop_short_name" data-title="品牌馆简称">
+                <img src="{:qiniu_domains()}/upload/9b/f0911ea4f5fc8d6325307d3a8ec1b4a92306bdfb8752b33611f76b27cdcd97.png?origin=supplement.png" style="width:40px;height:40px;">
+                <span style="color: #FF8544;vertical-align: 80%;">补充</span>
+            </span>
+            {else /}
+            <span style="cursor: pointer;margin-left:20px;" class="shop-supplement" data-type="edit" data-name="shop_short_name" data-title="品牌馆简称">
+                <span style="color: #FF8544;vertical-align: 0%;">编辑</span>
+            </span>
+            {/if}
+        </div>
+        <!-- 店铺简介 -->
+        <div class="login-store-add-reject-list">
+            <div class="login-store-add-cont-box-list-tit">
+                品牌馆简介
+            </div>
+            {if optional($shopData->shop)->shop_description != ''}
+                {if strlen(optional($shopData->shop)->shop_description) > 80}
+                    <p class="text login-store-add-cont-box-list-phone-text" style=" width:500px; text-align: justify;">
+                {else /}
+                    <p class="text login-store-add-cont-box-list-phone-text" style="text-align: justify;">
+                {/if}
+                {:optional($shopData->shop)->shop_description}
+                </p>
+            {/if}
+            {if optional($shopData->shop)->shop_description == ''}
+            <span style="cursor: pointer;" class="shop-supplement" data-name="shop_description" data-title="品牌馆简介">
+                <img src="{:qiniu_domains()}/upload/9b/f0911ea4f5fc8d6325307d3a8ec1b4a92306bdfb8752b33611f76b27cdcd97.png?origin=supplement.png" style="width:40px;height:40px;">
+                <span style="color: #FF8544;vertical-align: 80%;">补充</span>
+            </span>
+            {else /}
+            <span style="cursor: pointer;margin-left:20px;" class="shop-supplement" data-type="edit" data-name="shop_description" data-title="品牌馆简介">
+                <span style="color: #FF8544;vertical-align: 0%;">编辑</span>
+            </span>
+            {/if}
+        </div>
+    </div>
+    <!-- 主营类目 -->
+    <div class="login-store-add-cont-box-list" style="margin-bottom:10px;">
+        <div class="login-store-add-cont-box-list-tit">
+            主营类目
+        </div>
+        <div class="login-store-add-cont-box-list-type">
+            {if $shopData}
+            {foreach :optional(optional($shopData)->shop)->category as $val}
+            <div class="list-type-box">
+                <div class="list-type list-type-Y">
+                    {$val->name}
+                    <img src="{:qiniu_domains()}/upload/f9/3674fed7e0b80d5cca0cffbcdb40cc7ff9344cceb7456989e6a0563b04f656.png?origin=Log in_ok.png"
+                        alt="">
+                </div>
+            </div>
+            {/foreach}
+            {else /}
+            -
+            {/if}
+        </div>
+    </div>
+    <!-- 上传店铺LOGO -->
+    <div class="login-store-add-cont-box-list">
+        <div class="login-store-add-cont-box-list-tit">
+            品牌馆LOGO
+        </div>
+        <div class="login-store-add-cont-box-list-logo">
+            <div class="shop-logo-box">
+                <img class="logo-img" src='{:qiniu_domains().session("shop.shop_logo")}' alt="">
+            </div>
+        </div>
+    </div>
+    <!-- 管理人姓名/邮箱/手机号 -->
+    <div class="login-store-add-reject-box-list">
+        <!-- 管理人姓名 -->
+        <div class="login-store-add-reject-list">
+            <div class="login-store-add-cont-box-list-tit">
+                品牌馆管理人姓名
+            </div>
+            <p class="text login-store-add-cont-box-list-name-text">{:session('shop_user.username')}</p>
+        </div>
+        <!-- 管理人邮箱 -->
+        <div class="login-store-add-reject-list">
+            <div class="login-store-add-cont-box-list-tit">
+                品牌馆管理人邮箱
+            </div>
+            <p class="text login-store-add-cont-box-list-shoptype-text">
+                {if session('shop_user.email') != ''}
+                {:session('shop_user.email')}
+                {else /}
+                -
+                {/if}
+            </p>
+        </div>
+
+        <!-- 管理人手机号 -->
+        <div class="login-store-add-reject-list">
+            <div class="login-store-add-cont-box-list-tit">
+                品牌馆管理人手机号
+            </div>
+            <p class="text login-store-add-cont-box-list-phone-text">{:session('shop_user.phone')}</p>
+        </div>
+        <div class="login-store-add-reject-list">
+            <div class="login-store-add-cont-box-list-tit">
+                店铺地址
+            </div>
+            <p class="text login-store-add-cont-box-list-name-text">
+                {:optional(optional($shopData)->province, '-')->short_name}
+                {:optional(optional($shopData)->city, '-')->short_name}
+                {:optional(optional($shopData)->country, '-')->short_name}
+                {:optional($shopData, '-')->address}
+            </p>
+        </div>
+    </div>
+    <!-- 公司经营地址 -->
+</div>
+
+<!--&lt;!&ndash; 企业法定代表人信息 &ndash;&gt;-->
+<!--<div class="login-store-add-cont-box">-->
+<!--<div class="login-store-add-cont-box-tit">-->
+<!--<img src="{:qiniu_domains()}/upload/50/99be7e257f1fff2b751e3c8f4f1c5d35ca3a0f8ef2db9efc5f32d4508e45a1.png?origin=Log in_faren.png" alt="">-->
+<!--<h2>企业法定代表人信息</h2>-->
+<!--</div>-->
+<!--&lt;!&ndash; 法定代表人姓名/手机号/身份证号 &ndash;&gt;-->
+<!--<div class="login-store-add-reject-box-list" style="padding-left:37px;">-->
+<!--&lt;!&ndash; 法定代表人姓名 &ndash;&gt;-->
+<!--<div class="login-store-add-reject-list">-->
+<!--<div class="login-store-add-cont-box-list-tit">-->
+<!--法定代表人姓名-->
+<!--</div>-->
+<!--<p class="text login-store-add-cont-box-list-name-text">{:optional($shopData, '-')->legal_representative_name}</p>-->
+<!--</div>-->
+<!--&lt;!&ndash; 法定代表人手机号 &ndash;&gt;-->
+<!--<div class="login-store-add-reject-list">-->
+<!--<div class="login-store-add-cont-box-list-tit">-->
+<!--法定代表人手机号-->
+<!--</div>-->
+<!--<p class="text login-store-add-cont-box-list-shoptype-text">{:optional($shopData, '-')->legal_representative_phone}</p>-->
+<!--</div>-->
+
+<!--&lt;!&ndash; 法定代表人身份证号 &ndash;&gt;-->
+<!--<div class="login-store-add-reject-list">-->
+<!--<div class="login-store-add-cont-box-list-tit">-->
+<!--法定代表人身份证号-->
+<!--</div>-->
+<!--<p class="text login-store-add-cont-box-list-phone-text">{:optional($shopData, '-')->legal_representative_idcard}</p>-->
+<!--</div>-->
+<!--</div>-->
+<!--&lt;!&ndash; 法定代表身份证照片上传 &ndash;&gt;-->
+<!--<div class="idcard-imgbox">-->
+<!--&lt;!&ndash; 正面 &ndash;&gt;-->
+<!--<div class="idcard-imgbox-l">-->
+<!--<div class="login-store-add-cont-box-list-tit">-->
+<!--法定代表人身份证正面照-->
+<!--</div>-->
+<!--<div class="login-store-add-cont-box-list-logo">-->
+<!--<div class="shop-logo-box">-->
+<!--<img class="logo-img" src="{:qiniu_domains().optional($shopData)->idcard_front}" alt="">-->
+<!--</div>-->
+<!--</div>-->
+<!--</div>-->
+<!--&lt;!&ndash; 反面 &ndash;&gt;-->
+<!--<div class="idcard-imgbox-r">-->
+<!--<div class="login-store-add-cont-box-list-tit">-->
+<!--法定代表人身份证反面照-->
+<!--</div>-->
+<!--<div class="login-store-add-cont-box-list-logo">-->
+<!--<div class="shop-logo-box">-->
+<!--<img class="logo-img" src="{:qiniu_domains().optional($shopData)->idcard_back}" alt="">-->
+<!--</div>-->
+<!--</div>-->
+<!--</div>-->
+<!--</div>-->
+<!--</div>-->
+
+<!--&lt;!&ndash; 公司资质信息 &ndash;&gt;-->
+<!--<div class="login-store-add-cont-box" {if 4 > optional(optional($shopData)->shop)->shop_type}style="display:none;"{/if}>-->
+<!--<div class="login-store-add-cont-box-tit">-->
+<!--<img src="{:qiniu_domains()}/upload/da/9019d10af9d95abb0da1c5a8ca32434690daba3e1442d35d3f178579ca3f77.png?origin=login_zizhi_.png" alt="">-->
+<!--<h2>公司资质信息</h2>-->
+<!--</div>-->
+<!--&lt;!&ndash; 公司名称/统一社会信用代码 &ndash;&gt;-->
+<!--<div class="login-store-add-reject-box-list">-->
+<!--&lt;!&ndash; 公司名称 &ndash;&gt;-->
+<!--<div class="login-store-add-reject-list" style="margin-right:80px;">-->
+<!--<div class="login-store-add-cont-box-list-tit">-->
+<!--公司名称-->
+<!--</div>-->
+<!--<p class="text login-store-add-cont-box-list-name-text">{:optional($shopData, '-')->company_name}</p>-->
+<!--</div>-->
+<!--&lt;!&ndash; 统一社会信用代码 &ndash;&gt;-->
+<!--<div class="login-store-add-reject-list" style="margin-right:80px;">-->
+<!--<div class="login-store-add-cont-box-list-tit">-->
+<!--统一社会信用代码-->
+<!--</div>-->
+<!--<p class="text login-store-add-cont-box-list-shoptype-text">{:optional($shopData, '-')->credit_code}</p>-->
+<!--</div>-->
+<!--</div>-->
+<!--&lt;!&ndash; 营业执照照片上传 &ndash;&gt;-->
+<!--<div class="idcard-imgbox" style="padding:0;">-->
+<!--&lt;!&ndash; 营业执照 &ndash;&gt;-->
+<!--<div class="idcard-imgbox-l">-->
+<!--<div class="login-store-add-cont-box-list-tit" style="width: 127px;">-->
+<!--营业执照-->
+<!--</div>-->
+<!--<div class="login-store-add-cont-box-list-logo">-->
+<!--<div class="shop-logo-box">-->
+<!--<img class="logo-img" src="{:qiniu_domains().optional($shopData)->business_licence_url}" alt="">-->
+<!--</div>-->
+<!--</div>-->
+<!--</div>-->
+<!--&lt;!&ndash; 开户许可证 &ndash;&gt;-->
+<!--<div class="idcard-imgbox-r">-->
+<!--<div class="login-store-add-cont-box-list-tit" style="width: 127px;">-->
+<!--开户许可证-->
+<!--</div>-->
+<!--<div class="login-store-add-cont-box-list-logo">-->
+<!--<div class="shop-logo-box">-->
+<!--<img class="logo-img" src="{:qiniu_domains().optional($shopData)->opening_permit}" alt="">-->
+<!--</div>-->
+<!--</div>-->
+<!--</div>-->
+<!--</div>-->
+<!--</div>-->
+{if !optional(optional(optional($shopData->shop)->bankcard)->bank)->bank_name
+    || !optional(optional($shopData->shop)->bankcard)->opening_bank
+    || !optional(optional($shopData->shop)->bankcard)->account_name
+    || !optional(optional($shopData->shop)->bankcard)->account
+}
+<!-- 公司结算信息 -->
+
+<div class="login-store-add-cont-box">
+    <div class="login-store-add-cont-box-tit">
+        <img
+            src="{:qiniu_domains()}/upload/30/ad68625ffd1b2cf7b6a9aad435c0222093c9c9b8850b58d81f47993f57e124.png?origin=Log in_jiesuan.png">
+        <h2>公司结算信息</h2>
+
+    </div>
+
+    <!-- 开户银行/开户类别/开户支行名称 -->
+    <div class="login-store-add-reject-box-list" style="padding-left:70px;">
+        <!-- 开户银行 -->
+        <div class="login-store-add-reject-list">
+            <div class="login-store-add-cont-box-list-tit">
+                开户银行：
+            </div>
+            <span style="margin: 0 20px;display: inline-block">
+                <select id="bank_id" class="input-sm">
+                    <option value="">请选择开户银行</option>
+                    {foreach $banks as $bank}
+                    <option value="{$bank->bank_id}" {if
+                        condition="optional(optional(optional($shopData->shop)->bankcard)->bank)->bank_id eq $bank->bank_id"
+                        }selected{/if}>{$bank->bank_name} </option> {/foreach} </select> </span> </div> {if
+                        4==optional(optional($shopData)->shop)->shop_type}
+                        <!-- 开户类别 -->
+                        <div class="login-store-add-reject-list">
+                            <div class="login-store-add-cont-box-list-tit">
+                                开户类别：
+                            </div>
+                            <p class="text login-store-add-cont-box-list-shoptype-text">
+                                {:optional(optional(optional($shopData)->shop)->bankcard, '-')->card_type_text}
+                            </p>
+                        </div>
+                        {/if}
+
+                        <!-- 开户支行名称 -->
+                        <div class="login-store-add-reject-list">
+                            <div class="login-store-add-cont-box-list-tit">
+                                开户支行名称：
+                            </div>
+                            <input type="text" name="opening_bank" id="opening_bank"
+                                value="{:optional(optional(optional($shopData)->shop)->bankcard, '-')->opening_bank}"
+                                placeholder="请输入开户支行名称" class="input-sm">
+                        </div>
+                        <div class="login-store-add-reject-list">
+                            <div class="login-store-add-cont-box-list-tit">
+                                开户名称：
+                            </div>
+                            <input type="text" name="account_name" id="account_name"
+                                value="{:optional(optional(optional($shopData)->shop)->bankcard, '-')->account_name}"
+                                placeholder="请输入开户名称" class="input-sm">
+                        </div>
+
+            <!-- 开户支行名称 -->
+            <div class="login-store-add-reject-list">
+                <div class="login-store-add-cont-box-list-tit">
+                    银行账号：
+                </div>
+                <input type="text" name="account" id="account"
+                    value="{:optional(optional(optional($shopData)->shop)->bankcard, '-')->account}"
+                    placeholder="请输入银行账号" class="input-sm">
+            </div>
+            <div style="width:100%;padding-top:50px">
+                <a href="javascript:;" class="checkSettlement btn  btn-fill btn-lg">提交</a>
+            </div>
+        </div>
+
+    </div>
+
+    {/if}
+
+    <!--&lt;!&ndash; 品牌信息 &ndash;&gt;-->
+    <!--<div class="login-store-add-cont-box" {if 4 == optional(optional($shopData)->shop)->shop_type}style="display:none;"{/if}>-->
+    <!--<div class="login-store-add-cont-box-tit">-->
+    <!--<img src="{:qiniu_domains()}/upload/da/9019d10af9d95abb0da1c5a8ca32434690daba3e1442d35d3f178579ca3f77.png?origin=login_zizhi_.png" alt="">-->
+    <!--<h2>品牌信息</h2>-->
+    <!--</div>-->
+    <!--&lt;!&ndash; 商标注册号/品牌授权有效期 &ndash;&gt;-->
+    <!--<div class="login-store-add-reject-box-list">-->
+    <!--&lt;!&ndash; 商标注册号 &ndash;&gt;-->
+    <!--<div class="login-store-add-reject-list" style="margin-right:80px;">-->
+    <!--<div class="login-store-add-cont-box-list-tit">-->
+    <!--商标注册号-->
+    <!--</div>-->
+    <!--<p class="text login-store-add-cont-box-list-name-text">{:optional($shopData, '-')->trademarking_number}</p>-->
+    <!--</div>-->
+    <!--&lt;!&ndash; 品牌授权有效期 &ndash;&gt;-->
+    <!--<div class="login-store-add-reject-list" style="margin-right:80px;">-->
+    <!--<div class="login-store-add-cont-box-list-tit">-->
+    <!--品牌授权有效期-->
+    <!--</div>-->
+    <!--<p class="text login-store-add-cont-box-list-shoptype-text">{:optional($shopData, '-')->brand_authorization_validity}</p>-->
+    <!--</div>-->
+    <!--</div>-->
+
+    <!--&lt;!&ndash; 证明照片上传 &ndash;&gt;-->
+    <!--<div class="idcard-imgbox" style="padding:0;">-->
+    <!--&lt;!&ndash; 商标注册证明 &ndash;&gt;-->
+    <!--<div class="idcard-imgbox-l">-->
+    <!--<div class="login-store-add-cont-box-list-tit" style="width: 127px;">-->
+    <!--商标注册证明-->
+    <!--</div>-->
+    <!--<div class="login-store-add-cont-box-list-logo">-->
+    <!--<div class="shop-logo-box">-->
+    <!--<img class="logo-img" src="{:qiniu_domains().optional($shopData)->trademarking_Prove}" alt="">-->
+    <!--</div>-->
+    <!--</div>-->
+    <!--</div>-->
+    <!--&lt;!&ndash; 品牌授权证明 &ndash;&gt;-->
+    <!--<div class="idcard-imgbox-r">-->
+    <!--<div class="login-store-add-cont-box-list-tit" style="width: 127px;">-->
+    <!--品牌授权证明-->
+    <!--</div>-->
+    <!--<div class="login-store-add-cont-box-list-logo">-->
+    <!--<div class="shop-logo-box">-->
+    <!--<img class="logo-img" src="{:qiniu_domains().optional($shopData)->brand_authorization_Prove}" alt="">-->
+    <!--</div>-->
+    <!--</div>-->
+    <!--</div>-->
+    <!--</div>-->
+    <!--</div>-->
+    <!--</div>-->
+    {haspermission:close key="edit-shop-logo"}
+    <div class="mask-box" style="display:none;">
+        <div class="amend-logo-img-box" style="display:none;">
+            <h3>修改logo图片</h3>
+            <div class="amend-logo-img" id="shop_logo">
+                <img src="{:qiniu_domains()}/upload/aa/f8b72d529506ff5ad4bbc900de978303590afe2e8592306bac42cd8e4f2edb.png?origin=logos.png"
+                    alt="">
+            </div>
+            <div class="amend-logo-img-choose-box">
+                <button class="amend-logo-img-choose-btn">选择图片</button>
+                <input class="amend-logo-img-choose-file" type="file" name="" id="">
+            </div>
+            <p>说明： 图片建议尺寸需等宽高，且宽高不低于480px，支持JPG,PNG格式；</p>
+            <div class="amend-logo-img-btn-box">
+                <button class="amend-logo-img-btn-back">取消修改</button>
+                <button class="amend-logo-img-btn-next btn-logo">提交</button>
+            </div>
+        </div>
+        <div class="amend-pass-box" style="display:none;">
+            <div class="amend-new-pass-box">
+                <span class="amend-new-pass-box-l">新密码 : </span>
+                <input class="amend-new-pass-box-inp" oninput="value=value.replace(/[\W]/g,'')" minlength="6"
+                    maxlength="23" autocomplete="off" type="text" placeholder="请设置新密码">
+            </div>
+
+            <div class="amend-new-pass-box">
+                <span style="margin-left:150px;color:#afb9c3">6-23位字母及数字组合的密码</span>
+            </div>
+
+            <div class="amend-new-pass-box">
+                <span class="amend-new-pass-box-l">确认密码 : </span>
+                <input class="amend-again-pass-box-inp" oninput="value=value.replace(/[\W]/g,'')" minlength="6"
+                    maxlength="23" autocomplete="off" type="text" placeholder="请再次输入您的新密码">
+            </div>
+            <div class="amend-logo-img-btn-box">
+                <button class="amend-logo-img-btn-back">取消修改</button>
+                <button class="amend-logo-img-btn-next btn-pass">提交</button>
+            </div>
+        </div>
+    </div>
+    {/haspermission:close}
+</div>
+{/block}
+
+{block name='js'}
+<script>
+    //  点击修改logo头像
+    $('.store-info-logo-btn').on('click', function () {
+        $('.mask-box').show();
+        $('.amend-logo-img-box').show();
+        $('.amend-logo-img').find('img').attr("src", $("#logo").attr('src'));
+    });
+
+    //选择logo头像
+    $('.amend-logo-img-choose-file').on('change', function () {
+        var that = $(this);
+        var file = $(this)[0].files[0];
+        var formData = new FormData();
+        formData.append('file', file);
+        var urls = '/api/update-shop-logo';
+        $.ajax({
+            url: urls,
+            type: 'POST',
+            cache: false,
+            data: formData,
+            dataType: 'json',
+            processData: false,
+            contentType: false,
+            success: function (data) {
+                // console.log(data);
+                layer.msg('上传成功！', {
+                    icon: 1,
+                    time: 1000
+                });
+                $('.amend-logo-img').find('img').attr("src", data.data.url);
+            },
+            error: function (data) {
+                layer.msg(data.responseJSON.msg, {
+                    icon: 2
+                });
+            }
+        });
+    });
+
+    //点击修改密码
+    $('.store-info-logo-pass-btn').on('click', function () {
+        $('.mask-box').show();
+        $('.amend-pass-box').show();
+    });
+
+    //取消选择或修改
+    $('.amend-logo-img-btn-back').on('click', function () {
+        $('.mask-box,.amend-logo-img-box,.amend-pass-box').hide();
+    });
+</script>
+<script>
+    // 密码修改
+    $(".btn-pass").click(function () {
+        var new_password = $('.amend-new-pass-box-inp').val();
+        var confirm_password = $('.amend-again-pass-box-inp').val();
+
+        if (new_password == '') {
+            layer.msg('新密码不能为空！', {
+                icon: 2
+            });
+            return false;
+        }
+
+        if (false == checkPassword(new_password) || new_password.length < 6) {
+            layer.msg('请输入6-23位字母及数字的组合密码', {
+                icon: 2
+            });
+            return false;
+        }
+
+        if (confirm_password == '') {
+            layer.msg('确认密码不能为空！', {
+                icon: 2
+            });
+            return false;
+        }
+
+        if (false == checkPassword(confirm_password) || confirm_password.length < 6) {
+            layer.msg('请输入6-23位字母及数字的组合密码', {
+                icon: 2
+            });
+            return false;
+        }
+
+        if (new_password !== confirm_password) {
+            layer.msg('两次密码不一致！', {
+                icon: 2
+            });
+            return false;
+        }
+
+        $.ajax({
+            url: '/change-password',
+            type: 'POST',
+            data: {
+                'new_password': new_password,
+                'confirm_password': confirm_password
+            },
+            dataType: 'json',
+            success: function (data) {
+                // console.log(data);
+                layer.msg(data.msg, {
+                    icon: 6,
+                    time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                }, function () {
+                    // location.reload();
+                    $('.mask-box,.amend-logo-img-box,.amend-pass-box').hide();
+                    window.location.href = '/login';
+                });
+            },
+            error: function (data) {
+                layer.msg(data.responseJSON.msg, {
+                    icon: 2
+                });
+            }
+        });
+    });
+
+    function checkPassword(value) {
+        var vReg = /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,}$/;
+        if (vReg.test(value)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    // logo 修改
+    $(".btn-logo").click(function () {
+        var shop_logo = $('.amend-logo-img').find('img').attr("src");
+        if (!shop_logo) {
+            layer.msg('品牌馆Logo不能为空！', {
+                icon: 2
+            });
+        }
+        $.ajax({
+            url: '/change-logo',
+            type: 'POST',
+            data: {
+                'shop_logo': shop_logo
+            },
+            dataType: 'json',
+            success: function (data) {
+                // console.log(data);
+                layer.msg(data.msg, {
+                    icon: 6,
+                    time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                }, function () {
+                    $('.mask-box,.amend-logo-img-box,.amend-pass-box').hide();
+                    location.reload();
+                });
+            },
+            error: function (data) {
+                layer.msg(data.responseJSON.msg, {
+                    icon: 2
+                });
+            }
+        });
+    });
+
+
+    // 公司结算信息,提交判断
+    $('.checkSettlement').on('click', function () {
+        // 开户银行
+        bank_id = $('#bank_id').val();
+        // 开户支行名称
+        opening_bank = $('#opening_bank').val();
+        // 开户名称
+        account_name = $('#account_name').val();
+        //银行帐号
+        account = $('#account').val();
+
+        if (bank_id == '') {
+            layer.msg('请选择开户银行', {
+                icon: 2
+            });
+            return false;
+        }
+        if (opening_bank == '') {
+            layer.msg('请输入开户支行名称', {
+                icon: 2
+            });
+            return false;
+        }
+        if (account_name == '') {
+            layer.msg('请输入开户名称', {
+                icon: 2
+            });
+            return false;
+        }
+        if (account == '') {
+            layer.msg('请输入银行卡号', {
+                icon: 2
+            });
+            return false;
+        }
+
+        confirm_text = "信息提交后，将不可以再进行修改，请谨慎操作！";
+        confirm_json = {
+            btn: ['确定', '返回修改'],
+            btnAlign: 'c',
+            yes: function (index) {
+                settlementUpdate(bank_id, opening_bank, account_name, account);
+                layer.close(index);
+            }
+        };
+
+        layer.confirm(confirm_text, confirm_json)
+    });
+
+    // 公司结算信息,提交功能
+    function settlementUpdate(bank_id, opening_bank, account_name, account) {
+        $.ajax({
+            url: "/shop-info/settlement",
+            type: 'POST',
+            dataType: 'json',
+            data: {
+                'bank_id': bank_id,
+                'opening_bank': opening_bank,
+                'account_name': account_name,
+                'account': account,
+            },
+            success: function (result) {
+                layer.msg(result.msg, {
+                    icon: 6,
+                    time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                }, function () {
+                    location.reload();
+                });
+            },
+            error: function (data) {
+                layer.msg(data.msg, {
+                    icon: 2
+                });
+            }
+        });
+    }
+
+    // 厂家简介补充
+    $(".shop-supplement").click(function () {
+
+        var dataType = $(this).attr('data-type');
+        if (dataType == 'edit') {
+            var content = $(this).parents('.login-store-add-reject-list').find('.login-store-add-cont-box-list-phone-text').html().trim();
+        }
+        var title = $(this).attr('data-title');
+        var msg = '';
+
+        if (title == "品牌馆简称") {
+            var type = 1;
+            msg = "简短，突出产品或品牌的名称，如：画版";
+            var len = 8;
+        } else {
+            var type = 2;
+            var len = 300;
+            msg = "阐述品牌或产品的优势，服务售后等，便于消费者记住您，限300字以内";
+        }
+        var html = '';
+        html += '<div style="margin-top:30px;">';
+        html += '<center><textarea rows="6" cols="45" maxlength="'+len+'" style="resize: none;" class="inp shop-content" placeholder="'+msg+'">';
+        if (dataType == 'edit') {
+            html += content;
+        }
+        html +='</textarea>';
+        html += '</center></div>';
+
+        layer.open({
+            type: 1,
+            title: title,
+            shadeClose: true,
+            btn: ["确定", "取消"],
+            shade: [0.3, '#393D49'],
+            area: ['400px', '300px'],
+            content: html,
+            yes: function (index, layero) {
+                // 获取信息
+                var content = $(".shop-content").val();
+                if (content == '') {
+                    layer.msg("亲，请先填写信息", {icon: 2}, function () {
+                        $(".shop-content").focus();
+                    });
+                    return false;
+                }
+                // 进行提交保存
+                layer.load(3, {shade: [0.1, '#393D49']});
+                $.ajax({
+                    url: '/shop-info/supplement',
+                    type: 'POST',
+                    data: {content:content,type:type},
+                    dataType: 'json',
+                    success: function (data) {
+                        layer.msg(data.msg, {
+                            icon: 6,
+                            time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                        }, function () {
+                            layer.closeAll();
+                            window.location.reload();
+                        });
+                    }, error: function (data) {
+                        layer.msg(data.responseJSON.msg, {icon: 2}, function () {
+                            layer.closeAll();
+                        });
+                    }
+                });
+            },
+        });
+    });
+</script>
+{/block}

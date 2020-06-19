@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        {include file="layout/head" /}
+        <title>品牌厂家直供平台</title>
+        {block name="seo"}
+            网站标题关键字与描述
+        {/block}
+
+        {block name="style"}
+            样式
+        {/block}
+    </head>
+    <body>
+        <div class="ShopFrontPage-wrap">
+
+            <!-- 右侧区域 -->
+            <div class="ShopFrontPage-r">
+                <div class="nav-r">
+                    <!-- 公共头部 -->
+                    {include file="layout/header" /}
+                    <div class="nav-r-bot" style="display: flex;align-items: center;justify-content: space-between;">
+                        <div>
+                            <!-- 自己的标题 -->
+                            {block name="title"}
+                                页面标题
+                            {/block}
+                            
+                        </div>
+                        <div style="padding-right:40px" class="back">
+                            <a style="position: relative;cursor: pointer" href="javascript:history.back(-1)">
+                                <em style="width: 8px;height: 8px;border-bottom: 1px solid #000;border-left: 1px solid #000;transform: rotate(45deg);position: absolute;left: -12px; top:6px;"></em>
+                                返回
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                {block name="content"}
+                    页面主题内容
+                {/block}
+            </div>
+        </div>
+        {include file="layout/footer" /}
+        {block name='js'}
+            用户自定义js
+        {/block}
+    <script>
+        $('.ShopFrontPage-wrap').on('click',function (e) {
+            e.stopPropagation();
+            $('.laydate-btns-clear').click();
+        });
+
+        $('#layui-laydate2, #date, #delivery_date, #date_month, #get_date, #end_date').on('click',function (e) {
+            e.stopPropagation();
+        });
+
+        // 校验cookie 店铺id是否一致，不一致，
+        let init_shop_id = 0;
+        $(function() {
+            init_shop_id = $.cookie('shop_id');
+            setInterval(function () {
+                if (init_shop_id != $.cookie('shop_id')) {
+                    window.location.href = '/';
+                }
+            }, 1000);
+        });
+    </script>
+    </body>
+</html>

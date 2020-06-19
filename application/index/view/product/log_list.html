@@ -1,0 +1,55 @@
+{extend name="layout/base" /}
+
+{block name="seo"}
+<title>{$title|default="画版商户后台管理系统"}</title>
+<meta name="keywords" content="{$keywords|default='网站关键字'}">
+<meta name="description" content="{$desc|default='网站描述'}">
+{/block}
+
+{block name="style"}
+<link rel="stylesheet" href="__STATIC__/style/freight.css?{:config('huaban.css_version.version')}">
+{/block}
+
+{block name="title"}
+<span>商品管理</span> /
+<span class="colorTit">操作记录</span>
+{/block}
+
+{block name="content"}
+<!-- 平台功能区 -->
+<div class="ShopFrontPage-r-bot">
+    <div class="cards">
+        <div class="freight-box">
+            <div class="freight-table">
+                <table class="freight-tb">
+                    <thead>
+                    <tr class="tr-th">
+                        <td>操作人</td>
+                        <td>操作ID</td>
+                        <td>操作内容</td>
+                        <td>操作时间</td>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {foreach name='logs' item='log'}
+                    <tr>
+                        <td>{$log->shop_user_name}</td>
+                        <td>{$log->shop_user_id}</td>
+                        <td>{$log->content}</td>
+                        <td>{$log->create_time}</td>
+                    </tr>
+                    {/foreach}
+                    </tbody>
+
+                </table>
+            </div>
+        </div>
+        <!--分页-->
+        {$logs->render()|raw}
+    </div>
+</div>
+{/block}
+
+{block name='js'}
+
+{/block}

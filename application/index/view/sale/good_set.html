@@ -1,0 +1,128 @@
+<!--
+ * @Creat: Created by VS Code
+ * @Author: Jun
+ * @Date: 2019-08-20 14:42:04
+ * @LastEditors: Jun
+ * @LastEditTime: 2019-08-21 16:18:15
+ -->
+{extend name="layout/base" /}
+
+{block name="seo"}
+<title>{$title|default="品牌厂家直供平台"}</title>
+{/block}
+
+{block name="style"}
+<link rel="stylesheet" href="__STATIC__/style/sale.min.css?{:config('huaban.css_version.version')}">
+{/block}
+
+{block name="title"}
+<span>销售管理</span> /
+<span class="colorTit">销售商品上架</span>
+{/block}
+
+{block name="content"}
+<div class="ShopFrontPage-r-bot">
+    <div class="order-box cards">
+        <div class="order-search">
+            <form action="/sale/good-set" method="get">
+                <div class="form-group" style="justify-content: flex-start;align-items:center">
+                    <div class="form-item">
+                        <label for="date">发布时间</label>
+                        <input type="text" autocomplete="off" placeholder="请选择发布时间" name="create_time" value="{$create_time}" id="date">
+                        <i></i>
+                    </div>
+                    <div class="form-item">
+                        <label for="select">商品标题</label>
+                        <input type="text" placeholder="请输入商品标题" name="product_name" value="{$product_name}" id="shop_name">
+                    </div>
+                    <!--<div class="form-item">-->
+                        <!--<label for="name">商品编码</label>-->
+                        <!--<input type="text" placeholder="请输入商家编码" name="product_sn" value="{$product_sn}" id="shop_code">-->
+                        <!--<i></i>-->
+                    <!--</div>-->
+                    <!--<div class="form-item">-->
+                        <!--<label for="name">商品ID</label>-->
+                        <!--<input type="text" placeholder="请输入商品ID" name="product_id" value="{$product_id}" id="shop_ID">-->
+                        <!--<i></i>-->
+                    <!--</div>-->
+                </div>
+
+                <div class="form-group" style="justify-content: flex-start;padding-left:10px;">
+
+                    <!--<div class="form-item" style="width: 220px;margin-left: 0">-->
+                        <!--<label for="name">密码图</label>-->
+                        <!--<input type="text" placeholder="请输入密码图名称" name="works_name" value="{$works_name}" id="works_name">-->
+                        <!--<i></i>-->
+                    <!--</div>-->
+                    <div >
+                        <input type="submit" value="查询" class="btn btn-fill">
+                        <i></i>
+                    </div>
+
+                </div>
+            </form>
+
+        </div>
+        <div class="table-special">
+            {volist name='product_list' id='vo'}
+            <div class="sale-goods-item">
+                <div class="sale-goods-box">
+                    <div class="sale-goods">
+
+                        <div class="sale-goods-img">
+                            <img src="{:qiniu_domains().$vo->image}" alt="{$vo->product_name}" width="100%">
+                        </div>
+                        <div class="sale-goods-info">
+                            <p>{$vo->product_name}</p>
+                            <!--<p class="text-gray">ID:{$vo->product_id}</p>-->
+                        </div>
+                    </div>
+                    <div class="sale-goods-time">
+                        <p class="text-gray">发布时间</p>
+                        <p>{$vo->create_time}</p>
+                    </div>
+                    <!--<div class="sale-goods-time">-->
+                        <!--<p class="text-gray">状态</p>-->
+                        <!--<p>{$vo->StatusText}</p>-->
+                    <!--</div>-->
+                    {haspermission:close key="edit-sale-config"}
+                    <div class="sale-goods-btn">
+                        <a class="btn btn-default set-upper" data-id="{$vo->product_id}" href="javascript:;" data-type="{$vo->check_product_text}">上架配置</a>
+                    </div>
+                    {/haspermission:close}
+                </div>
+            </div>
+            {/volist}
+        </div>
+        {$product_list->render()|raw}
+    </div>
+</div>
+{/block}
+
+{block name='js'}
+<script>
+    $(".set-upper").on('click', function () {
+        var type = $(this).attr('data-type');
+        var product_id = $(this).attr('data-id');
+        if (type == 0) {
+            layer.open({
+                btn: ["去完善商品信息", "取消"],
+                closeBtn: 0, //不显示关闭按钮
+                anim: 2,
+                shadeClose: true, //开启遮罩关闭
+                content: '该商品的信息尚未完善，暂不能进行上架配置！',
+                icon: 0,
+                btnAlign:"c",
+                yes: function (index, layero) {
+                    window.location.href = "/product/save?product_id="+product_id+"&type=2";
+                },
+                btn2: function (index, layero) {
+                    layer.close(index)
+                }
+            });
+        } else {
+            window.location.href = "/sale/upper-set?product_id="+product_id;
+        }
+    });
+</script>
+{/block}

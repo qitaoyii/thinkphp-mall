@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>404</title>
+</head>
+<body>
+<div style="width: 100vw;margin-top:30px;">
+    <img src="https://qiniu1.ac.vip/upload/26/860cad1174ec3d55deca98b0ca349706858fbce48d7fc28bb46ccaf286a3f2.png?origin=404.png" width="50%" height="auto" style="display: block;margin: 0 auto;">
+</div>
+<div class="" style="font-size: 36px;margin: 0 auto;text-align: center;color: #323232;">
+    咦，页面跑丢了~ 还有
+    <span id="dd" style="color:darkorange;font-weight: bold;">3</span>
+    秒，页面将自动跳转首页...
+</div>
+<!--倒计时-->
+<script type="text/javascript">
+    function run(){
+        var s = document.getElementById("dd");
+        if(s.innerHTML == 0){
+            window.history.go(-1);
+            // window.location.href='/';
+            return false;
+        }
+        s.innerHTML = s.innerHTML * 1 - 1;
+    }
+    window.setInterval("run();", 1000);
+</script>
+</body>
+</html>

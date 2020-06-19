@@ -1,0 +1,474 @@
+{extend name="layout/base" /}
+
+{block name="seo"}
+<title>{$title|default="品牌厂家直供平台"}</title>
+{/block}
+
+{block name="style"}
+<style></style>
+{/block}
+
+{block name="title"}
+<span>基本信息</span> /
+<span class="colorTit">操作员管理</span>
+{/block}
+
+<!-- 平台功能区 -->
+{block name="content"}
+<div class="ShopFrontPage-r-bot">
+    <div class="order-box cards">
+        <div class="order-search">
+            <div class="form-group">
+                <div>
+                    <input type="button" value="新增操作员" class="btn btn-fill" style="cursor: pointer" onclick="addOper()">
+                    <i></i>
+                    <a href="/operator/role" class="btn btn-o">操作员角色维护</a>
+                </div>
+            </div>
+        </div>
+        <div class="order-table">
+            <table class="order-tb">
+                <thead>
+                    <tr class="tr-th">
+                        <th>登录账号</th>
+                        <th>操作员姓名</th>
+                        <th>创建时间</th>
+                        <th>最后登录时间</th>
+                        <th>账号状态</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {foreach name='shopUsers' item='user'}
+                    <tr class="tr-bd">
+                        <td><span class="userphone">{$user->phone}</span></td>
+                        <td>
+                            {$user->username}
+                        </td>
+                        <td>
+                            {$user->create_time}
+                        </td>
+                        <td>
+                            {$user->last_login_time ? $user->last_login_time : '-'}
+                        </td>
+                        <td>
+                            {if !$user->is_shop_owner}
+                            <div class="switch-box">
+                                <label>
+                                    <input style="cursor: pointer" type="checkbox" {if 0==$user->status} value='on' checked {else /} value='off' {/if} class="switch mui-switch-animbg" onclick="return false;" data-id="{$user->user_id}"><span></span></label>
+                            </div>
+                            {/if}
+                        </td>
+                        <td>
+                            <div class="operate" data-id="{$user->user_id}" data-name="{$user->username}" data-phone="{$user->phone}" data-email="{$user->email}" data-role-id="{$user->role_id}" data-user-role-id="{$user->user_role->id}">
+                                {if 0==$user->status}
+                                <p class="operate-item" onclick="pwdEdit($(this))">
+                                    <a href="javascript:;"><i class="icon icon-pwd_edit"></i>密码修改</a>
+                                </p>
+                                {else /}
+                                <p class="operate-item" onclick="infoDel($(this))">
+                                    <a href="javascript:;"><i class="icon icon-detel"></i>删除操作员</a>
+                                </p>
+                                {/if}
+
+                                {if !$user->is_shop_owner}
+                                <p class="operate-item" onclick="infoEdit($(this))">
+                                    <a href="javascript:;"><i class="icon icon-mod"></i>修改</a>
+                                </p>
+                                {/if}
+                            </div>
+                        </td>
+                    </tr>
+                    {/foreach}
+                </tbody>
+            </table>
+        </div>
+
+        <!--分页-->
+        <div class="pragination-group" id="pageToolbar">
+            {$shopUsers->render()|raw}
+        </div>
+
+    </div>
+
+</div>
+
+<div class="add-layer" style="display:none">
+    <p>
+        <label>操作员登录手机号：</label>
+        <input type="tel" id="oper_phone" maxlength="11" placeholder="请输入操作员登录手机号" class="input-sm">
+    </p>
+    <p>
+        <label>操作员登录密码：</label>
+        <input type="text" id="password" oninput="value=value.replace(/[\W]/g,'')" minlength="6" maxlength="23" placeholder="请设置操作员登录密码" class="input-sm">
+    </p>
+    <p style="margin-left:235px;color:#afb9c3">6-23位字母及数字组合的密码</p>
+    <p>
+        <label>操作员姓名：</label>
+        <input type="text" oninput="value=value.replace(/[^\w\u4E00-\u9FA5\_]/g, '')" maxlength="10" id="oper_name"  placeholder="请输入操作员姓名" class="input-sm">
+    </p>
+    <p>
+        <label>操作员邮箱：</label>
+        <input type="email" id="oper_email" placeholder="请设置操作员邮箱" class="input-sm">
+    </p>
+    <p>
+        <label>操作员角色：</label>
+        <span style="margin: 0 20px;display: block">
+            <select id="oper_role" class="input-sm" style="width:220px">
+                <option value="0">请选择</option>
+                {foreach $roles as $role}
+                <option value="{$role->id}">{$role->name}</option>
+                {/foreach}
+            </select>
+        </span>
+    </p>
+</div>
+
+<div class="edit-layer" style="display:none">
+    <p>
+        <label>操作员登录手机号：</label>
+        <input type="tel" id="oper_phone_edit" placeholder="请输入操作员登录手机号" class="input-sm" disabled>
+    </p>
+    <p>
+        <label>操作员姓名：</label>
+        <input type="text" id="oper_name_edit" oninput="value=value.replace(/[^\w\u4E00-\u9FA5\_]/g, '')" placeholder="请输入操作员姓名" class="input-sm" disabled>
+    </p>
+    <p>
+        <label>操作员邮箱：</label>
+        <input type="email" id="oper_email_edit" placeholder="请设置操作员邮箱" class="input-sm" disabled>
+    </p>
+    <p>
+        <label>操作员角色：</label>
+        <span style="margin: 0 20px;display: block">
+            <select id="oper_role_edit" class="input-sm" style="width:220px">
+                <option value="0">请选择</option>
+                {foreach $roles as $role}
+                <option value="{$role->id}">{$role->name}</option>
+                {/foreach}
+            </select>
+        </span>
+
+    </p>
+</div>
+{/block}
+
+{block name='js'}
+<script>
+    /*手机号分割显示*/
+    (function userphone(obj) {
+        obj.each(function() {
+            var phoneNum = $(this).text();
+            $(this).html(phoneNum.replace(/(?=(\d{4})+$)/g, " "));
+        });
+    })($(".userphone"));
+    $('select').select2({
+        minimumResultsForSearch: -1
+    });
+    //启用账号/禁用账号开关
+    $('.switch').on('click', function() {
+        var user_id = $(this).data('id');
+        var _this = $(this);
+        if (_this.is(':checked')) {
+            confirm_text = "是否要启用该账号？";
+                confirm_json = {
+                    btn: ['立即启用', '取消'],
+                    btnAlign: 'c',
+                    yes: function(index) {
+                        _this.prop('checked', true);
+                        statusUpdate(user_id, 0);
+                        layer.close(index);
+                    }
+                }
+        } else {
+            confirm_text = "禁用后，该账号不能登录店铺后台<br>是否禁用？";
+                confirm_json = {
+                    btn: ['立即禁用', '取消'],
+                    btnAlign: 'c',
+                    yes: function(index) {
+                        _this.prop('checked', false);
+                        statusUpdate(user_id, 1);
+                        layer.close(index);
+                    }
+                }
+        }
+        layer.confirm(confirm_text, confirm_json)
+    });
+
+    // 状态修改
+    function statusUpdate(user_id, type) {
+        $.ajax({
+            url: "/operator/status",
+            type: 'POST',
+            dataType: 'json',
+            data: {
+                'user_id': user_id,
+                'type': type
+            },
+            success: function(result) {
+                layer.msg(result.msg, {
+                    icon: 6,
+                    time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                }, function() {
+                    location.reload();
+                });
+            },
+            error: function(data) {
+                layer.msg(data.responseJSON.msg, {
+                    icon: 2
+                });
+            }
+        });
+    }
+
+    //密码修改
+    function pwdEdit(obj) {
+        var perObj = obj.parent('.operate');
+        var edit = {
+            oper_name: perObj.data('name'),
+            oper_id: perObj.data('id'),
+            oper_phone: perObj.data('phone'),
+        };
+        var layer_c = '';
+        layer_c += '<div class="pwd-layer">' + '<p class="text-link"><i>登录账号：<span class="userphone">' + edit.oper_phone + '</i>' +
+            '<i>操作员姓名：' + edit.oper_name + '</i></p>' +
+            '<p><label>新密码：</label>' +
+            '<input type="text" oninput="value=value.replace(/[\\W]/g,\'\')" minlength="6" maxlength="23" readonly onfocus="this.removeAttribute(\'readonly\');" id="edit_pwd" placeholder="请设置新密码" class="input-sm">' +
+            '</p>' +
+            '<p style="margin-left:150px;color:#afb9c3;    margin-bottom: 10px; margin-top: -15px;">6-23位字母及数字组合的密码</p>' +
+            '<p><label>确认密码：</label>' +
+            '<input type="text" oninput="value=value.replace(/[\\W]/g,\'\')" minlength="6" maxlength="23" readonly onfocus="this.removeAttribute(\'readonly\');" id="pwd_again" placeholder="请再次输入您的新密码" class="input-sm">' +
+            '</p>';
+        layer.open({
+            type: 1,
+            btn: ['提交', '取消'],
+            title: '密码修改',
+            content: layer_c,
+            btnAlign:'c',
+            shadowClose: true,
+            closeBtn:'',
+            area: "420px",
+            yes: function(index) {
+                var new_password = $('#edit_pwd').val(),
+                    confirm_password = $('#pwd_again').val();
+
+                if (new_password == '') {
+                    layer.msg('新密码不能为空！', {
+                        icon: 2
+                    });
+                    return false;
+                }
+
+                if (false == checkPassword(new_password) || new_password.length < 6) {
+                    layer.msg('请输入6-23位字母及数字的组合密码', {
+                        icon: 2
+                    });
+                    return false;
+                }
+
+                if (confirm_password == '') {
+                    layer.msg('确认密码不能为空！', {
+                        icon: 2
+                    });
+                    return false;
+                }
+
+                if (false == checkPassword(confirm_password) || confirm_password.length < 6) {
+                    layer.msg('请输入6-23位字母及数字的组合密码', {
+                        icon: 2
+                    });
+                    return false;
+                }
+                
+                if (new_password !== confirm_password) {
+                    layer.msg('两次密码不一致！', {
+                        icon: 2
+                    });
+                    return false;
+                }
+
+                user_id = perObj.data('id');
+                $.ajax({
+                    url: "/operator/password",
+                    type: 'POST',
+                    dataType: 'json',
+                    data: {
+                        'user_id': user_id,
+                        'new_password': new_password,
+                        'confirm_password': confirm_password
+                    },
+                    success: function(result) {
+                        layer.msg(result.msg, {
+                            icon: 6,
+                            time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                        }, function() {
+                            // location.reload();
+                        });
+                    },
+                    error: function(data) {
+                        layer.msg(data.responseJSON.msg, {
+                            icon: 2
+                        });
+                    }
+                });
+                layer.close(index);
+            }
+        });
+    }
+
+    //修改操作员角色
+    function infoEdit(obj) {
+        var perObj = obj.parent('.operate');
+        $("#oper_phone_edit").val(perObj.data('phone'));
+        $("#oper_name_edit").val(perObj.data('name'));
+        $("#oper_email_edit").val(perObj.data('email'));
+        $("#oper_role_edit").val(perObj.data('role-id')).select2({minimumResultsForSearch: -1});
+
+        var user_id = perObj.data('id');
+        var user_role_id = perObj.data('user-role-id');
+        layer.open({
+            type: 1,
+            btn: ['提交', '取消'],
+            title: '操作员角色修改',
+            content: $(".edit-layer"),
+            btnAlign:'c',
+            shadowClose: true,
+            area: "420px",
+            yes: function(index) {
+                var role_id = $("#oper_role_edit").val();
+
+                if ($("#oper_role_edit option:selected").val() == 0) {
+                    layer.msg('请选择操作员角色！', {
+                        icon: 2
+                    });
+                    return false;
+                }
+
+                $.ajax({
+                    url: "/operator/edit",
+                    type: 'POST',
+                    dataType: 'json',
+                    data: {
+                        'user_id': user_id,
+                        'user_role_id': user_role_id,
+                        'role_id': role_id
+                    },
+                    success: function(result) {
+                        layer.msg(result.msg, {
+                            icon: 6,
+                            time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                        }, function() {
+                            location.reload();
+                        });
+                    },
+                    error: function(data) {
+                        layer.msg(data.responseJSON.msg, {
+                            icon: 2
+                        });
+                    }
+                });
+                layer.close(index);
+            }
+        });
+    }
+
+    /*新增操作员*/
+    function addOper() {
+
+        layer.open({
+            type: 1,
+            content: $('.add-layer'),
+            title: '新增操作员',
+            btn: ['提交', '取消'],
+            btnAlign:'c',
+            shadowClose: true,
+            area: "500px",
+            yes: function(index) {
+               if (false == checkPassword($("#password").val())) {
+                   layer.msg('请输入6-23位字母及数字的组合密码', {
+                       icon: 2
+                   });
+                   return false;
+               }
+               if ($("#oper_role option:selected").val() == 0) {
+                   layer.msg('请选择操作员角色！', {
+                       icon: 2
+                   });
+                   return false;
+               }
+
+                var shopUser = {
+                    phone: $("#oper_phone").val(),
+                    password: $("#password").val(),
+                    username: $("#oper_name").val(),
+                    email: $("#oper_email").val(),
+                    role: $("#oper_role option:selected").val()
+                };
+                $.ajax({
+                    url: "/operator/add",
+                    type: 'POST',
+                    dataType: 'json',
+                    data: shopUser,
+                    success: function(result) {
+                        layer.close(index);
+                        layer.msg(result.msg, {
+                            icon: 6,
+                            time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                        }, function() {
+                            location.reload();
+                        });
+                    },
+                    error: function(data) {
+                        layer.msg(data.responseJSON.msg, {
+                            icon: 2
+                        });
+                    }
+                });
+            }
+        });
+    }
+
+    function checkPassword(value)
+    {
+        var vReg = /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,}$/;
+        if ( vReg.test( value ) )
+        {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    //删除操作员
+    function infoDel(obj) {
+        var perObj = obj.parent('.operate');
+        var user_id = perObj.data('id');
+        layer.confirm("是否要删除该操作员用户？", {
+            btn: ['立即删除', '取消'],
+            btnAlign: 'c',
+            title:"删除操作员"
+        }, function(index) {
+            $.ajax({
+                url: "/operator/delete",
+                type: 'POST',
+                dataType: 'json',
+                data: {'user_id': user_id},
+                success: function(result) {
+                    layer.close(index);
+                    layer.msg(result.msg, {
+                        icon: 6,
+                        time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                    }, function() {
+                        location.reload();
+                    });
+                },
+                error: function(data) {
+                    layer.msg(data.responseJSON.msg, {
+                        icon: 2
+                    });
+                }
+            });
+        });
+    }
+
+</script>
+{/block}

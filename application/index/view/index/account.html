@@ -1,0 +1,171 @@
+{extend name="layout/base" /}
+
+{block name="seo"}
+<title>{$title|default="品牌厂家直供平台"}</title>
+{/block}
+
+{block name="style"}
+<style>
+    /* 已下样式复制 */
+    .money-header-box{
+        width:100%;
+        padding:20px 30px;
+    }
+    .money-header-box-t{
+        width:100%;
+    }
+    .money-header-box-t h3{
+        font-size: 15px;
+        font-weight: 600;
+        color: #555555;
+        margin-bottom: 5px;
+    }
+    .money-header-box-t h1{
+
+        font-size: 30px;
+        font-weight: 600;
+        color: #FF8544;
+    }
+
+    .money-header-box-b{
+        width:1036px;
+        display: flex;
+        margin-top:20px;
+        justify-content:space-between;
+    }
+    .money-details{
+        display: flex;
+        align-items: baseline;
+    }
+    .money-details p{
+        font-size: 13px;
+        color: #6D7278;
+        vertical-align: bottom;
+    }
+    .money-details>span{
+        font-size: 20px;
+        color: #2F323E;
+        font-weight: 800;
+    }
+    .money-details>a,.money-header-box-t h1>a{
+        font-size: 14px;
+        margin-left: 10px;
+        position: relative;
+        cursor: pointer;
+    }
+    .money-details>a:after,.money-header-box-t h1>a:after{
+        position: absolute;
+        content: '';
+        width: 0.6em;
+        height:0.6em;
+        border:1px solid #FF8544;
+        border-left:none;
+        border-top:none;
+        transform:rotate(-45deg);
+        top:0;
+        bottom:0;
+        margin: auto;
+    }
+    /* 结束 */
+</style>
+{/block}
+
+{block name="title"}
+<span>基本信息</span> /
+<span class="colorTit">品牌馆账户</span>
+{/block}
+{block name="content"}
+<!-- 平台功能区 -->
+<div class="ShopFrontPage-r-bot">
+    <div class="order-box cards">
+        <div class="money-header-box">
+            <div class="money-header-box-t">
+                <h3>总金额（元）</h3>
+                <h1>{$accountData->total_price}
+<!--                    <a class="text-o" href="/settlement/index">明细</a>-->
+                </h1>
+
+            </div>
+            <div class="money-header-box-b">
+                <div class="money-details" style="margin-right:50px;">
+                    <p>可提现金额（元）</p>
+                    {if $accountData->available_price-$applyMoney > 0}
+                    <span>￥{$accountData->available_price-$applyMoney}</span>
+                    {else /}
+                    <span>￥0.00</span>
+                    {/if}
+
+                    {if $accountData->available_price-$applyMoney > 0}
+                    <span style="color:#999999;font-size: 12px;margin-left:10px;">( 已申请：￥ {$applyMoney} )</span>
+                    {haspermission:close key="view-withdrawal-info"}
+                    <a class="text-o" href="/withdrawal/apply?cash_money={$accountData->available_price-$applyMoney}">提现</a>
+                    {/haspermission:close}
+                    {/if}
+                </div>
+                <div class="money-details">
+                    <p>已提现金额（元）</p>
+                    <span>{$accountData->cash_outs_price}</span>
+                    {haspermission:close key="view-withdrawal-detail"}
+                    <a class="text-o" href="/order/cash-out?status=2">明细</a>
+                    {/haspermission:close}
+                </div>
+                <div class="money-details">
+                    <p>冻结金额（元）</p>
+                    <span>{$accountData->freezed_price}</span>
+                    {if $accountData->freezed_price > 0}
+                    {haspermission:close key="view-frozen-detail"}
+                    <a class="text-o" href="/withdrawal/forbidden">明细</a>
+                    {/haspermission:close}
+                    {/if}
+                </div>
+                {if count($accountDetails)}
+                <div>
+                    <a href="javascript:;" class="btn btn-o btn-icon btn-export" id="export"><i class="fa fa-download"></i>导出</a>
+                </div>
+                {/if}
+            </div>
+        </div>
+        <div class="order-table" style="margin-top:10px;">
+            <table class="order-tb">
+                <thead>
+                <tr class="tr-th">
+                    <th>序号</th>
+                    <th>时间</th>
+                    <th>金额(元)</th>
+                    <th>类型</th>
+                    <th>流水号</th>
+                    <th>备注</th>
+                </tr>
+                </thead>
+                <tbody>
+                {foreach name='accountDetails' item='val'}
+                <tr class="tr-bd">
+                    <td>{$accountDetails->num++}</td>
+                    <td>{$val->create_time}</td>
+                    <td>
+                        {if $val->total_price > 0}+{/if}
+                        {$val->total_price}
+                    </td>
+                    <td>{$val->type_text}</td>
+                    <td>{$val->pipeline_number}</td>
+                    <td>{$val->remarks}</td>
+                </tr>
+                {/foreach}
+                </tbody>
+            </table>
+        </div>
+        <!--分页-->
+        <div class="pragination-group" id="pageToolbar">
+            {$accountDetails->render()|raw}
+        </div>
+    </div>
+</div>
+{/block}
+
+{block name='js'}
+    <script>
+        $("#export").click(function () {
+            window.location.href = '/index/export';
+        });
+    </script>
+{/block}

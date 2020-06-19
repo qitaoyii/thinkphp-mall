@@ -1,0 +1,454 @@
+{extend name="layout/base" /}
+
+{block name="seo"}
+    <title>{$title|default="品牌厂家直供平台"}</title>
+{/block}
+
+{block name="style"}
+<link rel="stylesheet" href="__STATIC__/style/login-store-add.css?{:config('huaban.css_version.version')}">
+<style>
+    .mask-brand-img-box{
+        position: relative;
+        overflow: hidden;
+    }
+    .clear-box{
+        width: 100%;
+        height:30px;
+        background: rgba(0,0,0,.4);
+        position: absolute;
+        top:-30px;
+        left:0;
+
+    }
+    .img-clear{
+        width:18px;
+        height:18px;
+        position: absolute;
+        top: 6px;
+        right: 10px;
+        z-index: 99;
+        cursor: pointer;
+    }
+</style>
+{/block}
+
+{block name="title"}
+    <span>基本信息</span> /
+    <span class="colorTit">厂家首页</span>
+{/block}
+
+<!-- 平台功能区 -->
+{block name="content"}
+    {if $brandData->status == 2}
+    <p style="color:#2F323E;margin-left: 29px;margin-top: 12px;">
+        <img src="{:qiniu_domains()}/upload/c5/52f3359079ab20e18f83eed8625c33385d2d581b5344a308c7499a49b2b7c8.png" style="width:15px;height:15px;">
+         品牌申请审核失败，请点击
+        <span style="color:#FF3E3E;cursor: pointer;" class="brandBtn">重新提交</span>
+    </p>
+    {/if}
+    <div class="ShopFrontPage-r-bot">
+        <div class="platform">
+            <div class="platform-one">
+                <div class="platform-one-top">
+                    <div class="platform-imgbox">
+                        <img src="<?= qiniu_domains() . session('shop.shop_logo')?>" alt="">
+                    </div>
+                    <p class="platformname">欢迎回来 , {:session('shop.shop_name')}</p>
+                    <p>上次登录时间：{$last_login_time}</p>
+                </div>
+                <div class="platform-one-bot">
+                    <p class="one-bot-l">消息：</p>
+                    <p class="one-bot-c">您有 <span>{$pending_order_count}</span> 笔待处理的订单</p>
+                    {if $pending_order_count}
+                    <p class="one-bot-r"><a href="/order">立即处理</a></p>
+                    {/if}
+                </div>
+            </div>
+            <div class="platform-two platform-three">
+                <!--<p class="platform-two-t">可提现金额</p>-->
+                <div class="wallet-t">
+                    <span>可提现金额</span>
+                <a href="/withdrawal/apply?cash_money={$available_price}">提现<img src="{:qiniu_domains()}/upload/34/6b5ec680d2b7ca16840e737d3096d5e9a3b20e6b3448d323989dfc486c1a00.png?origin=right.png" alt=""></a>
+                </div>
+                <div class="platform-two-c">
+                    ￥{$available_price}
+                </div>
+                <div class="platform-two-b">
+                    <!--
+                    <button class="btn-l">充值</button>
+                    <button class="btn-r">提现</button>
+                    -->
+                </div>
+            </div>
+            <div class="linearbox">
+                <p></p>
+            </div>
+            <div class="platform-three">
+                <div class="three-wallet">
+                    <div class="wallet-t">
+                        <span>入账金额</span>
+                        <!--<a href="/settlement/await">查看明细<img src="{:qiniu_domains()}/upload/34/6b5ec680d2b7ca16840e737d3096d5e9a3b20e6b3448d323989dfc486c1a00.png?origin=right.png" alt=""></a>-->
+                    </div>
+                    <h3 class="wallet-b">
+                        {$freezed_price}
+                    </h3>
+                </div>
+                <div class="three-wallet-two">
+                    <div class="wallet-t">
+                        <span>冻结金额</span>
+                        <a href="/withdrawal/forbidden">查看明细<img src="{:qiniu_domains()}/upload/34/6b5ec680d2b7ca16840e737d3096d5e9a3b20e6b3448d323989dfc486c1a00.png?origin=right.png" alt=""></a>
+                    </div>
+                    <h3 class="wallet-b">
+                        {$forbidden_price}
+                    </h3>
+                </div>
+
+            </div>
+            <div class="platform-four">
+                <div class="four-t">
+                    <div class="wallet-t">
+                        <span>剩余版谷数量（份）</span>
+                       <!-- <a>版权购买<img src="{:qiniu_domains()}/upload/34/6b5ec680d2b7ca16840e737d3096d5e9a3b20e6b3448d323989dfc486c1a00.png?origin=right.png" alt=""></a>-->
+                    </div>
+                    <h3 class="wallet-b">
+                        {$stock_num}
+                    </h3>
+                </div>
+                <div class="four-b">
+                    <div class="four-b-l">
+                        <h3>{$receive_num}</h3>
+                        <a href="/user/index">
+                            <h4>版谷领取数量</h4>
+                        </a>
+                    </div>
+                    <div class="four-b-r">
+                        <h3>{$customer_num}</h3>
+                        <a href="/copyright/receive-list">
+                            <h4>版谷获客统计</h4>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 平台快速管理区 -->
+        <ul class="icon-list">
+            <li class="list-box">
+                <a href="{:url('product/linkage')}">
+                    <img class="list-box-img" src="{:qiniu_domains()}/upload/01/6dc1b4eac6a3a454056d62ccd1e861029d547da26713f6ac8d38c340d0fa5d.png?origin=商品.png" alt="">
+                    <img class="list-box-img2" src="{:qiniu_domains()}/upload/f7/6c9a391c341affbb3fb8a2ede03c808062d71a16e7f816e334415770502be2.png?origin=商品 2.png" alt="">
+                    <h3>发布新商品</h3>
+                </a>
+            </li>
+
+            <li class="list-box">
+                <a href="/order/delivery-list">
+                    <img class="list-box-img" src="{:qiniu_domains()}/upload/5e/dfd337137f63dbf9bc31bc3d30d3d575842ebf35816112a50ce77b91797c71.png?origin=发货.png" alt="">
+                    <img class="list-box-img2" src="{:qiniu_domains()}/upload/44/9e250939145c7e9bf62ff62de542f6bcf8d2805370c2e65c756946bc7cf18d.png?origin=发货 2.png" alt="">
+                    <h3>去发货</h3>
+                </a>
+            </li>
+
+            <li class="list-box">
+                <a href="{:url('order/templates')}">
+                    <img class="list-box-img" src="{:qiniu_domains()}/upload/0f/6a1e649f24e0a4c46cfc885482cca5868818e75948615a5b6b87ab76928f72.png?origin=运费模版.png" alt="">
+                    <img class="list-box-img2" src="{:qiniu_domains()}/upload/1b/a4b5d2bf796252ffcc130058d186e955e7de9fcbc5d5d2b5230a734253d55b.png?origin=形状 2 copy 2.png" alt="">
+                    <h3>运费模板</h3>
+                </a>
+            </li>
+
+            <li class="list-box">
+                <a href="profit/index">
+                    <img class="list-box-img" src="{:qiniu_domains()}/upload/8f/ac72d976521ea739eb7bfa0ea6269128b9df79997cf83663b1d3bd6d18ad82.png?origin=分润统计.png" alt="" width="50px">
+                    <img class="list-box-img2" src="{:qiniu_domains()}/upload/60/23f27869f31a826f0a54f02c884f1d870a7b951424356eb34743135a656542.png?origin=分润统计鼠标滑过.png" alt="" width="50px">
+                    <h3>分红查询</h3>
+                </a>
+            </li>
+
+            <li class="list-box">
+                <a href="{:url('/copyright/index')}">
+                    <img class="list-box-img" src="{:qiniu_domains()}/upload/f4/38adcb23de57e8ad77f5de7a19b1e2f5c8ad4d3b120c50f32ad466139175e2.png" alt="" width="50px">
+                    <img class="list-box-img2" src="{:qiniu_domains()}/upload/18/ca47c63651655842597cc73d0228c15e8b4a816973475ab617c70f38ed9e96.png?origin=版权复制.png" alt="" width="50px">
+                    <h3>版谷中心</h3>
+                </a>
+            </li>
+        </ul>
+        {haspermission:close key="view-order"}
+        <div class="statistical">
+            <div class="layui-col-lg9 layui-col-md9 layui-col-sm7 layui-col-xs6" style="padding-top:20px;padding-left: 20px">
+                <div id="main" style="width: 100%;height:250px;"></div>
+            </div>
+        </div>
+        {/haspermission:close}
+    </div>
+<!-- 品牌弹窗 -->
+<div class="mask-wrap mask-wrap-none">
+    <div class="mask-brand-box">
+        <span style="color:red;">拒绝原因：品牌申请信息不符合，请重新提交！</span>
+        <input type="hidden" id="brand_id" value="{$brandData->brand_id}">
+        <!-- 品牌中文名 -->
+        <div class="mask-brand-list">
+            <div class="mask-brand-list-l">
+                <p>品牌名称&nbsp;（中文）</p>
+                <div class="symbol">
+                    :
+                    <em>*</em>
+                </div>
+            </div>
+            <div class="mask-brand-list-r">
+                <input type="text" style="width:250px;" value="{$brandData->brand_name}" maxlength="20" id="brand_name_ch" placeholder="请输入品牌中文名称">
+            </div>
+        </div>
+        <!-- 品牌英文名 -->
+        <div class="mask-brand-list">
+            <div class="mask-brand-list-l">
+                <p>品牌名称&nbsp;（英文）</p>
+                <div class="symbol">
+                    :
+                    <em>*</em>
+                </div>
+            </div>
+            <div class="mask-brand-list-r">
+                <input type="text" style="width:250px;" value="{$brandData->brand_name_en}" maxlength="20" id="brand_name_en" placeholder="请输入品牌英名称">
+            </div>
+        </div>
+        <!-- 品牌所属国家 -->
+        <div class="mask-brand-list">
+            <div class="mask-brand-list-l">
+                <p>品牌所属国家</p>
+                <div class="symbol">
+                    :
+                    <em>*</em>
+                </div>
+            </div>
+            <div class="mask-brand-list-r">
+                <select name="prefix_id" id="prefix_id" style="width:250px;">
+                    {foreach $countryList as $country}
+                    <option value="{$country->prefix_id}" {if $brandData->country_prefix_id eq $country->prefix_id}selected{/if}>{$country->chinese_name}</option>
+                    {/foreach}
+                </select>
+            </div>
+        </div>
+        <!-- 品牌LOGO -->
+        <div class="mask-brand-list">
+            <div class="mask-brand-list-l">
+                <p>品牌LOGO</p>
+                <div class="symbol">
+                    :
+                    <em>*</em>
+                </div>
+            </div>
+            <div class="mask-brand-list-r">
+                <div class="mask-brand-img-box" id="brand_logo" url_path="{:qiniu_domains().$brandData->logo}">
+                    <div class="clear-box"><img class="img-clear" style="width: 18px;height: 18px;" src="/static/imgs/close2.png"></div>
+                    <img class="logo-img" src="{:qiniu_domains().$brandData->logo}">
+                </div>
+            </div>
+        </div>
+
+        <!-- 品牌简介 -->
+        <div class="mask-brand-list">
+            <div class="mask-brand-list-l">
+                <p>品牌简介</p>
+                <div class="symbol">
+                    :
+                    <em>*</em>
+                </div>
+            </div>
+            <div class="mask-brand-list-r">
+                <textarea name="" maxlength="200" id="brand_desc" cols="30" rows="10" placeholder="请输入品牌简介，限200字以内">{$brandData->brand_desc}</textarea>
+            </div>
+        </div>
+        <div class="mask-btn-box">
+            <button class="mask-btn-back">取消</button>
+            <button class="mask-btn-next">完成</button>
+        </div>
+    </div>
+</div>
+{/block}
+
+{block name='js'}
+    <script src="__STATIC__/layuiadmin/layui/layui.js"></script>
+    <script>
+        layui.config({
+            base: '__STATIC__/layuiadmin/' //静态资源所在路径
+        }).extend({
+            index: 'lib/index' //主入口模块
+        }).use(['index','echarts'],function(){
+            var layer = layui.layer,
+                $     = layui.jquery,
+                echarts = layui.echarts;
+            {haspermission:close key="view-order"}
+            var myChart = echarts.init(document.getElementById('main'));
+
+            $.ajax({
+                type: 'GET',
+                url: '/index/get-order-count',
+                error:function(){
+                },
+                success:function(msg){
+                    myChart.setOption({
+                        color: ['#EE0000','#006400','#00B2EE','#FFA500'],//红、绿、黄、蓝
+                        title: {
+                            text: '七日订单统计'
+                        },
+                        tooltip: {},
+                        legend: {
+                            data:['订单总量','已支付']
+                        },
+                        xAxis: {
+                            data: msg.data.date
+                        },
+                        yAxis: {},
+                        series: [{
+                            name: '订单总量',
+                            type: 'line',
+                            data: msg.data.total_num
+                            ,smooth: true
+                        },
+                        {
+                            name: '已支付',
+                            type: 'line',
+                            data: msg.data.pay_num
+                            ,smooth: true
+                        }]
+                    });
+                }
+            });
+
+            //随着屏幕调整大小
+            window.addEventListener("resize",function(){
+                myChart.resize();
+            });
+            {/haspermission:close}
+        });
+    </script>
+    <script type="text/javascript">
+        //执行icon-list划过变色功能
+        $('.icon-list').on('mouseleave', 'li', function() {
+            $(this).find('h3').css("color", "#2f3a3e");
+            $(this).removeClass('list-box2');
+        })
+    </script>
+    <script>
+        // 品牌创建
+        $(".brandBtn").on('click',function () {
+            $('.mask-wrap').removeClass('mask-wrap-none');
+        });
+
+        //详情弹框关闭
+        $('.mask-wrap').on('click', '.mask-btn-back', function() {
+            $('.mask-wrap').addClass('mask-wrap-none');
+        });
+
+        //品牌弹框完成
+        $('.mask-wrap').on('click', '.mask-btn-next', function() {
+            // 获取数据进行提交
+            var brand_id = $("#brand_id").val();
+            var brand_name_ch = $("#brand_name_ch").val();
+            var brand_name_en = $("#brand_name_en").val();
+            var prefix_id = $("#prefix_id").val();
+            var brand_logo = $("#brand_logo").attr('url_path');
+            var brand_desc = $("#brand_desc").val();
+
+            if (brand_name_ch == '') {
+                layer.msg('请填写品牌名称（中文）！',{icon: 2});
+                return false;
+            }
+            if (brand_name_en == '') {
+                layer.msg('请填写品牌名称（英文）！',{icon: 2});
+                return false;
+            }
+            if (prefix_id == '') {
+                layer.msg('请选择品牌所属国家！',{icon: 2});
+                return false;
+            }
+            if (brand_logo == '') {
+                layer.msg('请上传品牌LOGO！',{icon: 2});
+                return false;
+            }
+            if (brand_desc == '') {
+                layer.msg('请填写品牌简介！',{icon: 2});
+                return false;
+            }
+
+            $.ajax({
+                url: '/index/brand-update',
+                type: 'POST',
+                data: {
+                    'brand_id':brand_id,
+                    'brand_name_ch':brand_name_ch,
+                    'brand_name_en': brand_name_en,
+                    'prefix_id': prefix_id,
+                    'brand_logo': brand_logo,
+                    'brand_desc': brand_desc
+                },
+                dataType: 'json',
+                success: function(data) {
+                    layer.msg(data.msg, {
+                        icon: 6,
+                        time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                    }, function(){
+                        $('.mask-wrap').addClass('mask-wrap-none');
+                        $('.etails').removeClass('etails-none');
+                        location.reload();
+                    });
+                },error:function (data) {
+                    layer.msg(data.responseJSON.msg,{icon: 2});
+                }
+            });
+        });
+
+        //品牌上传图片功能
+        $('.mask-wrap').on('change', '.file', function() {
+            var that = $(this);
+            var file = $(this)[0].files[0];
+            var formData = new FormData();
+            formData.append('file', file);
+            var urls = '/api/shop-image';
+            $.ajax({
+                url: urls,
+                type: 'POST',
+                cache: false,
+                data: formData,
+                dataType: 'json',
+                processData: false,
+                contentType: false,
+                success: function(data) {
+                    // console.log(data);
+                    layer.msg('上传成功！',{icon: 1,time:1000});
+                    var $img = '<div class="clear-box"><img class="img-clear" style="width: 18px;height: 18px;" src="/static/imgs/close2.png"></div>';
+                    $img += '<img class="logo-img" src="'+data.data.url+'">';
+                    that.parents('.mask-brand-img-box').attr('url_path', data.data.url);
+                    that.parents('.mask-brand-img-box').html($img);
+                },error:function (data) {
+                    layer.msg(data.responseJSON.msg,{icon: 2});
+                }
+            });
+        });
+
+        //主图动画触发
+        $('.mask-brand-img-box').on('mouseenter',  function(e) {
+
+            e.stopPropagation();
+            $(this).find('.clear-box').animate({
+                top: '0'
+            });
+        });
+
+        $('.mask-brand-img-box').on('mouseleave',  function(e) {
+
+            e.stopPropagation();
+            //执行的动画
+            $(this).find('.clear-box').animate({
+                top: '-31px'
+            }, 300);
+        });
+
+        $('body').on('click','.img-clear',function () {
+            var box2 = '<img class="add-img" src="{:qiniu_domains()}/upload/7f/1afb3c68fcbb0d68421b558c8fb28ba88e7e93f2837996e67f581dabe3b393.png?origin=add.png" alt="">' +
+                '<input class="add-imgLOGO file" type="file" name="" id="">';
+            $(this).parents('.mask-brand-img-box').html(box2);
+        });
+    </script>
+{/block}

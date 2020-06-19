@@ -1,0 +1,242 @@
+{extend name="layout/base" /}
+
+{block name="seo"}
+    <title>{$title|default="品牌厂家直供平台"}</title>
+{/block}
+
+{block name="style"}
+<style>
+.static-title{
+    position: relative;
+    padding-left:1em;
+    font-size: 16px;
+    color:#333;
+    height: 30px;
+    line-height:30px;
+}
+.static-title:after{
+    position:absolute;
+    content:"";
+    left:0;
+    top: 0;
+    bottom: 0;margin: auto;
+    width:4px;
+    height: 1em;background:#FF8544;
+}
+.data-box{
+    width:100%;
+    font-weight: 600;
+    display: flex;
+    justify-content: flex-start;
+}
+.data-item{
+    width: 300px;
+    height: auto;
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+}
+.data-item p:first-child{font-size: 14px;color: #555;font-weight: 600}
+.data-item .text-o{
+    font-size: 32px;
+}
+
+</style>
+{/block}
+
+{block name="title"}
+    <span>订单管理</span> /
+    <span class="colorTit">订单统计</span>
+{/block}
+
+{block name="content"}
+    <!-- 平台功能区 -->
+    <div class="ShopFrontPage-r-bot">
+        <div class="order-box cards">
+                <div class="form-group" style="
+                justify-content: flex-start;
+                align-items: center;">
+                        <div class="form-item" style="position:relative;">
+                            <label for="create_time">日期</label>
+                            <input type="text" readonly placeholder="请选择日期" autocomplete="off" name="create_time" value="{$create_time}" id="delivery_date">
+                            <i></i>
+                            <span class="text-gray" style="position: absolute;bottom:0;top:0;left:110%;width: 100%;margin: auto;line-height: 34px;">说明：日期跨度最长为15天</span>
+                            <div style="width: auto;position: absolute;bottom:0;top:0;left:200%;width: 100%;margin: auto;line-height: 34px;">
+                                <input type="button" value="查询" class="btn btn-fill" id="search" style="cursor: pointer;">
+                                <i></i>
+                            </div>
+                        </div> 
+                </div>
+                <div class="static-result">
+                    <p class="static-title">统计结果</p>
+                    <div class="data-box">
+                        <div class="data-item">
+                            <p>累计成单量</p>
+                            <p class="text-o" id="num">0</p>
+                        </div>
+                        <div class="data-item">
+                            <p>累计成交金额</p>
+                            <p class="text-o" id="price">￥0</p>
+                        </div>
+                    </div>
+                </div>  
+                
+            <div class="statistical">
+                    <p class="static-title">趋势统计图</p>
+                <div class="layui-col-lg9 layui-col-md9 layui-col-sm7 layui-col-xs6" style="padding-top:20px;padding-left: 20px">
+                    <div id="main" style="max-width:100%;height:250px"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+{/block}
+
+{block name='js'}
+<script src="__STATIC__/layuiadmin/layui/layui.js?{:config('huaban.css_version.version')}"></script>
+<script src="__STATIC__/highcharts/highcharts.js?{:config('huaban.css_version.version')}"></script>
+<script src="__STATIC__/highcharts/exporting.js?{:config('huaban.css_version.version')}"></script>
+<script src="__STATIC__/highcharts/series-label.js?{:config('huaban.css_version.version')}"></script>
+<script src="__STATIC__/highcharts/oldie.js?{:config('huaban.css_version.version')}"></script>
+<script src="__STATIC__/highcharts/grid-light.js?{:config('huaban.css_version.version')}"></script>
+<script src="__STATIC__/highcharts/highcharts-zh_CN.js?{:config('huaban.css_version.version')}"></script>
+<script>
+    //时间选择
+    laydate.render({
+    elem:"#delivery_date",
+    range:true,
+    done:function(value,start_time,end_time){
+        // 判断所选时间区间不能大于15天
+        var time = value.split(' - ');
+        var start_time = Date.parse(time[0]+' 00:00:00'),
+            end_time = Date.parse(time[1]+' 23:59:59');
+        // 60*60*24*15*1000 = 1296000000
+        if((end_time - start_time) > 1296000000){
+            layer.msg('时间区间不能超过15天', {icon: 2},function(){
+                $("#delivery_date").val('');
+            });
+            return false;
+        }
+    }
+});
+</script>
+<script>
+
+    var statData = {$statData|raw};
+
+    layui.config({
+        base: '__STATIC__/layuiadmin/' //静态资源所在路径
+    }).extend({
+        index: 'lib/index' //主入口模块
+    }).use(['index', 'echarts'], function () {
+        var layer = layui.layer,
+            $ = layui.jquery,
+            echarts = layui.echarts;       
+        
+        // 统计表默认统计图示
+        $("#search").on("click", function () {
+            create_time = $("#delivery_date").val();
+            window.location.href = "/order/statistics?create_time="+create_time;
+        })
+        //随着屏幕调整大小
+       /* window.addEventListener("resize", function () {
+            myChart.resize();
+        });*/
+
+        function getDay(day) {
+            var today = new Date();
+            var targetday_milliseconds = today.getTime() + 1000 * 60 * 60 * 24 * day;
+            today.setTime(targetday_milliseconds);
+            var tYear = today.getFullYear();
+            var tMonth = today.getMonth();
+            var tDate = today.getDate();
+            tMonth = doHandleMonth(tMonth + 1);
+            tDate = doHandleMonth(tDate);
+            return tYear + "-" + tMonth + "-" + tDate;
+        }
+
+        function doHandleMonth(month) {
+            var m = month;
+            if (month.toString().length == 1) {
+                m = "0" + month;
+            }
+            return m;
+        }
+
+        $(function () {
+            create_time = $("#delivery_date").val();
+            if(!create_time){
+                chartTitle="当日订单统计"
+            }else{
+                chartTitle=create_time+"的订单统计"
+            }
+
+            total_num=statData.day_order.total_num;
+            total_price=statData.day_order.total_price;
+            $("#num").html(total_num);
+            $("#price").html("￥"+total_price);
+
+            var chart = Highcharts.chart('main', {
+                chart: {
+                    type: 'line'
+                },
+                credits: {
+                    // 去除右下角highchart.com
+                    enabled:false
+                },
+                exporting: {
+                    // 去除右上角的图标
+                    enabled:false
+                },
+                title: {
+                    text: chartTitle
+                },
+                xAxis: {
+                    categories:statData.date
+                },
+                yAxis: {
+                    title: {
+                        text: ''
+                    }
+                },
+                legend: {
+                    layout: 'vertical',
+                    align: 'right',
+                    verticalAlign: 'middle'
+                },
+                plotOptions: {
+                    line: {
+                        dataLabels: {
+                            // 开启数据标签
+                            enabled: true
+                        },
+                        // 关闭鼠标跟踪，对应的提示框、点击事件会失效
+                        enableMouseTracking: true
+                    }
+                },
+                series: [{
+                    name: '订单总量',
+                    data: statData.total_num
+                }, {
+                    name: '已支付',
+                    data: statData.pay_num
+                }],
+                responsive: {
+                    rules: [{
+                        condition: {
+                            maxWidth: 500
+                        },
+
+                        chartOptions: {
+                            legend: {
+                                layout: 'horizontal',
+                                align: 'center',
+                                verticalAlign: 'bottom'
+                            }
+                        }
+                    }]
+                }
+            });
+        });
+    });
+</script>
+{/block}

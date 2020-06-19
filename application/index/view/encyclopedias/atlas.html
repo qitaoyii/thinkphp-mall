@@ -1,0 +1,258 @@
+{extend name="layout/base" /}
+
+{block name="seo"}
+<title>{$title|default="画版商户后台管理系统"}</title>
+{/block}
+
+{block name="style"}
+
+<style>
+    .layui-layer-photos .layui-layer-phimg{
+        height:100%;
+        overflow-y: auto!important;
+    }
+    .h3{font-family: MicrosoftYaHei-Bold;font-size: 20px;color: #555555;font-weight:bold;margin-bottom:20px;}
+    .choose-item{position: relative;}
+    .choose-item.active>a{color:#FF7D2C;}
+    .status-list{position: absolute;top:50px;left:0;width:100%;height:auto;display:none;background: #fff; border-radius: 6px;box-shadow: 1px 1px 5px #CCC;}
+    .status-list li{height:40px;line-height:40px;text-align:center;color:#555;}
+    .status-list li:hover a{color:#FF7D2C;}
+   
+
+    </style>
+    <link rel="stylesheet" href="__STATIC__/style/atlas.css?{:config('huaban.css_version.version')}">
+{/block}
+
+{block name="title"}
+<span>基本信息</span> /
+<span class="colorTit">品牌馆百科</span>
+{/block}
+<!-- 平台功能区 -->
+{block name="content"}
+<div class="ShopFrontPage-r-bot">
+    <div class="order-box cards">
+        <div class="h3">我的百科</div>
+        <div class="choose-list">
+            <div class="choose-item status "><a href="/encyclopedias/index?status=0">所有版本</a>
+            </div>
+            <div class="choose-item active"><a href="/encyclopedias/atlas">图册</a></div>
+        </div>
+        {if $count < 10}
+            <div class="btn-groups">
+                <button class="btn btn-fill">上传新图片</button>
+                <input type="file" name="" id="file-i" multiple accept="image/jpeg,image/png" class="btn btn-fill"
+                    style="opacity: 0;">
+                <!--<p>图片尺寸限制为等宽，宽度不低于480px</p>-->
+            </div>
+        {/if}
+            <div class="atlas-list">
+            {foreach $imgList as $val}
+            <div class="atlas-item-box">
+                    <div class="atlas-item">
+                            <div class="atlas-item-img" style="overflow: hidden">
+                                <img src="{:qiniu_domains().$val->img_url}" class="item-img" width="100%" height="100%">
+                            </div>
+                            <!-- <p class="atlas-item-name"><input type="text" value="{$val->img_title}" readonly> </p> -->
+                            <p class="atlas-item-name"><input type="text" value="{$val->create_time}" readonly> </p>
+                            <p class="atlas-item-edit"><img src="{:qiniu_domains()}/upload/75/eb740e04e780e0eff7aa1baaec2e9bc13f4688e31ce8d9f9fbfad2bf0976d4.png?origin=more.png" alt=""></p>
+                            <ul class="atlas-item-edit-list">
+                                    <!-- <li><p class="img-edit" data-id="{$val->id}">重命名</p></li> -->
+                                    <li><p class="img-del" data-id="{$val->id}">删除</p></li>
+                            </ul>
+                    </div>
+            </div>
+            
+            {/foreach}
+        </div>
+        <!--分页-->
+        <div style="text-align: center">{$imgList->render()|raw}</div>
+        
+    </div>
+</div>
+{/block}
+
+{block name='js'}
+    <script>
+        //上传图片 批量上传
+        $('#file-i').on('change', function () {
+            layer.load(3, {
+                shade: [0.1, '#393D49']
+            });
+            var file_len = $('#file-i')[0].files.length;
+            if (file_len > 10) {
+                layer.msg('一次最多上传10张图片！', {
+                    icon: 2,
+                    time: 1000
+                }, function () {
+                    layer.closeAll();
+                });
+                return false;
+            }
+            var formData = new FormData();
+            var count = 0;
+
+            for (var i = 0; i < $('#file-i')[0].files.length; i++) {
+                count++;
+                formData.append('file' + i, $('#file-i')[0].files[i]);
+            }
+            $.ajax({
+                url: '/encyclopedias/img-add',
+                type: 'POST',
+                cache: false,
+                data: formData,
+                dataType: 'json',
+                processData: false,
+                contentType: false,
+                success: function (data) {
+                    layer.closeAll();
+                    var failMsg = '';
+                    if (count > data.data.succNum) {
+                        errNum = count - data.data.succNum;
+                        failMsg = " 失败 " + errNum + " 张,失败原因如下：<br>" + data.data.errmsg;
+                    }
+
+                    layer.confirm('图片上传成功 ' + data.data.succNum + ' 张 ' + failMsg, {
+                        btn: ['取消', '确定'] //可以无限个按钮
+                    }, function (index, layero) {
+                        //按钮【按钮一】的回调
+                        layer.closeAll();
+                        $(".file").val('');
+                        window.location.reload();
+                    }, function (index) {
+                        //按钮【按钮二】的回调
+                        $(".file").val('');
+                        window.location.reload();
+                    });
+
+                },
+                error: function (data) {
+                    layer.msg(data.responseJSON.msg, {icon: 2}, function () {
+                        layer.closeAll();
+                    });
+                }
+            });
+        });
+        // 编辑图片
+        $(".img-edit").click(function () {
+            console.log(22222)
+        });
+        // 删除图片
+        $(".img-del").click(function () {
+            var id = $(this).attr('data-id');
+            layer.confirm('确定要删除吗？', {
+                btn: ['确定', '取消'],
+            }, function(index, layero){
+                // 执行添加
+                layer.load(0, {
+                    shade: [0.1,'black'] //0.1透明度的白色背景
+                });
+                $.ajax({
+                    url: '/encyclopedias/img-delete',
+                    type: 'POST',
+                    cache: false,
+                    data: {'id':id},
+                    dataType: 'json',
+                    success: function(data) {
+                        layer.msg(data.msg, {
+                            icon: 6,
+                            time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                        }, function () {
+                            layer.closeAll();
+                            window.location.reload();
+                        });
+                    },
+                    error: function (data) {
+                        layer.msg(data.responseJSON.msg, {icon: 2}, function () {
+                            layer.closeAll();
+                        });
+                    }
+                });
+            }, function(index){
+                layer.close(index);
+            });
+
+        });
+        // 删除图片交互
+        $(".atlas-item-edit").click(function(){
+            $(this).next('.atlas-item-edit-list').toggle();
+        });
+        //鼠标滑过list显示
+        $(".atlas-item").on("mouseleave",function(){
+            $(this).find('.atlas-item-edit-list').hide()
+        });
+    </script>
+    <script>
+        // 图片展示样式
+            function changeSize(o){
+                //console.log(o[0].naturalWidth/o[0].naturalHeight,o);
+                var w=o[0].naturalWidth;
+                var h=o[0].naturalHeight;
+                if(w/h>1&&w>h){
+                    o.css({
+                        width:'100%',
+                        height:'auto'
+                    });
+                }else{
+                    o.css({
+                        width:'auto',
+                        height:'100%'
+                    });
+                }
+            }
+            $('.item-img').each(function(){
+                var _this=$(this);
+               setTimeout(function(){
+                $(this).on("load",function(){
+                    changeSize(_this);
+                });   
+               },0);              
+            });
+     
+    
+    </script>
+    <script>
+        $(".atlas-list").on('click', '.item-img', function () {
+            var lis = [];
+            var imgsortlist = [];
+            var lists = [];
+            // 渲染
+            var idx=$(this).parents('.atlas-item-box').index();
+            // console.log(idx);
+    
+            //获取主图排序
+            var li = $('.atlas-list .atlas-item-box');
+    
+            for (i = 0; i < li.length; i++) {
+                lis.push({
+                    'src': $(li[i]).find('.item-img').attr('src'),
+                    'imgurl': $(li[i]).find('.item-img').attr('src')
+                });
+            }
+    
+            $.each(lis, function(index, item) {
+                imgsortlist.push({
+                    //'id': item.id,
+                    'src': item.src,
+                    'url': item.imgurl,
+                    // 'shop_media_id': item.data_id
+                });
+            });
+    
+            $.each(imgsortlist, function(index, item) {
+                lists.push(item);
+            });
+    
+            var json = {
+                "start": idx, //初始显示的图片序号，默认0' +
+                "data":  lists,//相册包含的图片，数组格式' +
+            }
+            var index=layer.photos({
+                photos: json,
+                shade:0,
+                closeBtn:1,
+                area: ['500px', '600px'],
+                anim: 5 //0-6的选择，指定弹出图片动画类型，默认随机（请注意，3.0之前的版本用shift参数）
+            });
+        });
+    </script>
+{/block}

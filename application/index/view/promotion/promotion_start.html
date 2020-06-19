@@ -1,0 +1,182 @@
+{extend name="layout/base" /}
+
+{block name="seo"}
+<title>{$title|default="画版商户后台管理系统"}</title>
+{/block}
+
+{block name="style"}
+<style></style>
+{/block}
+
+{block name="title"}
+<span>活动管理</span> /
+<span class="colorTit">活动</span>
+{/block}
+
+<!-- 平台功能区 -->
+{block name="content"}
+    <div class="ShopFrontPage-r-bot">
+        <div class="order-box cards">
+            <div class="order-search">
+                <form action="index" method="get">
+                    <div class="form-group">
+                        <div class="form-item">
+                            <label for="name">活动名称</label>
+                            <input type="text" placeholder="请输入活动名称" name="activity_name" value="{$activity_name}" id="name">
+                            <i></i>
+                        </div>
+                        <div class="form-item-btn right">
+                            <input type="submit" value="查询" class="btn btn-fill">
+                            <i></i>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="order-table">
+                <table class="order-tb">
+                    <thead>
+                    <tr>
+                        <th colspan="6">
+                            <div class="form-group">
+                                <div class="form-checkbox" id="allCheck">
+                                    <label for="">
+                                        <input type="checkbox" class="allcheck">
+                                        <span></span> 全选
+                                    </label>
+                                </div>
+                                <div class="form-item-btn right">
+                                    <a href="javascript:;" class="btn btn-o btn-icon promotion_stop_more"><i class="icon-end"></i>批量结束</a>
+                                </div>
+                            </div>
+                        </th>
+                    </tr>
+                    <tr>
+                        <th>活动名称</th>
+                        <th>活动有效期</th>
+                        <th>活动内容</th>
+                        <th>活动范围</th>
+                        <th>活动状态</th>
+                        <th>操作</th>
+                    </tr>
+                    </thead>
+                    {foreach name='promotions' item='promotion'}
+                    <tbody>
+                    <tr class="scope-tr"></tr>
+                    <tr class="tr-th">
+                        <td colspan='7'>
+                            <div class="form-checkbox">
+                                <label for="">
+                                    <input type="checkbox" name="promotion_id[]" class="item-check"
+                                           value="{$promotion->promotion_id}">
+                                    <span></span></label>
+                            </div>
+                            <span>活动创建时间：{$promotion->create_time}</span>
+                        </td>
+                    </tr>
+                    <tr class="tr-bd">
+                        <td><span class="clip">{$promotion->activity_name}</span></td>
+                        <td>
+                            {:time_to_date($promotion->start_time)} 至 {:time_to_date($promotion->end_time)}
+                        </td>
+                        <td>
+                            {:optional($promotion->coupon)->type_text}
+                        </td>
+                        <td>
+                            {:optional($promotion->coupon)->using_text}
+                        </td>
+                        <td>
+                            <span class="text-o">{$promotion->status_text}</span>
+                        </td>
+                        <td>
+                            <div class="operate">
+                                <p class="operate-item">
+                                    <a href="/promotion/statistics?promotion_id={$promotion->promotion_id}"><i class="icon icon-tongji"></i>活动统计</a>
+                                </p>
+                                <p class="operate-item">
+                                    <a href="javascript:;" class="promotion_stop" promotion_id="{$promotion->promotion_id}"><i class="icon icon-end"></i>立即结束</a>
+                                </p>
+                                <p class="operate-item">
+                                    <a href="/promotion/detail?promotion_id={$promotion->promotion_id}"><i class="icon icon-yulan"></i>详情</a>
+                                </p>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                    {/foreach}
+                </table>
+            </div>
+            <!--分页-->
+            {$promotions->render()|raw}
+        </div>
+    </div>
+{/block}
+
+{block name='js'}
+    <script type="text/javascript">
+
+        // 批量活动结束
+        $(".promotion_stop_more").click(function () {
+            var promotion_ids = [];
+            $("input[name='promotion_id[]']").each(function () {
+                if ($(this).is(':checked')) {
+                    promotion_ids.push($(this).val());
+                }
+            });
+            if (promotion_ids.length == 0) {
+                layer.msg('请至少选择一个活动进行结束操作！', {
+                    icon: 0,
+                    time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                });
+                return false;
+            }
+            promotion_ids = promotion_ids.join(',');
+
+            layer_confirm(promotion_ids);
+        });
+
+        // 单个活动结束
+        $(".promotion_stop").click(function () {
+            var promotion_ids = $(this).attr('promotion_id');
+            layer.confirm('是否结束该活动？？', {
+                btn: ['立即结束', '取消']
+            }, function (index, layero) {
+                sale_ajax(promotion_ids);
+            }, function (index) {
+                layer.close(index);
+            });
+        });
+
+        // 提示框
+        function layer_confirm(promotion_ids) {
+            layer.confirm('是否要批量结束所选的活动？', {
+                btn: ['立即结束', '取消']
+            }, function (index, layero) {
+                sale_ajax(promotion_ids);
+            }, function (index) {
+                layer.close(index);
+            });
+        }
+
+        // 发送数据
+        function sale_ajax(promotion_ids) {
+            $.ajax({
+                url: "stop",
+                type: 'POST',
+                dataType: 'json',
+                data: {'promotion_ids': promotion_ids},
+                success: function (result) {
+                    console.log(result);
+                    layer.msg(result.msg, {
+                        icon: 6,
+                        time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                    }, function () {
+                        location.reload();
+                    });
+                }, error: function (data) {
+                    console.log(data);
+                    layer.msg(data.responseJSON.msg, {icon: 2});
+                }
+            });
+        }
+    </script>
+{/block}

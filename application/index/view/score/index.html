@@ -1,0 +1,286 @@
+{extend name="layout/base" /}
+
+{block name="seo"}
+<title>{$title|default="品牌厂家直供平台"}</title>
+{/block}
+
+{block name="style"}
+<style>
+    .mask-brand-img-box{
+        position: relative;
+        overflow: hidden;
+    }
+    .clear-box{
+        width: 100%;
+        height:30px;
+        background: rgba(0,0,0,.4);
+        position: absolute;
+        top:-30px;
+        left:0;
+
+    }
+    .img-clear{
+        width:18px;
+        height:18px;
+        position: absolute;
+        top: 6px;
+        right: 10px;
+        z-index: 99;
+        cursor: pointer;
+    }
+    .plus-score1,.plus-score2,.plus-score3{
+        border: 0;
+        background:#fff;
+        padding: 0 10px;
+    }
+    .add-layer p{
+        width:100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .add-layer p label{
+        flex: 1;
+    }
+    .add-layer p input{
+        width: 220px;
+        height: 30px;
+        text-align: justify;
+        border: 1px solid #E8E8E8;
+        border-radius: 3px;
+        margin: 0 20px;
+        padding:0 5px;
+    }
+    .add-layer p .inp_score{
+        background: #fff;
+        border: 0;
+    }
+    .add-layer p .text_score{
+        width: 220px;
+        border: 1px solid #E8E8E8;
+        border-radius: 3px;
+        margin: 0 20px;
+        padding:0 5px;
+        height: 70px;
+        
+    }
+    #layui-layer1 .layui-layer-btn .layui-layer-btn1{
+        margin: 5px 30px 0;
+    }
+    textarea{ resize:none;}
+    .btn-group{
+
+    }
+
+</style>
+{/block}
+
+{block name="title"}
+<span>客户管理</span> /
+<span class="colorTit">积分管理</span>
+{/block}
+{block name="content"}
+<!-- 平台功能区 -->
+<div class="ShopFrontPage-r-bot">
+    <div class="order-box cards">
+        <form action="/score/index" method="get">
+            <div class="order-search">
+                <div class="form-group" style="
+                justify-content: flex-start;
+                align-items: center;">
+                    <!--<div class="form-item">-->
+                        <!--<label>日期</label>-->
+                        <!--<input type="text" autocomplete="off" placeholder="请选择日期" name="create_time" value="{$create_time}" id="date">-->
+                        <!--<i></i>-->
+                    <!--</div>-->
+                    <!--<div class="form-item">-->
+                        <!--<label>客户姓名</label>-->
+                        <!--<input type="text" placeholder="请输入客户姓名" name="user_name" value="{$user_name}" id="user_name">-->
+                        <!--<i></i>-->
+                    <!--</div>-->
+
+                    <div class="form-item">
+                        <label>客户手机号</label>
+                        <input type="text" placeholder="请输入客户手机号" onkeyup="value=value.replace(/[^\d]/g,'')" maxlength=11 name="phone" value="{$phone}" id="user_phone">
+                        <i></i>
+                    </div>
+                    <div>
+                        <input type="submit" value="查询" class="btn btn-fill">
+                        <i></i>
+                    </div>
+                </div>
+            </div>
+        </form>
+
+        <div class="order-table">
+            {haspermission:close key="view-score-tcket-info"}
+            <!--<div class="btn-group"><a href="/score/ticket" class="btn btn-fill" style="margin-left:80%;">自助积分审核</a></div>-->
+            {/haspermission:close}
+            <table class="order-tb">
+                <thead>
+                    <tr class="tr-th">
+                        <th>序号</th>
+                        <th>客户手机号</th>
+                        <th>客户姓名</th>
+                        <th>所获平台积分</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {foreach $scoreList as $key=>$val}
+                    <tr class="tr-bd">
+                        <td>{$scoreList->num++}</td>
+                        <td>
+                            <span class="userphone">{:optional($val->user, '-')->phone}</span>
+                        </td>
+                        <td>
+                            {:optional($val->user, '-')->username}
+                        </td>
+                        <td class="old-score">
+                            {$val->score}
+                        </td>
+                        <td>
+                            {haspermission:close key="add-score-ticket"}
+                            <button type="button" data-user-name="{:optional($val->user, '-')->username}" data-phone="{:optional($val->user, '-')->phone}" data-id="{$val->id}" data-user-id="{$val->user_id}" data-type="2" class="plus-score plus-score1">赠送积分</button>
+                            {/haspermission:close}
+                            {haspermission:close key="delete-score-ticket"}
+                            <button type="button" data-user-name="{:optional($val->user, '-')->username}" data-phone="{:optional($val->user, '-')->phone}" data-id="{$val->id}" data-user-id="{$val->user_id}" data-type="3" class="plus-score plus-score2">销减积分</button>
+                            {/haspermission:close}
+                            <button type="button" data-user-id="{$val->user_id}" class="detail-score plus-score3">积分详情</button>
+                        </td>
+                    </tr>
+                    {/foreach}
+                </tbody>
+            </table>
+        </div>
+        <div class="add-layer" style="display:none">
+            <p>
+                <label>客户手机号：</label>
+                <input type="tel" class="inp_score" id="oper_phone" disabled oninput = "value=value.replace(/[^\d]/g,'')" maxlength="11" placeholder="请输入操作员登录手机号" class="input-sm">
+            </p>
+            <p>
+                <label>客户姓名：</label>
+                <input type="text" class="inp_score" maxlength="10" disabled id="oper_name" placeholder="请输入操作员姓名" class="input-sm">
+            </p>
+            <p>
+                <label class="labOne">赠送积分：<span style="color:red;"> * </span></label>
+                <input type="email" id="add_score" oninput = "value=value.replace(/[^\d]/g,'')" placeholder="请填写积分数量，限整数" class="input-sm">
+            </p>
+            <p>
+                <label class="labTwo">赠送说明：<span style="color:red;"> * </span></label>
+                <textarea name="" class="text_score" maxlength="200" id="score_desc" cols="32" rows="5" placeholder="请填写积分赠送原因，限200字以内"></textarea>
+            </p>
+        </div>
+        <!--分页-->
+        <div class="pragination-group" id="pageToolbar">
+            {$scoreList->render()|raw}
+        </div>
+    </div>
+</div>
+{/block}
+
+{block name='js'}
+<script>
+    /*手机号分割显示*/
+    (function userphone(obj) {
+        obj.each(function () {
+            var phoneNum = $(this).text();
+            $(this).html(phoneNum.replace(/(?=(\d{4})+$)/g, " "));
+        })
+    })($(".userphone"));
+</script>
+
+<script>
+    // 增加积分
+    $(".plus-score").click(function () {
+        var score_id = $(this).attr('data-id');
+        var user_id = $(this).attr('data-user-id');
+        var user_name = $(this).attr('data-user-name');
+        var phone = $(this).attr('data-phone');
+        var type = $(this).attr('data-type');
+        var old_score = $(this).parents('tr').find('.old-score').text().trim();
+
+        $("#oper_phone").val(phone);
+        $("#oper_name").val(user_name);
+        var title = '赠送积分';
+        if (type == 2) {
+            $(".labOne").html('赠送积分：<span style="color:red;"> * </span>');
+            $(".labTwo").html('赠送说明：<span style="color:red;"> * </span>');
+            $("#score_desc").attr('placeholder', '请填写积分赠送原因，限200字以内');
+        } else if (type == 3) {
+            title = '销减积分';
+            $(".labOne").html('销减积分：<span style="color:red;"> * </span>');
+            $(".labTwo").html('销减说明：<span style="color:red;"> * </span>');
+            $("#score_desc").attr('placeholder', '请填写积分销减原因，限200字以内');
+        }
+
+        layer.open({
+            type: 1,
+            btn: ['提交', '取消'],
+            title: title,
+            content: $(".add-layer"),
+            closeBtn: '',
+            shadowClose: true,
+            area: "500px",
+            yes: function(index) {
+                // 字段验证
+                var score = $("#add_score").val();
+                var score_desc = $("#score_desc").val();
+
+
+                if (!score && type == 2) {
+                    layer.msg('请填写赠送积分！', {icon: 2});
+                    return false;
+                } else if (!score && type == 3) {
+                    layer.msg('请填写销减积分！', {icon: 2});
+                    return false;
+                }
+
+                if (!score_desc && type == 2) {
+                    layer.msg('请填写赠送说明！', {icon: 2});
+                    return false;
+                } else if (!score && type == 3) {
+                    layer.msg('请填写销减积分说明！', {icon: 2});
+                    return false;
+                }
+
+                if ((score*1) > (old_score*1) && type == 3) {
+                    layer.msg('销减积分应小于等于当前积分！', {icon: 2});
+                    return false;
+                }
+
+                $.ajax({
+                    url: "/score/save",
+                    type: 'POST',
+                    dataType: 'json',
+                    data: {
+                        'user_id': user_id,
+                        'score_id': score_id,
+                        'score_desc': score_desc,
+                        'type': type,
+                        'score': score
+                    },
+                    success: function(result) {
+                        layer.closeAll();
+                        layer.msg(result.msg, {
+                            icon: 6,
+                            time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                        }, function() {
+                            location.reload();
+                        });
+                    },
+                    error: function(data) {
+                        layer.msg(data.responseJSON.msg, {icon: 2});
+                    }
+                });
+            }
+        });
+    });
+
+    // 积分详情
+    $(".detail-score").click(function () {
+        var user_id = $(this).attr('data-user-id');
+        window.location.href = '/score/detail?user_id='+user_id;
+    });
+</script>
+{/block}

@@ -1,0 +1,241 @@
+{extend name="layout/base" /}
+
+{block name="seo"}
+<title>{$title|default="画版商户后台管理系统"}</title>
+{/block}
+
+{block name="style"}
+<style>
+    .copy-right{
+        cursor: pointer;
+        color:blue;
+    }
+    .tip-title{
+        position:relative;
+        height: 40px;
+        margin: 20px;
+        padding-left:1em;
+        line-height:40px;
+        font-size: 18px;color:#222;
+    }
+    .tip-title:after{
+        position:absolute;
+        top:0;
+        bottom:0;
+        content:'';
+        height: 1em;
+        width:3px;
+        left:0;
+        background:#ff8544;
+        margin: auto;
+    }
+    .info-item{
+        min-height:40px;
+        height:auto!important;
+    }
+    .info-item>*{font-size: 14px !important;}
+    .item-value.flex{
+        display:flex;
+        justify-content: space-between;
+        width: auto;
+    }
+    .item-value.flex .item-img {
+        width:auto;
+
+    }
+    .item-value.flex .item-value-info {
+       display: flex;
+       flex-direction: column;
+       padding-left:12px;
+       justify-content: flex-end;
+    }
+</style>
+{/block}
+
+{block name="title"}
+<span>活动管理</span> /
+<span class="colorTit">活动统计</span>
+{/block}
+
+<!-- 平台功能区 -->
+{block name="content"}
+    <div class="ShopFrontPage-r-bot">
+        <input type="hidden" value="{$promotion_id}" id="data-id">
+        <div class="order-box cards" style="min-height: 0">
+            <div class="state-info">
+                <div class="info-list">
+                    <div class="info-item">
+                        <span class="item-label">活动名称：</span>
+                        <div class="item-value">{$promotionData->activity_name}</div>
+                    </div>
+                    <div class="info-item">
+                        <span>活动状态：</span>
+                        <p style="display:flex;align-items: center;">
+                                {if 2 == $promotionData->status}
+                                <img src="{:qiniu_domains()}/upload/8c/a73cf3756e2ef486042592146adbbf2bebec1512af7f606c331970dd7ec8ac.png?origin=已结束.png" alt="" width="22px" style="margin-right:10px;">
+                                <i class="text-gray">
+                                {/if}
+                                {if 1 == $promotionData->status}
+                                <img src="{:qiniu_domains()}/upload/be/59082fb94aa8156ae9658f3223f752a15412d6c080b8575164e22f8af22669.png?origin=进行中.png" alt="" width="22px" style="margin-right:10px;">
+                                <i class="text-blue">
+                                {/if}
+                                {if 0 == $promotionData->status}
+                                <img src="{:qiniu_domains()}/upload/d3/43ca712a2ec69e5f384a7d12313368b300d4890d303b97ef6d75774247da02.png?origin=未开始.png" alt="" width="22px" style="margin-right:10px;">
+                                <i class="text-red">
+                            {/if}
+                            {$promotionData->status_text}</i></p>
+                    </div>
+                    <div class="info-item">
+                            <span class="item-label">版谷总量：</span>
+                            <div class="item-value">
+                                {if $promotionData->num_type == 1}
+                                <p>不限</p>
+                                {else /}
+                                <p>{$promotionData->total_num}</p>
+                                {/if}
+                            </div>
+                        </div>
+                        <div class="info-item">
+                            <span class="item-label">已领取数量：</span>
+                            <div class="item-value">
+                                <span>{$count}</span>
+                            </div>
+                        </div>
+                    <!-- <div class="info-item">
+                        <span class="item-label">活动时间：</span>
+                        <div class="item-value">{:time_to_date($promotionData->start_time)} 至 {:time_to_date($promotionData->end_time)}</div>
+                    </div> -->
+                    <div class="info-item">
+                        <span class="item-label">作品名称：</span>
+                        <div class="item-value flex" >
+                            <span class="item-img">
+                                <img src="{:qiniu_domains().optional($promotionData->work)->works_cover}" alt="" width="80" height="80">
+                            </span>
+                            <p class="item-value-info">
+                                <i>{:optional(optional($promotionData->work)->artister)->real_name}</i>
+                                <i>《{:optional($promotionData->work)->works_name}》</i>
+                            </p>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="tip-title">领取统计</div>
+                <table class="order-tb">
+                    <thead>
+                        <tr class="tr-th">
+                            <th>序号</th>
+                            <th>版谷</th>
+                            <th>领取手机号</th>
+                            <th>领取时间</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {foreach $copyrights as $copyright}
+                        <tr class="tr-bd">
+                            <td>{$copyrights->num++}</td>
+                            <td style="width:300px;">
+                                <span data-id="1" class="copy-right">{$copyright->serial}</span>
+                                <span data-id="2" class="copy-right" style="display:none;">{$copyright->copy_code}</span>
+                                <span data-id="3" class="copy-right" style="display:none;">{$copyright->ranking}</span>
+                            </td>
+                            <td><span class="userphone">{:optional($copyright->user)->phone}</span></td>
+                            <td>{$copyright->create_time}</td>
+                        </tr>
+                        {/foreach}
+                    </tbody>
+                </table>
+            </div>
+            <!--分页-->
+            {$copyrights->render()|raw}
+        </div>
+        <!--统计表区域-->
+        <div class="statistical">
+                <div class="tip-title" style="margin-bottom:-20px; margin-top:10px;">近七日版谷领取统计图</div>
+            <div class="layui-col-lg9 layui-col-md9 layui-col-sm7 layui-col-xs6" style="padding-top:20px;">
+                <div id="main" style="width: 100%;height:250px;"></div>
+            </div>
+            <center>
+                <a href="javascript:;" class="btn btn-o btn-lg back">关闭</a>
+            </center>
+        </div>
+    </div>
+{/block}
+
+{block name='js'}
+    <script src="__STATIC__/layuiadmin/layui/layui.js?{:config('huaban.css_version.version')}"></script>
+    <script>
+        var obj = {$copyCodeCount|raw};
+
+        layui.config({
+            base: '__STATIC__/layuiadmin/' //静态资源所在路径
+        }).extend({
+            index: 'lib/index' //主入口模块
+        }).use(['index','echarts'],function(){
+            var layer = layui.layer,
+                $     = layui.jquery,
+                echarts = layui.echarts;
+
+            var myChart = echarts.init(document.getElementById('main'));
+
+            myChart.setOption({
+                color: ['#EE0000','#006400','#00B2EE','#FFA500'],//红、绿、黄、蓝
+                title: {
+                    text: ''
+                },
+                tooltip: {},
+                legend: {
+                    data:['领取数量']
+                },
+                xAxis: {
+                    data: obj.date
+                },
+                yAxis: {},
+                series: [{
+                    name: '领取数量',
+                    type: 'line',
+                    data: obj.copycode_num
+                    ,smooth: true
+                }]
+            });
+
+            //随着屏幕调整大小
+            window.addEventListener("resize",function(){
+                myChart.resize();
+            });
+        });
+    </script>
+
+    <script>
+        /*日期选择*/
+        laydate.render({
+            elem: '#date',
+            range: true,
+            change: function (value, date, endDate) {
+                console.log(value); //得到日期生成的值，如：2017-08-18
+                console.log(date); //得到日期时间对象：{year: 2017, month: 8, date: 18, hours: 0, minutes: 0, seconds: 0}
+                console.log(endDate); //得结束的日期时间对象，开启范围选择（range: true）才会返回。对象成员同上。
+            }
+        });
+
+        /*手机号分割显示*/
+        (function userphone(obj) {
+            obj.each(function () {
+                var phoneNum = $(this).text();
+                $(this).html(phoneNum.replace(/(?=(\d{4})+$)/g, " "));
+            })
+        })($(".userphone"));
+
+        $(".back").click(function () {
+            window.history.go(-1);
+        });
+
+        $(".copy-right").on('click', function () {
+            var index = $(this).attr('data-id');
+            if (index == 3) {
+                $(this).parents('td').find('.copy-right').eq(0).show().siblings().hide();
+            } else {
+                $(this).next().show().siblings().hide();
+            }
+        });
+    </script>
+{/block}

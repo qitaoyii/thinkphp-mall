@@ -1,0 +1,495 @@
+{extend name="layout/base" /}
+
+{block name="seo"}
+<title>{$title|default="画版商户后台管理系统"}</title>
+{/block}
+
+{block name="style"}
+<link href="{:qiniu_domains()}/upload/21/515c29e8d994ca300150e414a4c55dcc280a00e2cc33521b9f01ed0126800b.css?origin=froala_editor.pkgd.min.css" rel="stylesheet" type="text/css" />
+<link href="{:qiniu_domains()}/upload/57/631fb0f19ef3095e7be801e07e52fa20a9baf1738811e7dcf532e0239e88cf.css?origin=froala_editor.min.css" rel="stylesheet">
+<script type="text/javascript" src="{:qiniu_domains()}/upload/9f/0b2988e1b36d22839e391bf0266581f6af954c39f3c875efbde8689b746a53.js?origin=froala_editor.pkgd.min.js"></script>
+<script src='{:qiniu_domains()}/upload/ef/a2a1965232ce9f1f2c0803666083236afd85754a1104c8caa6e8636a5ac380.js?origin=zh_cn.js'></script>
+
+<style type="text/css">
+    /*编辑器报错title 方法一*/
+    /*a[href="https://froala.com/wysiwyg-editor"], a[href="https://www.froala.com/wysiwyg-editor?k=u"] {*/
+         /*display: none !important;*/
+         /*position: absolute;*/
+         /*top: -99999999px;*/
+     /*}*/
+    /*编辑器报错title 方法二*/
+    /*.fr-wrapper > div[style*='z-index:9999'] {*/
+        /*!*position: absolute;*/
+        /*top: -10000px;*/
+        /*opacity: 0;*!*/
+        /*display: none;*/
+    /*}*/
+    .h3{font-family: MicrosoftYaHei-Bold;font-size: 20px;color: #555555;font-weight:bold;margin:20px 0;}
+    .sample_info{
+        width:100%;
+        height: auto;
+        padding:20px;
+        border: 1px solid #E8E8E8;
+    /* background: rgba(255, 134, 68, 0.349); */
+        margin-bottom:10px;
+        border-radius:5px;
+    }
+    .sample_info>p{
+        margin-bottom:10px;
+        color:#999;
+    }
+    .information{
+        display:flex;
+        flex-direction: column;
+        font-size: 16px;
+    }
+    .information h3{
+        font-size:16px;
+        position:relative;
+        height:1em;
+        line-height: 1em;
+        display:flex;
+        align-items: center;
+        padding-left:10px;
+        border-left:3px solid #ff8544;
+        margin:10px 0;
+        font-weight: 600;
+    }
+    #refer-add{
+        display:flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        padding-top:40px;
+    }
+    #refer-add p{
+        height:40px;
+        width:90%;
+        display:flex;
+        justify-content: space-around;
+    }
+    #refer-add .label{
+        display:inline-block;
+        width: 70px;
+        text-align: right;
+    }
+    .btn-box{
+        width: 100%;
+        margin: auto;
+        height:80px;
+        display:flex;align-items: center;
+        justify-content: center;
+        background: #fff;
+        border-top:1px solid #e8e8e8;
+    }
+    #froala-editor ul li,#froala-editor ol li{
+        list-style: inherit;
+    }
+
+</style>
+
+{/block}
+
+{block name="title"}
+<span>厂家百科</span> /
+<span class="colorTit">创建百科</span>
+{/block}
+<!-- 平台功能区 -->
+{block name="content"}
+<div class="ShopFrontPage-r-bot" style="position: relative">
+    <div class="order-box cards">        
+        <div style="overflow:auto;width: 800px;margin: auto">
+                <div class="h3">我的百科</div>
+                <div class="sample_info simble">
+                    <p>示例信息</p>
+                    <div class="information">
+                        <h3>品牌概述</h3>
+                        <div>                            
+                            画版 ，中国最大的正版艺术共享平台，提供原作、版权、复制品、衍生品及全球供应链资源一站式服务，于2019年提出物权链的概念。
+                        </div>
+                    </div>
+                </div> 
+            <form id="myform" method="post">
+
+                    <input type="hidden" name="editor_content" id="content">
+                    <input type="hidden" name="refer_data" id="referData">
+                    <input type="hidden" name="id" id="baike_id">
+                    <input type="hidden" name="type" id="type" value="{$type}">
+                    <div id="froala-editor"></div>
+
+
+                <span id="baike_content"></span>
+                <div class="update-describe" style="display: none;">
+                        <div class="h3">编辑原因</div>
+                        <textarea name="update_describe" id="update_describe" rows="3" maxlength="120" class="sample_info" placeholder="请输入您编辑的原因，字数限制120以内" style="resize: none;"></textarea>
+                </div>
+                <div class="h3" style="padding-bottom:20px;border-bottom:1px solid #e8e8e8">参考资料<button type="button" class="text-blue see-box" style="float:right;background: none;border: none;display:flex;align-items: center;" id="btn1"> <img src="{:qiniu_domains()}/upload/87/8e44ab68123dbc81869087988a3998742ea6c86d2ecd2fd7d5f5c0c7b6b8b0.png?origin=38添加文本.png" alt="" width="20px"> 添加新参考资料</button></div>
+                <div id="add-html"></div>
+                <div id="refer-add" style="display:none;">
+                    <p><span class="label">文章名：</span><input type="text" maxlength="30" class="article-name input-sm"></p>
+                    <p><span class="label">URL：</span> <input type="text" class="article-url input-sm" placeholder=""></p>
+                    <p><span class="label">网站名：</span> <input type="text" maxlength="30" class="website-name input-sm"></p>
+                    <p><span class="label">发表日期：</span> <input type="text" readonly placeholder="请选择日期" autocomplete="off" id="end_date"
+                        class="publish-time input-sm"></p>
+                    <p><span class="label">引用日期：</span> <input type="text" class="quote-time input-sm" value="{:date('Y-m-d')}" readonly ></p>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="btn-box">
+        
+        <button type="button" id="back" style="margin-right:50px;display:none;" class="btn btn-o" onclick="history.back()">取消编辑</button>
+        <button type="button" class="btn btn-default btn-fill" id="btn">提交保存信息</button>
+
+        <button type="button" class="btn btn-default btn-fill see-btn" onclick="history.back()"  style="display: none">关闭</button>
+      
+    </div>
+</div>
+
+
+{/block}
+
+{block name='js'}
+<script type="text/javascript">
+    var dataObj = {$baiKeData|raw};
+    var day = new Date();
+    var data = day.getFullYear()+"-" + (day.getMonth()+1) + "-" + day.getDate();
+    laydate.render({
+        elem: '#end_date'
+        ,type: 'date'
+        ,max: data
+    });
+    // 中文显示
+    var editor = new FroalaEditor('div#froala-editor', {
+        // Set custom buttons.
+        toolbarButtons: {
+            // Key represents the more button from the toolbar.
+            moreText: {
+                // List of buttons used in the  group.
+                buttons: ['bold', 'italic', 'underline', 'strikeThrough', 'subscript', 'superscript', 'fontFamily', 'fontSize', 'textColor', 'backgroundColor', 'inlineClass', 'inlineStyle', 'clearFormatting'],
+                // Alignment of the group in the toolbar.
+                align: 'left',
+                // By default, 3 buttons are shown in the main toolbar. The rest of them are available when using the more button.
+                buttonsVisible: 3
+            },
+
+            moreParagraph: {
+                buttons: ['alignLeft', 'alignCenter', 'formatOLSimple', 'alignRight', 'alignJustify', 'formatOL', 'formatUL', 'paragraphFormat', 'paragraphStyle', 'lineHeight', 'outdent', 'indent', 'quote'],
+                align: 'left',
+                buttonsVisible: 3
+            },
+            moreRich: false,
+            moreMisc:false,
+            //   moreRich: {
+            //     buttons: ['insertLink', 'insertImage', 'insertVideo', 'insertTable', 'emoticons', 'fontAwesome', 'specialCharacters', 'embedly', 'insertFile', 'insertHR'],
+            //     align: 'left',
+            //     buttonsVisible: 3
+            //   },
+
+            //   moreMisc: {
+            //     buttons: ['undo', 'redo', 'fullscreen', 'print', 'getPDF', 'spellChecker', 'selectAll', 'html', 'help'],
+            //     align: 'right',
+            //     buttonsVisible: 2
+            //   }
+            // },
+        },
+        quickInsertButtons: ['table', 'ol', 'ul'],
+        // Change buttons for XS screen.
+        toolbarButtonsXS: [['undo', 'redo']],
+        language: 'zh_cn',
+        heightMax: 600,
+        heightMin:400,
+        width: 800,
+        charCounterCount:true,  // 字数统计
+    },function () {
+        editor.html.insert(dataObj.content, true);
+        $(".fr-counter").html("字数统计 : " + editor.charCounter.count());
+        $(".fr-counter").css({'margin-right':'2px'});
+    });
+
+    // 获取内容
+    $("#btn").click(function(){
+        // 编辑器内容
+        var str = $(".fr-view").html();
+        $("#content").val(str);
+        // 校验图片
+        var imgReg = /<img.*?(?:>|\/>)/gi;
+        var imgArr = str.match(imgReg);
+        if (imgArr) {
+            layer.msg("亲，编辑器中不能包括图片！", {icon: 2});
+            return false;
+        }
+        // 校验音频和视频
+        var videoReg = /<video.*?(?:>|\/>)/gi;
+        var audioReg = /<audio.*?(?:>|\/>)/gi;
+        var videoArr = str.match(videoReg);
+        var audioArr = str.match(audioReg);
+        if (videoArr || audioArr) {
+            layer.msg("亲，编辑器中不能包括视频或音频！", {icon: 2});
+            return false;
+        }
+        var updata_val=$("#update_describe").val().trim();
+        if (dataObj.id && updata_val=="") {
+            layer.msg("亲，编辑原因不能为空！", {icon: 2});
+            return false;
+        }
+
+        // 参考资料内容
+        var dataArr = [];
+        $(".refer-data").each(function (index, item) {
+             dataArr.push({
+                 'id':$(item).attr('data-id').trim(),
+                 'article_name': $(item).attr('data-name').trim(),
+                 'article_url': $(item).attr('data-url').trim(),
+                 'website_name': $(item).attr('data-web').trim(),
+                 'publish_time': $(item).attr('data-publish'),
+                 'quote_time': $(item).attr('data-quote'),
+             });
+        });
+        $("#referData").val(JSON.stringify(dataArr));
+
+        // 执行提交
+        layer.load(0, {
+            shade: [0.1,'black'] //0.1透明度的白色背景
+        });
+        $.ajax({
+            url: '/encyclopedias/save',
+            type: 'POST',
+            cache: false,
+            data: $('#myform').serialize(),
+            // dataType: 'json',
+            processData: false,
+            contentType: false,
+            success: function(data) {
+                
+                layer.msg(data.msg, {
+                    icon: 6,
+                    time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                }, function () {
+                    layer.closeAll();
+                    window.location.href = '/encyclopedias/index';
+                });
+            },
+            error: function (data) {
+                layer.msg(data.responseJSON.msg, {icon: 2}, function () {
+                    layer.closeAll();
+                });
+            }
+        });
+    });
+
+    // 添加参考资料
+    $("#btn1").click(function(){
+        $(".article-name").val('');
+        $(".article-url").val('');
+        $(".website-name").val('');
+        $(".publish-time").val('');
+        layer.open({
+            type: '1',
+            btn: ["确定", "取消"],
+            // shadeClose: true, //开启遮罩关闭
+            content: $("#refer-add"),
+            area:['400px', '500'],
+            title: "添加参考资料",
+            yes: function (index) {
+                var article_name = $(".article-name").val().trim();
+                var article_url = $(".article-url").val().trim();
+                var website_name = $(".website-name").val().trim();
+                var publish_time = $(".publish-time").val();
+                var quote_time = $(".quote-time").val();
+
+                if (!article_name) {
+                    layer.msg("亲，请填写文章名！", {
+                        icon: 2
+                    });
+                    return false;
+                }
+                if (!article_url) {
+                    layer.msg("亲，请填写URL！", {
+                        icon: 2
+                    });
+                    return false;
+                }
+                if (!CheckUrl(article_url)) {
+                    layer.msg("亲，必须以http,https开头,且需符合URL规范！", {
+                        icon: 2
+                    });
+                    return false;
+                }
+                if (!website_name) {
+                    layer.msg("亲，请填写网站名！", {
+                        icon: 2
+                    });
+                    return false;
+                }
+                if (!publish_time) {
+                    layer.msg("亲，请选择发表日期！", {
+                        icon: 2
+                    });
+                    return false;
+                }
+                if (publish_time>quote_time) {
+                    layer.msg("亲，发表日期不能大于引用日期！", {
+                        icon: 2
+                    });
+                    return false;
+                }
+
+                // 展示数据
+                var html = '';
+                html += '<div style="margin-top:10px;display:flex;justify-content:space-between" class="refer-data" data-id="0" data-name="'+article_name+'" data-name="'+article_name+'" data-url="'+article_url+'" data-web="'+website_name+'" data-quote="'+quote_time+'" data-publish="'+publish_time+'">';
+                html += '<div style="flex:1"><p><span class="article_name">'+article_name+'</span> . <span class="website_name">'+website_name+'</span>[引用日期<span class="quote_time">'+quote_time+'</span>] . </p>';
+                html += '<p class="article_url"><a href="'+article_url+'" target="_blank" class="text-blue">'+article_url+'</a></p></div>';
+                html += '<div class="operate see-box" style="width:150px"><p class="operate-item refer-edit"><a href="javascript:;" style="display: flex;"><i class="icon icon-edit"></i>编辑</a></p><p class="operate-item refer-del"><a href="javascript:;" style="display: flex;"><i class="icon icon-detel"></i>删除</a></p></div>';
+                html += '</div>';
+                $("#add-html").append(html);
+                layer.closeAll();
+            },
+            cancel: function () {
+                layer.closeAll();
+            }
+        });
+    });
+
+    // 编辑参考资料
+    $("#add-html").on("click", ".refer-edit", function () {
+        var _that = $(this);
+        //获取编辑的信息
+        var article_name = $(this).parents('.refer-data').attr('data-name');
+        var article_url = $(this).parents('.refer-data').attr('data-url');
+        var website_name = $(this).parents('.refer-data').attr('data-web');
+        var publish_time = $(this).parents('.refer-data').attr('data-publish');
+        // 赋值
+        $(".article-name").val(article_name);
+        $(".article-url").val(article_url);
+        $(".website-name").val(website_name);
+        $(".publish-time").val(publish_time);
+        layer.open({
+            type: '1',
+            btn: ["确定", "取消"],
+            // shadeClose: true, //开启遮罩关闭
+            content: $("#refer-add"),
+            area:['400px', '500'],
+            title: "添加参考资料",
+            yes: function (index) {
+                // 获取最新的值
+                var article_name = $(".article-name").val().trim();
+                var article_url = $(".article-url").val().trim();
+                var website_name = $(".website-name").val().trim();
+                var publish_time = $(".publish-time").val();
+                var quote_time = $(".quote-time").val();
+
+                if (!article_name) {
+                    layer.msg("亲，请填写文章名！", {
+                        icon: 2
+                    });
+                    return false;
+                }
+                if (!article_url) {
+                    layer.msg("亲，请填写URL！", {
+                        icon: 2
+                    });
+                    return false;
+                }
+                if (!CheckUrl(article_url)) {
+                    layer.msg("亲，必须以http,https开头,且需符合URL规范！", {
+                        icon: 2
+                    });
+                    return false;
+                }
+                if (!website_name) {
+                    layer.msg("亲，请填写网站名！", {
+                        icon: 2
+                    });
+                    return false;
+                }
+                if (!publish_time) {
+                    layer.msg("亲，请选择发表日期！", {
+                        icon: 2
+                    });
+                    return false;
+                }
+                if (publish_time>quote_time) {
+                    layer.msg("亲，发表日期不能大于引用日期！", {
+                        icon: 2
+                    });
+                    return false;
+                }
+
+                // 修改展示的数据
+                _that.parents('.refer-data').find('.article_name').html(article_name);
+                _that.parents('.refer-data').find('.article_url').find("a").html(article_url).attr("href",article_url);
+                _that.parents('.refer-data').find('.website_name').html(website_name);
+                _that.parents('.refer-data').find('.publish_time').html(publish_time);
+                _that.parents('.refer-data').find('.quote_time').html(quote_time);
+                _that.parents('.refer-data').attr('data-name',article_name);
+                _that.parents('.refer-data').attr('data-url',article_url);
+                _that.parents('.refer-data').attr('data-web',website_name);
+                _that.parents('.refer-data').attr('data-publish',publish_time);
+                _that.parents('.refer-data').attr('data-quote',quote_time);
+                layer.closeAll();
+            },
+            cancel: function () {
+                layer.closeAll();
+            }
+        });
+
+    });
+    // 删除参考资料
+    $("#add-html").on("click", ".refer-del", function () {
+        var _that = $(this);
+        layer.confirm('确定要删除吗？', {
+            btn: ['确定', '取消'],
+        }, function(index, layero){
+            _that.parents('.refer-data').remove();
+            layer.close(index);
+        }, function(index){
+            layer.close(index);
+        });
+    });
+    // 正则匹配
+    function CheckUrl(url) {
+        var http = /^http:\/\/.*/i.test(url);
+        var https = /^https:\/\/.*/i.test(url);
+        if (!http && !https) {
+            return false;
+        }
+        return true;
+    }
+</script>
+<script>
+    // 编辑
+    if (dataObj.id) {
+        $("#baike_id").val(dataObj.id);
+        $(".update-describe").show();
+        // 遍历参考资料
+        var html = '';
+        for (var i=0; i<dataObj.reference.length; i++) {
+            html += '<div style="margin-top:10px;display:flex;justify-content:space-between" class="refer-data" data-id="'+dataObj.reference[i].id+'" data-name="'+dataObj.reference[i].article_name+'" data-url="'+dataObj.reference[i].article_url+'" data-web="'+dataObj.reference[i].website_name+'" data-quote="'+dataObj.reference[i].quote_time+'" data-publish="'+dataObj.reference[i].publish_time+'">';
+            html += '<div style="flex:1"><p><span class="article_name">'+dataObj.reference[i].article_name+'</span> . <span class="website_name">'+dataObj.reference[i].website_name+'</span>[引用日期<span class="quote_time">'+dataObj.reference[i].quote_time+'</span>]. </p>';
+            html += '<p class="article_url"><a href="'+dataObj.reference[i].article_url+'" target="_blank" class="text-blue">'+dataObj.reference[i].article_url+'</a></p></div>';
+            html += '<div class="operate see-box" style="width:150px"><p class="operate-item refer-edit"><a href="javascript:;" style="display: flex;"><i class="icon icon-edit"></i>编辑</a></p><p class="operate-item refer-del"><a href="javascript:;" style="display: flex;"><i class="icon icon-detel"></i>删除</a></p></div>';
+            html += '</div>';
+        }
+        $("#add-html").append(html);
+        $("#baike_content").html(dataObj.content);
+    }
+    if($("#type").val()=="1"){
+
+        $(".see-box").hide(); 
+        $(".see-btn").show(); 
+        // $("#update_describe").val(dataObj.update_describe);
+        $("#update_describe").hide();
+        $("#froala-editor").hide();
+        $(".update-describe").hide();
+         $("#btn").hide();
+         $(".simble").hide();
+    }else{
+         $("#btn").show();
+        $(".see-btn").hide();
+        $("#baike_content").hide();
+        $("#back").show();
+    }
+
+</script>
+{/block}

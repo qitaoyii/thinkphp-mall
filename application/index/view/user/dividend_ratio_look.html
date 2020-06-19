@@ -1,0 +1,74 @@
+{extend name="layout/base" /}
+
+{block name="seo"}
+<title>{$title|default="画版商户后台管理系统"}</title>
+{/block}
+
+{block name="style"}
+<style></style>
+{/block}
+
+{block name="title"}
+<span>用户管理</span> /
+<span class="colorTit">用户版谷统计</span>
+{/block}
+{block name="content"}
+<!-- 平台功能区 -->
+    <div class="ShopFrontPage-r-bot">
+        <div class="order-box cards">
+            <div class="order-table">
+                <table class="order-tb">
+                    <caption>
+                        <div class="tb-title text-gray">
+                            <p>版谷：<span class="text-link">{$visitor->copy_code}</span></p>
+                            <p>版谷作品：
+                                <sapn class="text-link">《{:optional($visitor->works)->works_name}》</sapn>
+                            </p>
+                        </div>
+                    </caption>
+                    <thead>
+                    <tr class="tr-th">
+                        <th>序号</th>
+                        <th>国际区号</th>
+                        <th>用户手机号</th>
+                        <th>分红比例（%）</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {foreach $visitor->agent_detail as $key=>$detail}
+                        <tr class="tr-bd">
+                            <td>{$key+1}</td>
+                            <td>
+                                <select name="prefix[]" disabled>{foreach $country_prefixes as $country_prefix}<option value="{$country_prefix->prefix}" {if $detail['phone_prefix'] == $country_prefix->prefix}selected{/if}>+{$country_prefix->prefix}</option>{/foreach}</select>
+                            </td>
+                            <td>
+                                <span class="userphone">{$detail['phone']}</span>
+                            </td>
+                            <td>
+                                <span class="text-blue">{$detail['ratio']}</span>
+                            </td>
+                        </tr>
+                    {/foreach}
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="btn-group">
+                <a href="javascript:;" class="btn btn-o btn-lg" onclick="window.history.back()">关闭</a>
+            </div>
+
+        </div>
+    </div>
+{/block}
+
+{block name='js'}
+<script>
+    /*手机号分割显示*/
+    (function userphone(obj) {
+        obj.each(function () {
+            var phoneNum = $(this).text();
+            $(this).html(phoneNum.replace(/(?=(\d{4})+$)/g, " "));
+        })
+    })($(".userphone"));
+</script>
+{/block}

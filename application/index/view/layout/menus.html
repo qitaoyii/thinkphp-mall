@@ -1,0 +1,192 @@
+<!-- 左侧导航 -->
+<div class="ShopFrontPage-l">
+    <div class="nav-l-top">
+        <!--<img src="{:qiniu_domains()}/upload/aa/f8b72d529506ff5ad4bbc900de978303590afe2e8592306bac42cd8e4f2edb.png?origin=logos.png" alt="">-->
+        <a href="/">
+            {if get_moderator_id() && !session('shop.shop_id')}
+            <img src="<?= qiniu_domains() . session('moderator.moderator_header')?>" alt="">
+            {else /}
+            <img src="<?= qiniu_domains() . session('shop.shop_logo')?>" alt="">
+            {/if}
+        </a>
+        <a href="/">
+            {if get_moderator_id() && !session('shop.shop_id')}
+            <span>版主后台</span>
+            {else /}
+            <span>品牌厂家直供平台</span>
+            {/if}
+        </a>
+    </div>
+    <div style="width:280px;overflow: hidden;height: 90%">
+        <div class="nav-l-bot">
+            <ul class="nav-list">
+                <li class="list-item">
+                    <div class="nav-tit">
+                        {if get_moderator_id() && !session('shop.shop_id')}
+                        <i class="icon icon-shouye"></i> 版主信息
+                        {else /}
+                        <i class="icon icon-shouye"></i> 基本信息
+                        {/if}
+                    </div>
+                    <ol class="sub-nav">
+                        {haspermission:close key="view-menu-shop-index"}
+                            <li><a href="/">品牌馆首页</a></li>
+                        {/haspermission:close}
+                        {haspermission:close key="view-menu-shop-info"}
+                            <li><a href="/shop-info/detail">品牌馆信息</a></li>
+                        {/haspermission:close}
+                        {haspermission:close key="view-menu-account-info"}
+                            <li data-src="/withdrawal/forbidden"><a href="/index/account">品牌馆账户</a></li>
+                        {/haspermission:close}
+                        {if session('shop_user.is_shop_owner')}
+                            {haspermission:close key="view-menu-shop-operator"}
+                                <!--<li data-src="/operator/role"><a href="/operator/index">操作员管理</a></li>-->
+                            {/haspermission:close}
+                        {/if}
+                        {haspermission:close key="view-baike-list"}
+                            <li data-src="/encyclopedias/index,/encyclopedias/create,/encyclopedias/atlas"><a href="/encyclopedias/index">品牌馆百科</a></li>
+                        {/haspermission:close}
+                    </ol>
+                </li>
+
+                {haspermission:close key="view-menu-product-management"}
+                <li class="list-item">
+                    <div class="nav-tit">
+                        <i class="icon icon-shangpin"></i> 生产管理
+                    </div>
+                    <ol class="sub-nav">
+                        {haspermission:close key="view-menu-new-product"}
+                        <li data-src="/product/save"><a href="{:url('product/linkage')}">生产新商品</a></li>
+                        {/haspermission:close}
+                        {haspermission:close key="view-menu-all-product-list"}
+                        <li data-src="/product/wait-release,/product/log-list"><a href="{:url('product/index')}">所有商品</a></li>
+                        {/haspermission:close}
+                        {haspermission:close key="view-menu-media-center"}
+                        <li><a href="/index/material">素材中心</a></li>
+                        {/haspermission:close}
+                        <!--<li><a href="{:url('product/sale')}">出售中的商品</a></li>-->
+                        <!--{haspermission:close key="view-menu-trace-management"}-->
+                        <!--<li><a href="/trace/index">溯源管理</a></li>-->
+                        <!--{/haspermission:close}-->
+                        <!--{haspermission:close key="view-menu-trace-list"}-->
+                        <!--<li><a href="/trace/list">配置溯源列表</a></li>-->
+                        <!--{/haspermission:close}-->
+                        <!--{haspermission:close key="view-menu-trace-qrcode"}-->
+                        <!--<li><a href="/trace/qrcode">配置一物一码</a></li>-->
+                        <!--{/haspermission:close}-->
+                    </ol>
+                </li>
+                {/haspermission:close}
+
+                {haspermission:close key="view-memu-sale-management"}
+                <li class="list-item">
+                    <div class="nav-tit">
+                        <i class="icon icon-sale"></i> 销售管理
+                    </div>
+                    <ol class="sub-nav">
+                        {haspermission:close key="view-menu-sale-list"}
+                        <li><a href="/sale/index">商品管理</a></li>
+                        {/haspermission:close}
+                        <!--{haspermission:close key="view-menu-sale-good-set"}-->
+                        <!--<li data-src="/sale/upper-set"><a href="/sale/good-set">销售商品上架</a></li>-->
+                        <!--{/haspermission:close}-->
+                        {haspermission:close key="view-menu-distributor-list"}
+                        <li><a href="/distributor/index">经销商管理</a></li>
+                        {/haspermission:close}
+                    </ol>
+                </li>
+                {/haspermission:close}
+
+                {haspermission:close key="view-menu-order-management"}
+                <li class="list-item">
+                    <div class="nav-tit">
+                        <i class="icon icon-dindan"></i>
+                        订单管理
+                    </div>
+                    <ol class="sub-nav">
+                        {haspermission:close key="view-menu-all-order-list"}
+                        <li data-src="/order/detail"><a href="/order"> 全部订单</a></li>
+                        {/haspermission:close}
+                        {haspermission:close key="view-menu-delivery-list"}
+                        <li data-src="/order/delivery"><a href="/order/delivery-list">去发货</a></li>
+                        {/haspermission:close}
+                        <!--{haspermission:close key="view-order-sold"}-->
+                        <!--<li><a href="{:url('order/complete')}">已卖出的商品</a></li>-->
+                        <!--{/haspermission:close}-->
+                        {haspermission:close key="view-menu-delivery-template"}
+                        <li data-src="/order/template-save,/order/template-detail"><a href="{:url('order/templates')}">运费模板</a></li>
+                        {/haspermission:close}
+                        {haspermission:close key="view-menu-order-statistics"}
+                        <li><a href="{:url('order/statistics')}">订单统计</a></li>
+                        {/haspermission:close}
+                        <!--{haspermission:close key="view-unsettled-order-statistics"}-->
+                        <!--<li><a href="/settlement/await">待结算订单</a></li>-->
+                        <!--{/haspermission:close}-->
+                        {haspermission:close key="view-menu-cash-out-list"}
+                        <li><a href="/order/cash-out">提现记录</a></li>
+                        {/haspermission:close}
+                        {haspermission:close key="view-menu-settled-order-list"}
+                        <li><a href="/settlement/index">已结算订单</a></li>
+                        {/haspermission:close}
+                    </ol>
+                </li>
+                {/haspermission:close}
+
+                {haspermission:close key="view-menu-customer-management"}
+                <li class="list-item">
+                    <div class="nav-tit">
+                        <i class="icon icon-kehu"></i>
+                        客户管理
+                    </div>
+                    <ol class="sub-nav">
+                        {haspermission:close key="view-menu-customer-center"}
+                        <li data-src="/user/trace-detail"><a href="/user/index">客户中心</a></li>
+                        {/haspermission:close}
+                        {haspermission:close key="view-menu-score-management"}
+                        <li><a href="/score/index">积分管理</a></li>
+                        {/haspermission:close}
+                    </ol>
+                </li>
+                {/haspermission:close}
+
+                {haspermission:close key="view-menu-profit-management"}
+                <li class="list-item">
+                    <div class="nav-tit">
+                        <i class="icon icon-fenhong"></i>
+                        版谷资产
+                    </div>
+                    <ol class="sub-nav">
+                        {haspermission:close key="view-menu-copyright-center"}
+                        <li data-src="/copyright/copy-detail,/copyright/statistics"><a href="/copyright/index">版谷中心</a></li>
+                        {/haspermission:close}
+                        {haspermission:close key="view-menu-profit-list"}
+                        <!--<li data-src="/profit/detail"><a href="/profit/index">分红查询</a></li>-->
+                        {/haspermission:close}
+                        {haspermission:close key="view-menu-copyright-receive"}
+                        <!--<li><a href="/copyright/receive-list">领取查询</a></li>-->
+                        {/haspermission:close}
+                    </ol>
+                </li>
+
+                {/haspermission:close}
+                {haspermission:close key="view-promotion-index"}
+                <li class="list-item">
+                    <div class="nav-tit">
+                        <i class="icon icon-active"></i>
+                        活动管理
+                    </div>
+                    <ol class="sub-nav">
+                        {haspermission:close key="view-promotion-list"}
+                        <li data-src="/promotion/index"><a href="/promotion/index">全部活动</a></li>
+                        {/haspermission:close}
+
+                        {haspermission:close key="view-promotion-create"}
+                        <li data-src="/promotion/create"><a href="/promotion/create">创建新活动</a></li>
+                        {/haspermission:close}
+                    </ol>
+                </li>
+                {/haspermission:close}
+            </ul>
+        </div>
+    </div>
+</div>

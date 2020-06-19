@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="__STATIC__/style/login-pass.css?{:config('huaban.css_version.version')}">
+    <title>品牌厂家直供平台</title>
+</head>
+
+<body>
+<div class="login-pass-wrap">
+    <!-- 头部 -->
+    <div class="login-pass-top">
+        <div class="login-pass-top-l">
+            <div class="login-pass-top-logo">
+                <img src="{:qiniu_domains()}/upload/aa/f8b72d529506ff5ad4bbc900de978303590afe2e8592306bac42cd8e4f2edb.png?origin=logos.png" alt="">
+            </div>
+            <em>|</em>
+            <h2>品牌厂家直供平台</h2>
+            <h1>厂家入驻申请</h1>
+        </div>
+    </div>
+    <!-- 店铺选项 -->
+    <div class="login-shop-in-for">
+        <h1 class="login-shop-in-for-prompt">
+            注：审核中的厂家，请耐心等待审核结果！ 审核结果将在1-3个工作日，以短信形式发至厂家管理人的手机号上，请注意查收。
+        </h1>
+        <div class="login-shop-in-for-wrap">
+            {foreach name='shopLists' item='val'}
+                <div class="login-shop-in-for-list-box">
+                    <div class="login-shop-in-for-list">
+                        <div class="login-shop-in-for-list-img-box">
+                            <img class="login-shop-in-for-list-img" src="{:qiniu_domains().$val->shop_logo}" alt="">
+                        </div>
+                        <div class="login-shop-in-for-list-result-box">
+                            状态 : <span>{$val->status_text}</span>
+                        </div>
+                        <div class="login-shop-in-for-list-title-box">
+                            <h3>{$val->shop_name}</h3>
+                            <h4>提交时间 : <span>{$val->create_time}</span></h4>
+                        </div>
+                        {if 3 == $val->status}
+                        <a href="/shop-info/create?id={$val->id}"><button class="login-shop-in-for-list-btn">去处理</button></a>
+                        {/if}
+                    </div>
+                </div>
+            {/foreach}
+            {foreach name='shopList' item='val'}
+            <div class="login-shop-in-for-list-box">
+                <div class="login-shop-in-for-list">
+                    <div class="login-shop-in-for-list-img-box">
+                        <img class="login-shop-in-for-list-img" src="{:qiniu_domains().$val->shop_logo}" alt="">
+                    </div>
+                    <div class="login-shop-in-for-list-result-box">
+                        状态 : <span>{$val->status_text}</span>
+                    </div>
+                    <div class="login-shop-in-for-list-title-box">
+                        <h3>{$val->shop_name}</h3>
+                        <h4>提交时间 : <span>{$val->create_time}</span></h4>
+                    </div>
+                    {if 3 == $val->status}
+                    <a href="/shop-info/create?id={$val->id}"><button class="login-shop-in-for-list-btn">去处理</button></a>
+                    {/if}
+                </div>
+            </div>
+            {/foreach}
+
+            <div class="login-shop-in-for-list-add-box">
+                <div class="login-shop-in-for-list-add">
+                    <img src="{:qiniu_domains()}/upload/7f/1afb3c68fcbb0d68421b558c8fb28ba88e7e93f2837996e67f581dabe3b393.png?origin=add.png">
+                    <span>新厂家入驻</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 底部按钮 -->
+    <div class="login-shop-footer">
+        <button class="login-shop-footer-back">关闭</button>
+    </div>
+</div>
+
+<script src="{:qiniu_domains()}/upload/4f/e68fa216176e6d1f4580e924bafecc9f519984ecc06b1a840a08b0d88c95de.js?origin=jquery-3.3.1.min.js"></script>
+<script>
+    $('.login-shop-in-for-wrap').on('mouseenter', '.login-shop-in-for-list', function() {
+        $(this).addClass('login-shop-in-for-list-hover').parent('.login-shop-in-for-list-box').siblings().find('.login-shop-in-for-list').removeClass('login-shop-in-for-list-hover')
+    });
+
+    // 新店铺入驻
+    $(".login-shop-in-for-list-add-box").click(function () {
+       window.location.href = '/shop-info/create';
+    });
+
+    // 点击管理进行退出
+    $('.login-shop-footer-back').click(function () {
+        window.location.href = '/logout';
+    });
+</script>
+</body>
+
+</html>

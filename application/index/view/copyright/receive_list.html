@@ -1,0 +1,299 @@
+{extend name="layout/base" /}
+
+{block name="seo"}
+<title>{$title|default="品牌厂家直供平台"}</title>
+{/block}
+
+{block name="style"}
+<style>
+    .copy-right{
+        cursor: pointer;
+        color:blue;
+    }
+    .input-hidden input{
+        display: none;
+    }
+    .input-sm{margin:0;}
+</style>
+{/block}
+
+{block name="title"}
+<span>分红管理</span> /
+<span class="colorTit">领取查询</span>
+{/block}
+
+<!-- 平台功能区 -->
+{block name="content"}
+    <div class="ShopFrontPage-r-bot">
+        <div class="order-box cards">
+            <form action="/copyright/receive-list" method="get">
+                <div class="order-search">
+                    <div class="form-group">
+                        <div class="form-item">
+                            <label>领取时间</label>
+                            <input type="text" autocomplete="off" placeholder="请选择日期" name="create_time" value="{$create_time}" id="get_date">
+                            <i></i>
+                        </div>
+                        <div class="form-item" style="width: 300px;">
+                            <label>作品名称</label>
+                            <input type="text" placeholder="请输入版谷作品名称" name="works_name" value="{$works_name}" id="works_name">
+                            <i></i>
+                        </div>
+                        <div class="form-item">
+                            <label>版权获取方式</label>
+                            <select name="send_type" id="get_method">
+                                <option value="">全部</option>
+                                {foreach $statuses as $k => $v}
+                                <option value="{$k}" {if condition="$status eq $k"}selected{/if}>{$v}</option>
+                                {/foreach}
+                            </select>
+                            <i></i>
+                        </div>
+                        <div class="form-item">
+                            <label>领取手机号</label>
+                            <input type="text" placeholder="请输入领取手机号" onkeyup="value=value.replace(/[^\d]/g,'')" maxlength=11 name="phone" value="{$phone}" id="phone_number">
+                            <i></i>
+                        </div>
+                        <div class="form-item-btn">
+                            <input type="submit" value="查询" class="btn btn-fill">
+                            <i></i>
+                        </div>
+                        <div class="form-item-btn"></div>
+                        <!--占位元素，不可删-->
+
+                    </div>
+                    <div class="form-group">
+                        <!--<div class="form-item">
+                            <label>活动名称</label>
+                            <input type="text" placeholder="请输入活动名称" name="activity_name" value="{$activity_name}" id="active_name">
+                            <i></i>
+                        </div>-->
+                        <!--<div class="form-item">
+                            <label>领取手机号</label>
+                            <input type="text" placeholder="请输入领取手机号" onkeyup="value=value.replace(/[^\d]/g,'')" maxlength=11 name="phone" value="{$phone}" id="phone_number">
+                            <i></i>
+                        </div>-->
+                        <!--<div class="form-item" style="visibility: hidden">
+                            <label>商品标题</label>
+                            <input type="text" placeholder="请输入商品标题" name="product_name" value="{$product_name}" disabled id="goods_title">
+                            <i></i>
+                        </div>-->
+
+                    </div>
+                </div>
+            </form>
+
+            <div class="order-table">
+                <table class="order-tb">
+                    <thead>
+                        <tr class="tr-th">
+                            <th>序号</th>
+                            <th style="width:25%">版谷</th>
+                            <th>作品名称</th>
+                            <th>版权获取方式</th>
+                            <!--<th>商品标题</th>-->
+                            <th>活动名称</th>
+                            <th>客户手机号</th>
+                            <th>领取时间</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {foreach name='receiveList' item='receive'}
+                            <tr class="tr-bd">
+                                <td>{$receive->send_id}</td>
+                                <td>
+                                    <span data-id="1" class="copy-right">{:optional($receive->copyright, '--')->serial}</span>
+                                    <span data-id="2" class="copy-right" style="display:none;">{$receive->copy_code}</span>
+                                    <span data-id="3" class="copy-right" style="display:none;">{:optional($receive->copyright, '--')->ranking}</span>
+                                </td>
+                                <td>
+                                    《{:optional($receive->works)->works_name}》
+                                </td>
+                                <td>
+                                    {$receive->send_type_text}
+                                </td>
+                                <!--<td>-->
+                                    <!--<span class="clip">商品名称sss</span>-->
+                                <!--</td>-->
+                                <td>
+                                    {:optional($receive->promotion, '————')->activity_name}
+                                </td>
+                                <td>
+                                    <span class="userphone">{:optional($receive->user, '————')->phone}</span>
+                                </td>
+                                <td>
+                                    {:time_to_date($receive->create_time)}
+                                </td>
+                                <td>
+                                    <div class="operate">
+                                        <p class="operate-item">
+                                            <a href="javascript:void(0);" class="getDetail" data-send-id="{$receive->send_id}" data-send-type="{$receive->send_type}">
+                                                <i class="icon icon-yulan"></i>详情 <!-- - {$receive->send_type}-->
+                                            </a>
+                                        </p>
+                                    </div>
+                                </td>
+                            </tr>
+                        {/foreach}
+
+                    </tbody>
+                </table>
+            </div>
+
+            <!--分页-->
+            <div class="pragination-group" id="pageToolbar">
+               {$receiveList->render()|raw}
+            </div>
+        </div>
+    </div>
+
+
+<!--详情-->
+<div class="add-layer" style="display:none">
+    <div>
+        <label>领取手机号：</label>
+        <input type="text" value="" class="input-sm detail-phone" style="border:0px;">
+    </div>
+    <div>
+        <label>版谷：</label>
+        <span style="margin-left:35px;"></span>
+        <input type="text"  value="" class="input-sm copy_code" style="border:0px;">
+    </div>
+    <p>
+        <label>作品名称：</label>
+        <span style="display: flex;justify-content:space-between">
+            <img class="works_cover" src="" width="50px;">
+            <span style="display: flex;justify-content: space-between;flex-direction: column"><input type="text"  value="" class="input-sm works_name" style="border:0px;">
+                <input type="text"  value="" class="input-sm artist_name" style="border:0px;"></span>
+        </span>
+
+    </p>
+    <div>
+        <label>领取时间：</label>
+        <input type="tel"  value="" class="input-sm create_time" style="border:0px;">
+    </div>
+    <div class="public-title">
+        <label>活动名称：</label>
+        <!--<input type="text"  value="" class="input-sm activity_name" style="border:0px;margin-left:-30px;">-->
+        <span class="activity_name" style="margin-left:20px;"></span>
+    </div>
+    <!--<p class="product-show">-->
+        <!--<label>商品名称：</label>-->
+        <!--<input type="text"  value="" class="input-sm product_name" style="border:0px;">-->
+    <!--</p>-->
+    <!--<p class="product-show">-->
+        <!--<label>订单号：</label>-->
+        <!--<input type="text"  value="" class="input-sm order_sn" style="border:0px;">-->
+    <!--</p>-->
+</div>
+{/block}
+
+{block name='js'}
+<script>
+    /*手机号分割显示*/
+    (function userphone(obj) {
+        obj.each(function () {
+            var phoneNum = $(this).text();
+            $(this).html(phoneNum.replace(/(?=(\d{4})+$)/g, " "));
+        });
+    })($(".userphone"));
+    laydate.render({
+        elem: "#get_date",
+        range: true,
+        change: function (value, date, endDate) {
+            // console.log(value); //得到日期生成的值，如：2017-08-18
+            // console.log(date); //得到日期时间对象：{year: 2017, month: 8, date: 18, hours: 0, minutes: 0, seconds: 0}
+            // console.log(endDate); //得结束的日期时间对象，开启范围选择（range: true）才会返回。对象成员同上。
+        }
+    });
+
+    $(".copy-right").on('click', function () {
+        var index = $(this).attr('data-id');
+        if (index == 3) {
+            $(this).parents('td').find('.copy-right').eq(0).show().siblings().hide();
+        } else {
+            $(this).next().show().siblings().hide();
+        }
+    });
+
+    // 查看详情
+    $('.getDetail').on('click',function(){
+        var send_id = $(this).attr('data-send-id');
+        var send_type = $(this).attr('data-send-type');
+        if (send_type==4 || send_type==6 || send_type==7){
+            layer.msg("暂无信息");
+            return false;
+        }
+        $.ajax({
+            url: "/copyright/receive-detail",
+            type: 'POST',
+            dataType: 'json',
+            data:{send_id:send_id,send_type:send_type},
+            success: function(data) {
+                console.log(data.data);
+                let arr = [1,3,5];
+                if(arr.includes(data.data.type) === true){
+                    $(".detail-phone").val(data.data.receiveList.user.phone);
+                    $(".copy_code").val(data.data.receiveList.serial);
+                    $(".works_name").val('《'+data.data.receiveList.works.works_name+'》');
+                    $(".works_cover").attr('src', "{:qiniu_domains()}"+data.data.receiveList.works.works_cover);
+                    $(".artist_name").val(data.data.receiveList.works.artister.real_name);
+                    $(".create_time").val(data.data.receiveList.copyright.create_time);
+                    // $(".activity_name").val('《'+data.data.receiveList.promotion.activity_name+'》');
+                    $(".activity_name").html('《'+data.data.receiveList.promotion.activity_name+'》');
+                    $(".product-show").hide();
+                }
+
+                if(data.data.type == 2){
+                    $(".detail-phone").val(data.data.receiveList.user.phone);
+                    $(".copy_code").val(data.data.receiveList.serial);
+                    $(".works_name").val('《'+data.data.receiveList.works.works_name+'》');
+                    $(".works_cover").attr('src', "{:qiniu_domains()}"+data.data.receiveList.works.works_cover);
+                    $(".artist_name").val(data.data.receiveList.works.artister.real_name);
+                    $(".create_time").val(data.data.receiveList.create_time);
+                    // $(".product_name").val(data.data.receiveList.order.product_name);
+                    // $(".order_sn").val(data.data.receiveList.copycode.order_sn);
+                    // $(".product-show").show();
+                    $(".public-title").hide();
+                    $(".activity_name").parent('p').hide();
+                }
+
+                if(data.data.type == 8 || data.data.type == 9){
+                    $(".detail-phone").val(data.data.receiveList.user.phone);
+                    $(".copy_code").val(data.data.receiveList.serial);
+                    $(".works_name").val('《'+data.data.receiveList.works.works_name+'》');
+                    $(".works_cover").attr('src', "{:qiniu_domains()}"+data.data.receiveList.works.works_cover);
+                    $(".artist_name").val(data.data.receiveList.works.artister.real_name);
+                    $(".create_time").val(data.data.receiveList.create_time);
+                    // $(".product_name").val(data.data.receiveList.order.product_name);
+                    // $(".order_sn").val(data.data.receiveList.copycode.order_sn);
+                    // $(".product-show").show();
+                    $(".public-title").hide();
+                    $(".activity_name").parent('p').hide();
+                }
+
+                layer.open({
+                    type: 1,
+                    content: $('.add-layer'),
+                    title: '查看详情-'+data.data.msg,
+                    btn: '关闭',
+                    btnAlign: 'cc',
+                    shadeClose: true, //开启遮罩关闭
+                    area: ['500px'],
+                    yes: function(index){
+                        layer.closeAll();
+                        location.reload();
+                    }
+                });
+            }
+        });
+
+
+
+
+
+    });
+
+</script>
+{/block}

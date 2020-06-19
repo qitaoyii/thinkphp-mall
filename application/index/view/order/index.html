@@ -1,0 +1,588 @@
+{extend name="layout/base" /}
+
+{block name="seo"}
+<title>{$title|default="品牌厂家直供平台"}</title>
+{/block}
+
+{block name="style"}
+<style>
+    .refuse-text{
+        float: right;
+        margin-right:40px;
+        text-align: center;
+        padding:5px 10px;
+        border: 1px solid royalblue;
+        color:royalblue;
+        cursor: pointer;
+    }
+    .refund-reason{
+        width:18px;
+        height: 18px;
+        vertical-align: bottom;
+        cursor: pointer;
+    }
+    .refuse{
+        color: #333!important;
+        border: 1px solid #adadad!important;
+        display: inline-block;
+        margin-bottom: 10px;
+    }
+    .refuse-group{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+    .agree{
+        background-image:linear-gradient(-152deg, #0091FF 0%, #0091FF 100%)!important;
+        margin-bottom: 10px;
+        margin-left: 10px;
+    }
+    .refuse-title{
+        height:40px;font-size:14px;
+        display: flex;
+        align-items: center;
+        margin-left: -50px;
+    }
+    .refuse-layer{
+        width: 80%;
+        display: flex;
+        justify-content: center;
+        padding-left: 100px;
+    }
+    .refuse-status{
+        width: 300px;
+        height: 40px;
+
+    }
+    .refuse-content{
+        width: 300px;
+        border-radius: 5px;
+        border-color:#e8e8e8;
+        padding:6px;
+    }
+</style>
+{/block}
+
+{block name="title"}
+<span>订单管理</span> /
+<span class="colorTit">全部订单</span>
+{/block}
+
+{block name="content"}
+<!-- 平台功能区 -->
+<div class="ShopFrontPage-r-bot">
+    <div class="order-box cards">
+        <div class="order-search">
+            <form action="/order" method="get" id="myform">
+                <!--<input type="hidden" name="status" id="order_status">-->
+                <div class="form-group" style="justify-content: flex-start;align-items: center">
+                    <div class="form-item">
+                        <label for="create_time">订单创建时间</label>
+                        <input type="text" readonly placeholder="请选择日期" autocomplete="off" name="create_time" value="{$create_time}" id="date-m">
+                        <i></i>
+                    </div>
+                  <!--  <div class="form-item">
+                        <label for="order_sn">交易订单号</label>
+                        <input type="text" placeholder="交易订单号" name="order_sn" value="">
+                        <i></i>
+                    </div>
+                    <div class="form-item">
+                        <label for="product_name">商品标题</label>
+                        <input type="text" placeholder="商品标题" name="product_name" value="">
+                        <i></i>
+                    </div>
+                    <div class="form-item-btn">
+                        <input type="button" value="查询" class="btn btn-fill" id="search">
+                        &lt;!&ndash;<input type="button" value="高级查询" class="btn btn-o" id="h-search">&ndash;&gt;
+                        <i></i>
+                    </div>-->
+                    <!--<div class="form-item">-->
+                        <!--<label for="product_id">商品ID</label>-->
+                        <!--<input type="text" placeholder="请输入商品ID" name="product_id" value="{$product_id}">-->
+                        <!--<i></i>-->
+                    <!--</div>-->
+                    <div class="form-item">
+                        <label for="product_name">商品名称</label>
+                        <input type="text" placeholder="请输入商品名称" name="product_name" value="{$product_name}">
+                        <i></i>
+                    </div>
+                    <div class="form-item">
+                        <label for="tel">收货人手机号</label>
+                        <input type="text" placeholder="请输入收货人手机号" name="tel" value="{$tel}">
+                        <i></i>
+                    </div>
+                    <div class="form-item">
+                        <label for="status">订单类型</label>
+                        <select name="pre_sale" id="pre_sale">
+                            <option value="0" selected>全部</option>
+                            <option value="1" {if 1 == $pre_sale} selected {/if}>排号预售订单</option>
+                            <option value="2" {if 2 == $pre_sale} selected {/if}>普通订单</option>
+                        </select>
+                    </div>
+
+                </div>
+                <div class="form-group" style="justify-content: flex-start;align-items: center">
+                    <div class="form-item">
+                        <label for="consignee">收货人姓名</label>
+                        <input type="text" placeholder="请输入收货人姓名" name="consignee" value="{$consignee}">
+                        <i></i>
+                    </div>
+                    <div class="form-item" style="width:20%">
+                        <label for="order_sn">订单号</label>
+                        <input type="text" placeholder="请输入订单号" name="order_sn" value="{$order_sn}">
+                        <i></i>
+                    </div>
+                    <div class="form-item" style="width:20%">
+                        <label for="order_status">订单状态</label>
+                        <select name="order_status" id="order_status">
+                            <option value="0" selected>全部</option>
+                            {foreach \app\index\model\Order::STATUSES as $k => $v}
+                            <option value="{$k}" <?= $k == $order_status ? 'selected' : '' ?>>{$v}</option>
+                            {/foreach}
+                        </select>
+                    </div>
+                    
+                    <div>
+                        <input type="button" value="查询" class="btn btn-fill" id="search">
+                        <input type="button" value="高级查询" class="btn btn-o" id="h-search" hidden>
+                        <i></i>
+                    </div>
+                    <!--<div class="form-item" style="min-width: 280px;">
+                        <label for="transaction_id">支付订单号</label>
+                        <input type="text" placeholder="请输入支付订单号" name="transaction_id" id="date1" value="">
+                        <i></i>
+                    </div>
+                    <div class="form-item">
+                        <label for="pay_type">支付方式</label>
+                        <select  name="pay_type" id="pay_type">
+                            <option value="0" selected>全部</option>
+                            <option value=" "> </option>
+                        </select>
+                    </div>
+                    <div class="form-item">
+                        <label for="status">订单状态</label>
+                        <select name="status" id="order_status">
+                            <option value="0" selected>全部</option>
+                            <option value=" "> </option>
+                        </select>
+                    </div>-->
+                </div>
+            </form>
+        </div>
+        <div class="order-table">
+            <table class="order-tb">
+                <thead>
+                <tr>
+                    <th colspan="9">
+                        <div class="form-group">
+                            <div class="form-checkbox" id="allCheck" style="visibility: hidden">
+                                <label for="">
+                                    <input type="checkbox" class="allcheck">
+                                    <span></span> 全选
+                                </label>
+                            </div>
+                            {haspermission:close key="view-export-all-order"}
+                            <div class="form-item-btn" style="width: auto;margin-right: 25px;">
+                                <a href="javascript:;" class="btn btn-o btn-icon btn-export"><i class="fa fa-download"></i>导出</a>
+                            </div>
+                            {/haspermission:close}
+                        </div>
+                    </th>
+                </tr>
+                <tr>
+                    <th style="width: 20%">商品名称</th>
+                    <th style="width: 8%">售价（元）</th>
+                    <!--<th style="width: 8%">可获积分</th>-->
+                    <th style="width: 4%">数量</th>    
+                    <th style="width: 10%">订单金额（元）</th>
+                    <th style="width:10%">支付金额（元）</th>
+                    <th style="width:10%">订单状态</th>
+                    <th style="width:10%">售后状态</th>
+                    <th style="width: 10%">操作</th>
+                </tr>
+                </thead>
+                {foreach $orders as $order}
+                <tbody>
+                <tr class="scope-tr"></tr>
+                <tr class="tr-th">
+                    <td colspan='9'>
+                        {if $order->supplier_order_id > 0}
+                            <img style="width: 50px;display: inline-block;vertical-align: middle;margin-left: 20px;" src="{:qiniu_domains()}/upload/1a/824c96ea9d624fafd7aa8f4452f4e308f375a74a8e3c7386b40022b841bb13.png?attname=供应商标志.png">
+                        {/if}
+                        <div class="form-checkbox" style="visibility: hidden">
+                            <label for="">
+                                <input type="checkbox" checked name="order_ids[]" class="item-check" value="{$order->order_id}">
+                                <span></span>
+                            </label>
+                        </div>
+                        <span class="number">交易订单号：{$order->order_sn}</span>
+                        <!--{if strlen($order->transaction_id) && $order->settlement_price != '0.00'}
+                        <span class="time">支付订单号：{$order->transaction_id}</span>
+                        {/if}-->
+
+                        <span class="time">
+                            {switch name="$order->order_status"}
+                                {case value="1"}创建时间：{$order->create_time}{/case}
+                                {case value="2"}支付时间：{:optional(optional($order->payment_order_item)->payment_order)->success_time}{/case}
+                                {case value="3"}发货时间：{$order->deliver_time}{/case}
+                                {case value="4"}收货时间：{$order->confirm_receipt_time}{/case}
+                                {case value="5"}取消时间：{$order->cancel_time}{/case}
+                                {case value="6"}关闭时间：{$order->cancel_time}{/case}
+                                {default /}
+                            {/switch}
+                        </span>
+
+                        <span class="time">收货人：{$order->consignee}（{$order->tel}）</span>
+                        <span class="time">收货地址：{$order->full_address}</span>
+
+                    </td>
+                </tr>
+                <tr class="tr-bd">
+                    <td colspan="3" style="position:relative;">
+                        {foreach $order->order_items as $orderItem}
+                        <div class="goods-info">
+                            <div class="goods-item" style="flex: 5;max-width: none;padding-right:0">
+                                {if $order->pre_sale == 1}
+                                <img style="width:50px; position: absolute;top: 15px; left:-2px" src="{:qiniu_domains()}/upload/43/cf76a959e8696365d3575889943c1603587cd49b045c7996b8a20aa17b6aaa.png?attname=pre_sale.png">
+                                {/if}
+                                <div class="goods-img" style="border: 1px solid #e8e8e8">
+                                    <img src="{:qiniu_domains().$orderItem->product_sku_img}" alt="商品图" width='60px' height="60px">
+                                </div>
+                                <div class="goods-title">
+                                    <p title="{$orderItem->product_name}">{:cut_str($orderItem->product_name, 40)}</p>
+                                    <!--<p class="text-gray" style="font-size: 13px">ID:{$orderItem->product_id}</p>-->
+                                    <p class="text-gray" style="font-size: 13px">规格：{$orderItem->property_name}</p>
+                                    {if $order->pre_sale == 1}
+                                        <p style="color:#ff8544;font-size: 13px;">排号：{$orderItem->row_number}</p>
+                                    {/if}
+                                </div>
+                            </div>
+                            <div style="flex:2">
+                                ￥{$orderItem->sell_price}
+                            </div>
+                            <!--<div style="flex:2">{$orderItem->score}</div>-->
+                            <div style="flex:1">x {$orderItem->num}</div>
+                        </div>
+                        {/foreach}
+                    </td>
+
+                    <td style="width: 10%">
+
+                        <p class="text-link">￥{$order->total_price}</p>
+                        <p class="text-gray">（含运费：{$order->freight_price}）</p>
+
+                    </td>
+                    <td style="width: 10%">
+
+                        <p class="text-link">
+                            {if 8 == $order->pay_type}
+                            紫谷兑换：￥{:optional(optional($order->payment_order_item)->payment_order)->purple_price}
+                            {else /}
+                            现金支付：￥{:optional(optional($order->payment_order_item)->payment_order)->channel_pay_price}
+                            {/if}
+                        </p>
+                        <p class="text-red">
+                            <!--{if $order->red_packet_record_id > 0}-->
+                            <!--红包：-->
+                            <!--{else /}-->
+                            <!--优惠券：-->
+                            <!--{/if}-->
+                            <!-- -￥{$order->discount_amount}-->
+
+                            五谷优惠： -￥{$order->discount_amount}
+                        </p>
+                    </td>
+
+                    <td style="width: 10%">
+                        <p class="text-gray">{$order->status_text}</p>
+
+                        {if in_array($order->refund_status, [1,2,3])}
+                        <p class="text-gray" style="color: #0091FF;margin-top:6px;">
+                            ( {$order->refund_status_text} )
+                            <img class="refund-reason" data-reason="{$order->application_reason_text}" src="{:qiniu_domains()}/upload/1f/68d4ae0f966ed9daae217f4fb2f789f62998daff83030ea8153b102b2caabf.png?origin=hint_icon.png">
+                        </p>
+                        {/if}
+                    </td>
+                    <td style="width: 10%">
+                        {if $order->order_virtual}
+                        <p class="text-red">{:optional($order->order_virtual)->sale_status_text}</p>
+                        {/if}
+                    </td>
+                    <td style="width: 10%">
+                        {if $order->order_virtual}
+                            <p>
+                                <span style="cursor: pointer;" onclick="window.location.href='/order/detail?order_id={$order->order_id}'">详情</span>
+                            </p>
+                            {if $order->order_virtual->delivery_type == 2 && $order->order_virtual->sale_status == 2 && $order->order_status == 2}
+
+                                <br>
+                                <p>
+                                    <a href="/order/delivery?id={$order->order_id}" class="btn btn-fill">发货</a>
+                                </p>
+                            {/if}
+                        {else /}
+                            {if $order->supplier_order_id == 0}
+                                <p>
+                                    <span style="cursor: pointer;" onclick="window.location.href='/order/detail?order_id={$order->order_id}'">详情</span>
+                                </p>
+                                <br>
+                                <p  class="refuse-group">
+                                    {haspermission:close key="view-order-delivery"}
+                                    {if 2 == $order->order_status && in_array($order->refund_status,[0,4])}
+                                    <a href="/order/delivery?id={$order->order_id}" class="btn btn-fill">发货</a>
+                                    <br>
+                                    {/if}
+                                    {/haspermission:close}
+                                    {if $order->refund_status == 1}
+                                    <a href="javascript:;" class="btn btn-o refuse"  data-id="{$order->order_id}">拒绝退款</a>
+                                    <a href="javascript:;" class="btn btn-fill agree"  data-id="{$order->order_id}">同意退款</a>
+                                    {/if}
+                                </p>
+                            {/if}
+                        {/if}
+                    </td>
+                </tr>
+                </tbody>
+                {/foreach}
+            </table>
+        </div>
+        <!--分页-->
+        {$orders->render()|raw}
+    </div>
+</div>
+<div class="refuse-layer" style="display: none;">
+   <div style="margin-top:30px;">
+        <div class="refuse-title">拒绝原因：（必选）</div>
+        <select class="refuse-status">
+            <option value="0" selected>请选择拒绝原因</option>
+            {foreach \app\index\model\OrderRefundApplication::SELLERDENYTYPE as $k => $v}
+            <option value="{$k}" <?= $k == $order_status ? 'selected' : '' ?>>{$v}</option>
+            {/foreach}
+          </select>
+        <div class="refuse-title">拒绝说明：（必填，将呈现给用户）</div>
+       <textarea rows="6" cols="45" maxlength="50" style="resize: none;" class="inp refuse-content" placeholder="输入您的拒绝说明，50字以内...">
+        </textarea>
+    </div>
+</div>
+{/block}
+
+{block name='js'}
+<script>
+    laydate.render({
+        elem: '#date-m',
+        type: 'date',
+        range:true,
+        btns: ['clear', 'confirm'],
+        done: function (value, start, end) {
+            if (start.month !== end.month) {
+
+                layer.msg('暂不支持跨月查询哦！', {
+                    icon: 0,
+                    time: 1000 //2秒关闭（如果不配置，默认是3秒）
+                }, function () {
+                    $("#date-m").val('');
+                });
+                return false;
+            }
+        },
+    });
+</script>
+
+<script>
+    $(".btn-export").click(function () {
+        // 查询条件
+
+        var create_time = $("#date-m").val();
+        var order_sn = $("input[name='order_sn']").val();// 交易订单号
+        var product_name = $("input[name='product_name']").val(); // 商品标题
+        var transaction_id = $("input[name='transaction_id']").val(); // 支付订单号
+        var pay_type = $('#pay_type').val();// 支付方式
+        var status = $('#order_status').val();// 订单状态
+        var pre_sale = $('#pre_sale').val();// 订单类型
+
+        var where = "/order/export?";
+        if (!create_time) {
+            layer.msg('请选择订单创建时间！', {
+                icon: 0,
+                time: 2000 //2秒关闭（如果不配置，默认是3秒）
+            });
+            return false;
+        }
+
+        where += "create_time="+create_time;
+        where += "&order_sn="+order_sn;
+        where += "&product_name="+product_name;
+        where += "&transaction_id="+transaction_id;
+        where += "&pay_type="+pay_type;
+        where += "&order_status="+status;
+        where += "&pre_sale="+pre_sale;
+
+        var order_ids = [];
+        $("input[name='order_ids[]']").each(function() {
+            if ($(this).is(':checked')) {
+                order_ids.push($(this).val());
+            }
+        });
+
+        if (order_ids.length == 0) {
+            layer.msg('暂无数据，无法进行操作！', {
+                icon: 0,
+                time: 2000 //2秒关闭（如果不配置，默认是3秒）
+            });
+            return false;
+        }
+
+        $.ajax({
+            url: '/order/check-order-num', //请求地址
+            type: "get", //请求方式
+            dataType: "json", //返回数据格式为json
+            data: {
+                create_time:create_time,
+                order_sn:order_sn,
+                product_name:product_name,
+                transaction_id:transaction_id,
+                pay_type:pay_type,
+                status:status,
+                pre_sale:pre_sale,
+            },
+            success: function(data) { //请求成功完成后要执行的方法
+                layer.confirm('确定要导出订单数据吗？', {
+                    btn: ['确定', '取消'],
+
+                }, function (index) {
+                    window.location.href = where;
+                    layer.close(index);
+                });
+            }, error:function(resule) {
+                layer.msg(resule.responseJSON.msg,{icon: 2});
+            }
+        });
+    });
+
+    $("#search").on('click', function () {
+        $("#myform").submit();
+    });
+
+    $('.ShopFrontPage-wrap').on('click',function (e) {
+        e.stopPropagation();
+        $('.laydate-btns-clear').click();
+    });
+
+    $('#layui-laydate2,#date-m').on('click',function (e) {
+        e.stopPropagation();
+    });
+
+</script>
+
+<script>
+    // 拒绝退款
+    $(".refuse").click(function () {
+        var order_id = $(this).attr('data-id');
+        $(".refuse-content").val('');
+        layer.open({
+            type: 1,
+            title: "拒绝退款",
+            shadeClose: true,
+            btn: ["确定", "取消"],
+            shade: [0.3, '#393D49'],
+            area: ['450px', '400px'],
+            content: $('.refuse-layer'),
+            yes: function (index, layero) {
+                // 获取信息
+                var deny_reason = $(".refuse-content").val().trim();
+                var deny_status=$(".refuse-status").val();
+
+                if (deny_status == 0) {
+                    layer.msg("亲，请选择拒绝原因", {icon: 2}, function () {
+                        $(".refuse-status").focus();
+                    });
+                    return false;
+                }
+                if (deny_reason == '') {
+                    layer.msg("亲，请先填写拒绝说明", {icon: 2}, function () {
+                        $(".refuse-content").val('').focus();
+                    });
+                    return false;
+                }
+
+                // 进行提交保存
+                layer.load(3, {shade: [0.1, '#393D49']});
+                $.ajax({
+                    url: '/order/refuse',
+                    type: 'POST',
+                    data: {deny_reason:deny_reason, order_id:order_id, seller_deny_type: deny_status},
+                    dataType: 'json',
+                    success: function (data) {
+                        // console.log(data);
+                        // return false;
+                        layer.msg(data.msg, {
+                            icon: 6,
+                            time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                        }, function () {
+                            layer.closeAll();
+                            window.location.reload();
+                        });
+                    }, error: function (data) {
+                        layer.msg(data.responseJSON.msg, {icon: 2}, function () {
+                            layer.closeAll();
+                        });
+                    }
+                });
+            },
+        });
+    });
+
+    // 同意退款
+    $(".agree").click(function () {
+        var order_id = $(this).attr('data-id');
+        layer.confirm('是否同意该用户的退款申请？', {
+            btn: ['确定', '取消'],
+        }, function () {
+            // 增加加载层
+            layer.load(0, {
+                shade: [0.1,'black'] //0.1透明度的白色背景
+            });
+            $.ajax({
+                url: '/order/agree',
+                type: 'POST',
+                data:  {order_id: order_id},
+                dataType: 'json',
+                success: function (data) {
+                    // console.log(data)
+                    layer.msg(data.msg, {
+                        icon: 6,
+                        time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                    }, function () {
+                        layer.closeAll();
+                        location.reload();
+                    });
+                },
+                error: function (data) {
+                    layer.msg(data.responseJSON.msg, {icon: 2}, function () {
+                        layer.closeAll();
+                    });
+                }
+            });
+        });
+    });
+
+    // 快捷写入退款原因
+    $('body').on('click', ".refuse-text", function () {
+       $(".refuse-content").text($(this).text());
+    });
+
+    $(".refund-reason").on("mouseover", function () {
+        var msg = $(this).attr('data-reason');
+        if (msg) {
+            layer.tips("<span style='color:black'>"+msg+"</span>", $(this), {
+                tips: [1, '#fff'], //还可配置颜色
+                time:3000
+            });
+        }
+    });
+    $(".refund-reason").on("mouseout", function () {
+        layer.closeAll();
+    });
+</script>
+{/block}

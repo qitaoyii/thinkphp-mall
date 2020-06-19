@@ -1,0 +1,175 @@
+{extend name="layout/base" /}
+
+{block name="seo"}
+    <title>{$title|default="品牌厂家直供平台"}</title>
+    <meta name="keywords" content="{$keywords|default='网站关键字'}">
+    <meta name="description" content="{$desc|default='网站描述'}">
+{/block}
+
+{block name="style"}
+    <link rel="stylesheet" href="__STATIC__/style/freight.css?{:config('huaban.css_version.version')}">
+{/block}
+
+{block name="title"}
+    <span>订单管理</span> /
+    <span>运费模板</span>/
+    <span class="colorTit">查看运费模板</span>
+{/block}
+
+{block name="content"}
+    <!-- 平台功能区 -->
+    <div class="ShopFrontPage-r-bot">
+        <div class="cards">
+            <!--<form action="" type="post">-->
+            <div class="tpl-box">
+                <div class="tpl-title">模板基础信息</div>
+                <div class="tpl-content">
+                    <div class="tpl-item flex">
+                        <span>模板名称</span>
+                        <div>{$templateData->template_name}（{$templateData->status_text}）</div>
+                    </div>
+
+                </div>
+                <div class="tpl-title">商品包邮配送区域</div>
+                {if $templateData->is_free_postage == 0}
+                <div class="tpl-content">
+                    <div class="tpl-item">
+                        <span>选择区域</span>
+                        <div class="tpl-area" id="free">
+                            {foreach $templateData->free_area as $free_area}
+                                <div class="area-check">
+                                    <input type="checkbox" checked disabled><span>{$free_area.short_name}</span>
+                                </div>
+                            {/foreach}
+                        </div>
+                        <div class="btn-group flex">
+                            <p>共<b id='checknum' class="text-o">{$templateData->count}</b>区域</p>
+                        </div>
+                    </div>
+                </div>
+                {else /}
+                <div class="tpl-content">
+                    <div class="tpl-item">
+                        <span>选择区域</span>
+                        <div class="tpl-area">
+                            {foreach $templateData->free_area as $free_area}
+                                {if $free_area.type == 1}
+                                    <div class="area-check">
+                                        <input type="checkbox" checked disabled><span>{$free_area.short_name}</span>
+                                    </div>
+                                {/if}
+                            {/foreach}
+                        </div>
+                        <div class="btn-group flex">
+                            <p>共<b class="text-o">{$templateData->count}</b>区域</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="type-box"  style="display: block;">
+                    <div class="tpl-title">需要买家付邮费的区域</div>
+                    <div class="tpl-content">
+                        <div class="tpl-item">
+                            <span>计费方式</span>
+                            <div class="form-radio">
+                                <label>
+                                    <input type="radio" class="item-check" name="tplCharge" value="number" {if $templateData->charge_flag == 0} checked {/if} disabled>
+                                    <span></span>按件数计费
+                                </label>
+                            </div>
+                            <div class="form-radio">
+                                <label>
+                                    <input type="radio" class="item-check" name="tplCharge" value="weight" {if $templateData->charge_flag == 1} checked {/if} disabled>
+                                    <span></span>按重量计费
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tpl-content">
+                        <div class="charge">
+                            {if count($templateData->detail)}
+                                {foreach $templateData->detail as $detail}
+                                    <div class="area_box" style="width: calc(100% + 100px);">
+                                        <div class="tpl-item">
+                                            <span>配送区域</span>
+                                            <div class="tpl-area">
+                                                {foreach $detail->area_name as $keys=>$value}
+                                                <div class="area-check">
+                                                    <input type="checkbox" checked="" value="610000" data-name="陕西" disabled="disabled"><span>{$value.short_name}</span>
+                                                </div>
+                                                {/foreach}
+                                            </div>
+                                        </div>
+                                        <div class="tpl-item">
+                                            <span>配送运费</span>
+                                            <div class="tpl-info">
+                                                {if $templateData->charge_flag == 0}
+                                                <p><span>首件<i class="text-o">{$detail->first_weight}</i>件</span>
+                                                    <span>首费<i class="text-o">{$detail->first_price}</i>元</span>
+                                                    <span>续件<i class="text-o">{$detail->continue_weight}</i>件</span>
+                                                    <span>续费<i class="text-o">{$detail->continue_price}</i>元</span>
+                                                </p>
+                                                {else /}
+                                                <!--按重量计费-->
+                                                <p><span>首重<i class="text-o">{$detail->first_weight}</i>克（g）</span>
+                                                    <span>首费<i class="text-o">{$detail->first_price}</i>元</span>
+                                                    <span>续重<i class="text-o">{$detail->continue_weight}</i>克（g）</span>
+                                                    <span>续费<i class="text-o">{$detail->continue_price}</i>元</span>
+                                                </p>
+                                                {/if}
+                                                <!--指定条件包邮-->
+                                                <div class="flex">
+                                                    <div class="form-checkbox">
+                                                        <label>
+                                                            <input type="checkbox" disabled="disabled" class="item-check" name="condition" {if $detail->condition_postage != 0}checked{/if}>
+                                                            <span></span>指定条件包邮
+                                                        </label>
+                                                    </div>
+                                                    <!--按件数-->
+                                                    <div class="flex" {if $detail->condition_postage == 0}style='display:none;'{/if}>
+                                                        {if $detail->condition_postage == 1}
+                                                            {if $templateData->charge_flag == 0}
+                                                                <p>满 <i class="text-o">{$detail->full_num}</i>件包邮</p>
+                                                            {else /}
+                                                                <p>满 <i class="text-o">{$detail->full_num}</i>千克（kg）包邮</p>
+                                                            {/if}
+                                                        {else /}
+                                                            <p>满 <i class="text-o">{$detail->full_num}</i>元包邮</p>
+                                                        {/if}
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {/foreach}
+                            {/if}
+                        </div>
+
+                    </div>
+                </div>
+                <div class="tpl-title">不配送的区域<span class="text-gray">（不配送区域的买家将无法购买该模板绑定的商品）</span></div>
+                <div class="tpl-content" id="cant-area">
+                    {foreach $templateData->free_area as $no_area}
+                        {if $no_area.type == 3}
+                            <div class="area-check">
+                                <input type="checkbox" checked="" disabled="disabled" value="110000" data-name="北京" onchange="" name="cant-area"><span>{$no_area.short_name}</span>
+                            </div>
+                        {/if}
+                    {/foreach}
+                </div>
+                {/if}
+            </div>
+
+            <div class="tpl-btn">
+                <a href="javascript:;" class="btn btn-o btn-lg" onclick="history.back()">关闭</a>
+            </div>
+
+            <!-- </form>-->
+        </div>
+    </div>
+
+{/block}
+
+{block name='js'}
+{/block}

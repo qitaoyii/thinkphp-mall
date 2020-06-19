@@ -1,0 +1,1674 @@
+{extend name="layout/base" /}
+
+{block name="seo"}
+<title>{$title|default="品牌厂家直供平台"}</title>
+{/block}
+
+{block name="style"}
+<link rel="stylesheet" href="__STATIC__/style/material-index.css?{:config('huaban.css_version.version')}">
+<link type="text/css" rel="stylesheet"
+    href="{:qiniu_domains()}/upload/05/5ac49f96e0da433abf218f15f1247933d8916d0e0b9e5929b06e7e340c7b82.css" />
+<style>
+    .media-del {
+        position: absolute;
+        top: -8px;
+        right: -5px;
+        color: red;
+        display: none;
+    }
+
+    .media-edit {
+        position: absolute;
+        bottom: -8px;
+        right: -5px;
+        color: red;
+        display: none;
+    }
+
+    .create-list {
+        position: relative;
+    }
+
+    .create-list-title {
+        display: none;
+        position: absolute;
+        bottom: -10px;
+        left: 115px;
+        color: #dd1144;
+    }
+
+    .material-box .material-img-tabbox .material-img-tab-r .newlist-btns {
+        border: 1px solid #FF8544;
+        background: #fff;
+        color: #FF8544;
+        margin-left: 20px;
+    }
+
+    .material-box .material-img-tabbox .material-img-tab-r button {
+        padding: 5px 12px;
+        border-radius: 15px;
+        border: 0;
+        cursor: pointer;
+    }
+</style>
+{/block}
+
+{block name="title"}
+<span>商品管理</span> /
+<span class="colorTit">素材中心</span>
+{/block}
+
+<!-- 平台功能区 -->
+{block name="content"}
+<div class="material-box">
+    <div class="material-tit">
+        <h1>
+            素材中心
+        </h1>
+    </div>
+    <div class="material-tab-box">
+        <div class="material-tab">
+            <div class="material-tab-list tab-list">图片</div>
+            <div class="material-tab-list">视频</div>
+            <!--<div class="material-tab-list">规格管理</div>-->
+        </div>
+    </div>
+    <div class="material-cont-box">
+        <div class="material-img-box">
+            <div class="material-img-box-tit">
+                <div>图片(共<span class="imgnum">0</span>条)</div>
+            </div>
+            <div class="material-img-tabbox">
+                <!-- <div class="right-scroll">
+                        <
+                    </div> -->
+                <div class="material-img-tab-l over">
+                    <div class="material-img-tab-l-list over-list"></div>
+                </div>
+                <div class="img-select">
+                    展开
+                    <img
+                        src="{:qiniu_domains()}/upload/3e/0d87c438dae08d3e4a9dc14a96205ad8aa3f2514290327ae21674214c18780.png?origin=更多复制 2.png">
+                </div>
+                <div class="material-img-tab-r" style="width: 260px;">
+                    <button class="newlist-btn newlist-btn-i">创建新分组</button>
+                    <button class="newimg-btn newimg-btn-i">上传图片</button>
+                    <button class="newlist-btns" id="cropper">图片剪切</button>
+                    <input type="file" name="" id="file-i" multiple accept="image/jpeg,image/png">
+                </div>
+            </div>
+            <h3 class="material-img-prompt">上传图片单张限制在1M以内，宽度不能低于480px，支持JPG，PNG格式<img
+                    src="{:qiniu_domains()}/upload/69/226830a1091205af43e2eb02b952cacfb91f19c4573c5c9270528627d7212a.png?origin=prompt.png"
+                    alt=""></h3>
+            <div class="material-img-cont"></div>
+        </div>
+        <div class="material-video-box">
+            <div class="material-img-box-tit">
+                <div>视频(共<span class="videonum">0</span>条)</div>
+            </div>
+
+            <div class="material-img-tabbox">
+                <div class="material-img-tab-l">
+                    <div class="material-img-tab-l-list"></div>
+                </div>
+                <div class="img-select">
+                    展开
+                    <img
+                        src="{:qiniu_domains()}/upload/3e/0d87c438dae08d3e4a9dc14a96205ad8aa3f2514290327ae21674214c18780.png?origin=更多复制 2.png">
+                </div>
+                <div class="material-img-tab-r" style="width: 260px;">
+                    <button class="newlist-btn newlist-btn-v">创建新分组</button>
+                    <button class="newimg-btn newimg-btn-v">上传视频</button>
+                    <input type="file" name="" id="file-v" multiple accept="video/mp4">
+                </div>
+            </div>
+
+            <h3 class="material-img-prompt">支持{:config('huaban.product.main_video.max_length')}秒以内的时长视频，常规视频格式，如：.mp4
+                等<img
+                    src="{:qiniu_domains()}/upload/69/226830a1091205af43e2eb02b952cacfb91f19c4573c5c9270528627d7212a.png?origin=prompt.png"
+                    alt=""></h3>
+            <div class="material-img-cont"></div>
+        </div>
+        <div class="pragination-group" id='pageToolbar'></div>
+        {haspermission:close key="view-product-property"}
+        <div class="material-getAttribute-box">
+            <div class="material-getAttribute-linkage-box">
+                <div class="material-getAttribute-linkage-box-l">
+                    <h3>规格属性</h3>
+                    <div class="material-getAttribute-linkage">
+                        <div class="material-getAttribute-linkage-tit">
+                            商品一级类目
+                        </div>
+                        <div class="material-getAttribute-linkage-select one-select">
+                            <div class="material-getAttribute-linkage-select-val one-text">
+                                请输入一级类目
+                            </div>
+                            <img src="{:qiniu_domains()}/upload/ce/fefb23ebe2dd263cbc5c32fd5acac10c864036acbf22ca1f32cd084dfabc95.png?origin=arrowdown.png"
+                                alt="">
+                            <ul class="material-getAttribute-linkage-select-list-box one-ul"></ul>
+                        </div>
+                    </div>
+                    <div class="material-getAttribute-linkage">
+                        <div class="material-getAttribute-linkage-tit">
+                            商品二级类目
+                        </div>
+                        <div class="material-getAttribute-linkage-select two-select">
+                            <div class="material-getAttribute-linkage-select-val two-text">
+                                请输入二级类目
+                            </div>
+                            <img src="{:qiniu_domains()}/upload/ce/fefb23ebe2dd263cbc5c32fd5acac10c864036acbf22ca1f32cd084dfabc95.png?origin=arrowdown.png"
+                                alt="">
+                            <ul class="material-getAttribute-linkage-select-list-box two-ul"></ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="material-getAttribute-linkage-box-r material-getAttribute-linkage-box-r-none">
+                    <button class="addAttribute">添加属性值</button>
+                    <button class="back">返回</button>
+                </div>
+            </div>
+            <!-- 三级展示 -->
+            <div class="material-getAttribute-list-box" style="min-height: 567px;height:auto;">
+                <table class="material-getAttribute-list-box-table">
+
+                </table>
+                <table class="material-getAttribute-list-box-table-edit">
+
+                </table>
+            </div>
+        </div>
+        {/haspermission:close}
+    </div>
+</div>
+<div class="mask-box">
+    <div class="mask"></div>
+</div>
+
+{/block}
+
+{block name='js'}
+<script type="text/javascript"
+    src="{:qiniu_domains()}/upload/0a/93eb5eca9ad8575e8d80ed71bdfd74559e0fcc76b4efa54f15ebca8ebbe2ee.js?origin=zdialog.js">
+</script>
+<script type="text/javascript"
+    src="{:qiniu_domains()}/upload/62/3c0971fdebde35335b5d476528a1e58ae174cd04859e892a7f0a32f92677a3.js?origin=paging.js">
+</script>
+<script>
+    var imgOrvideoOjb = {};
+    //全局请求地址
+    var urls = '';
+    var url = '/api/media-category-list';
+
+    //存image与video数据
+    var image, video;
+
+
+    //默认type、id、第几页。
+    var type = 1;
+    var categoryid = 0;
+    var page = 1;
+
+    var clickVideoOrImg = 'img';
+
+    var data_url = '';
+    var selectUrl = '/api/product-property';
+    var dataID;
+    var dataID_two;
+
+
+
+    //请求tab头
+    defaultAjax(url, 1);
+
+    var search = decodeURI(window.location.search).split('=')[1];
+
+    if (search) {
+        var arr = search.split('-');
+        // console.log(arr);
+        $('.material-getAttribute-box').show().siblings().hide();
+        $('.material-tab').children().eq(2).addClass('tab-list').siblings().removeClass('tab-list');
+        $('.one-text').html('<span style="color:#000;">' + arr[0].split("_")[1] + '</span>');
+        dataID = arr[0].split("_")[0];
+        $('.two-text').html('<span style="color:#000;">' + arr[1].split("_")[1] + '</span>');
+        dataID_two = arr[1].split("_")[0];
+        List();
+    } else {
+        //默认请求
+        ImgOrVideoList(type, categoryid, page);
+    }
+    // 点击空白处隐藏
+    $('body').on('click', function () {
+        $('.one-ul').hide();
+        $('.two-ul').hide();
+    });
+
+    function List() {
+
+        $.ajax({
+            url: data_url + selectUrl + '?category_id=' + dataID_two,
+            type: "get", //请求方式
+            dataType: "json", //返回数据格式为json
+            // header: "Access-Control-Allow-Origin:*", //设置请求头
+            beforeSend: function () {
+                //等待延迟的函数
+                $.DialogByZ.Loading('__STATIC__/imgs/loading.png');
+            },
+            success: function (data) { //请求成功完成后要执行的方法
+                console.log(data);
+                $.DialogByZ.Close();
+                var tabtitle = '<tr class="table-tit">' +
+                    '<th>三级类目</th>' +
+                    '<th>规格1</th>' +
+                    '<th>规格2</th>' +
+                    '</tr>';
+                var height = 0;
+                var contthree = '';
+                $.each(data.data.list, function (index, item) {
+                    var str1 = item.type1_id != 0 ? item.type1_name : "请设置规格名称";
+                    var str2 = item.type2_id != 0 ? item.type2_name : "请设置规格名称";
+                    var style = str1 == "请设置规格名称" ? "color:#898E93" : "color:#000";
+                    var style2 = str2 == "请设置规格名称" ? "color:#898E93" : "color:#000";
+                    contthree +=
+                        '<tr class="table-list-tr" data-id="' + item.category_id + '">' +
+                        '<td>' + item.category_name + '</td>' +
+                        '<td type-id="' + item.type1_id + '" type="1"><p style="' + style + '">' +
+                        str1 +
+                        '<img class="amend-name" src="{:qiniu_domains()}/upload/4a/f65cac1de61710113c0e09042bac78477180aa39828ee13e8ee443ac95c974.png?origin=修改 3.png"></p><span class="edit-color span-edit" data-type="1">编辑</span></td>' +
+                        '<td type-id="' + item.type2_id + '" type="2"><p style="' + style2 + '">' +
+                        str2 +
+                        '<img class="amend-name" src="{:qiniu_domains()}/upload/4a/f65cac1de61710113c0e09042bac78477180aa39828ee13e8ee443ac95c974.png?origin=修改 3.png"></p><span class="edit-size span-edit" data-type="2">编辑</span></td>' +
+                        '</tr>';
+                    height += 1;
+                });
+
+                // if (height <= 6) {
+                //     // console.log(123)
+                //     $('.material-getAttribute-box').css('height', '567px');
+                // } else {
+                //     // console.log(123)
+                //     $('.material-getAttribute-box').css('height', (height * 50) + 200 + 'px');
+                // }
+                $('.material-getAttribute-list-box-table').html(tabtitle + contthree);
+            }
+        });
+    }
+
+    function defaultAjax(url, type) {
+        $.ajax({
+            url: urls + url, //请求地址
+            type: "get", //请求方式
+            dataType: "json", //返回数据格式为json
+            // header: "Access-Control-Allow-Origin:*", //设置请求头
+            success: function (data) { //请求成功完成后要执行的方法
+                image = data.data.image;
+                video = data.data.video;
+
+                //循环遍历数据并渲染分类tab头部
+                if (type == 1) {
+                    var imagetab = '';
+                    $.each(image, function (index, value) {
+                        imagetab +=
+                            '<div class="material-img-tab-list" style="position: relative" data-id="' +
+                            value.category_id + '">';
+                        if (index > 0) {
+                            imagetab +=
+                                '<span class="media-del"><img src="{:qiniu_domains()}/upload/15/e669d0e2ea7b43c78abd89b7a14d7bdd34734f7f41d23a6d8fd25d128cd381.jpg?origin=del.jpg" style="width:15px;height: 15px;"></span><span class="media-edit" title="重命名"><img src="{:qiniu_domains()}/upload/67/94acb00faefd771367b6d2bd01a1453b8ba6b39529323b9069cbc0b1b5a578.png?origin=edit.png" style="width:15px;height: 15px;" data-type="' +
+                                type + '"></span>';
+                        }
+                        imagetab += value.name + '(' + '<span>' + value.count + '</span>' + ')';
+                        imagetab += '</div>';
+                        $('.material-img-tab-l-list').html(imagetab);
+                        $('.imgnum').text(image[0].count);
+                        $('.material-img-tab-l-list').children().eq(0).addClass('img-tab-list')
+                    })
+                } else {
+                    var videotab = '';
+                    $.each(video, function (index, value) {
+                        videotab +=
+                            '<div class="material-img-tab-list" style="position: relative" data-id="' +
+                            value.category_id + '">';
+                        if (index > 0) {
+                            videotab +=
+                                '<span class="media-del"><img src="{:qiniu_domains()}/upload/15/e669d0e2ea7b43c78abd89b7a14d7bdd34734f7f41d23a6d8fd25d128cd381.jpg?origin=del.jpg" style="width:15px;height: 15px;"></span><span class="media-edit" title="重命名"><img src="{:qiniu_domains()}/upload/67/94acb00faefd771367b6d2bd01a1453b8ba6b39529323b9069cbc0b1b5a578.png?origin=edit.png" style="width:15px;height: 15px;" data-type="' +
+                                type + '"></span>';
+                        }
+                        videotab += value.name + '(' + '<span>' + value.count + '</span>' + ')';
+                        videotab += '</div>';
+                    });
+                    $('.material-img-tab-l-list').html(videotab);
+                    $('.videonum').text(video[0].count);
+                    $('.material-video-box .material-img-tab-l-list').children().eq(0).addClass(
+                        'img-tab-list');
+                }
+                if ($('.material-img-tab-l-list')[0].scrollHeight <= 55) {
+                    $(".img-select").hide()
+                }
+            }
+        });
+    }
+
+    //点击图片或视频tab
+    $('.material-tab').on('click', '.material-tab-list', function () {
+        $(this).addClass('tab-list').siblings().removeClass('tab-list');
+        categoryid = 0;
+        //判断点击tab头部
+        if ($(this).text() == "图片") {
+            clickVideoOrImg = 'img';
+            type = 1;
+            defaultAjax(url, type);
+            $('.pragination-group').show();
+            $('.material-img-box').show().siblings('.material-video-box,.material-getAttribute-box').hide();
+            var imagetab = '';
+            $.each(image, function (index, value) {
+                imagetab += '<div class="material-img-tab-list" style="position: relative" data-id="' +
+                    value.category_id + '">';
+                if (index > 0) {
+                    imagetab +=
+                        '<span class="media-del"><img src="{:qiniu_domains()}/upload/15/e669d0e2ea7b43c78abd89b7a14d7bdd34734f7f41d23a6d8fd25d128cd381.jpg?origin=del.jpg" style="width:15px;height: 15px;"></span><span class="media-edit" title="重命名"><img src="{:qiniu_domains()}/upload/67/94acb00faefd771367b6d2bd01a1453b8ba6b39529323b9069cbc0b1b5a578.png?origin=edit.png" style="width:15px;height: 15px;" data-type="' +
+                        type + '"></span>';
+                }
+                imagetab += value.name + '(' + '<span>' + value.count + '</span>' + ')';
+                imagetab += '</div>';
+            });
+            $('.material-img-tab-l-list').html(imagetab);
+            $('.imgnum').text(image[0].count);
+            $('.material-img-box .material-img-tab-l-list').children().eq(0).addClass('img-tab-list');
+            ImgOrVideoList(type, categoryid, page);
+
+        } else if ($(this).text() == "视频") {
+            clickVideoOrImg = 'video';
+            type = 2;
+            defaultAjax(url, type);
+            $('.pragination-group').show();
+            $('.material-video-box').show().siblings('.material-img-box,.material-getAttribute-box').hide();
+            var videotab = '';
+            $.each(video, function (index, value) {
+                videotab += '<div class="material-img-tab-list" style="position: relative" data-id="' +
+                    value.category_id + '">';
+                if (index > 0) {
+                    videotab +=
+                        '<span class="media-del"><img src="{:qiniu_domains()}/upload/15/e669d0e2ea7b43c78abd89b7a14d7bdd34734f7f41d23a6d8fd25d128cd381.jpg?origin=del.jpg" style="width:15px;height: 15px;"></span> <span class="media-edit" title="重命名"><img src="{:qiniu_domains()}/upload/67/94acb00faefd771367b6d2bd01a1453b8ba6b39529323b9069cbc0b1b5a578.png?origin=edit.png" style="width:15px;height: 15px;" data-type="' +
+                        type + '"></span>';
+                }
+                videotab += value.name + '(' + '<span>' + value.count + '</span>' + ')';
+                videotab += '</div>';
+            });
+            $('.material-img-tab-l-list').html(videotab);
+            $('.videonum').text(video[0].count);
+            $('.material-video-box .material-img-tab-l-list').children().eq(0).addClass('img-tab-list');
+            ImgOrVideoList(type, categoryid, page);
+        } else {
+            $('.material-getAttribute-box').show().siblings().hide();
+        }
+    });
+
+    // 删除素材分组
+    $('.material-img-tab-l-list').on('click', '.media-del', function (event) {
+        event.stopPropagation();
+        var category_id = $(this).parent('.material-img-tab-list').attr('data-id');
+
+        layer.confirm("确定删除该分组么（分组内的素材将同步删除）？", {
+            btn: ['确定', '取消']
+        }, function (index, layero) {
+            layer.load(3, {
+                shade: [0.1, '#393D49']
+            });
+            $.ajax({
+                url: urls + '/api/delete-media-category',
+                type: 'POST',
+                dataType: 'json',
+                data: {
+                    'category_id': category_id
+                },
+                success: function (result) {
+                    layer.closeAll();
+                    layer.msg(result.msg, {
+                        icon: 6,
+                        time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                    }, function () {
+                        defaultAjax(url, type);
+                    });
+                },
+                error: function (data) {
+                    layer.closeAll();
+                    layer.msg(data.responseJSON.msg, {
+                        icon: 2
+                    });
+                }
+            });
+        }, function (index) {
+            layer.close(index);
+        });
+    });
+    $('.material-img-tab-l-list').on('click', '.media-edit', function (event) {
+        event.stopPropagation();
+        var category_id = $(this).parent('.material-img-tab-list').attr('data-id');
+
+        layer.confirm("确定要对该素材分组名称进行编辑吗？", {
+            btn: ['确定', '取消']
+        }, function (index, layero) {
+            layer.close(index);
+            layer.prompt({
+                title: '请输入新的分组名称',
+            }, function (val, index) {
+                var name = val; //新分组
+                layer.load(3, {
+                    shade: [0.1, '#393D49']
+                });
+                $.ajax({
+                    url: urls + '/api/rename-media-category',
+                    type: 'POST',
+                    dataType: 'json',
+                    data: {
+                        'type': type,
+                        'name': name,
+                        'category_id': category_id
+                    },
+                    success: function (result) {
+                        layer.closeAll();
+                        layer.msg(result.msg, {
+                            icon: 6,
+                            time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                        }, function () {
+                            defaultAjax(url, type);
+                        });
+                    },
+                    error: function (data) {
+                        layer.closeAll();
+                        layer.msg(data.responseJSON.msg, {
+                            icon: 2
+                        });
+                    }
+                });
+                layer.close(index);
+            });
+        });
+
+    });
+
+
+    // 移入移出
+    $(document).on('mousemove', '.material-img-tab-list', function () {
+        $(this).find(".media-del,.media-edit").show();
+    }).on('mouseout', '.material-img-tab-list', function () {
+        $(this).find(".media-del,.media-edit").hide();
+    });
+
+    //图片或视频分类tab
+    $('.material-img-tab-l-list').on('click', '.material-img-tab-list', function () {
+        $(this).addClass('img-tab-list').siblings().removeClass('img-tab-list');
+
+        //获取点击id再次请求
+        categoryid = $(this).attr('data-id');
+        ImgOrVideoList(type, categoryid, page);
+    });
+
+    //设置分页插件高
+    $('#pageToolbar').css('height', '60px');
+
+    //封装点击分页请求
+    function ImgOrVideoList(type, categoryid, page) {
+        if (imgOrvideoOjb[type + '_' + categoryid + '_' + page]) {
+            getHtml(imgOrvideoOjb[type + '_' + categoryid + '_' + page]);
+            $('#pageToolbar').html('');
+            // 加分页
+            if (imgOrvideoOjb[type + '_' + categoryid + '_' + page + '_last_page']) {
+                num_count = imgOrvideoOjb[type + '_' + categoryid + '_' + page + '_last_page'] * 16;
+            } else {
+                num_count = data.data.last_page * 16;
+            }
+            $('#pageToolbar').Paging({
+                pagesize: 16,
+                count: num_count,
+
+                callback: function (res) {
+                    /*res当前页码*/
+                    page = res;
+
+                    $('.material-img-cont').html('');
+
+                    if (imgOrvideoOjb[type + '_' + categoryid + '_' + page]) {
+                        getHtml(imgOrvideoOjb[type + '_' + categoryid + '_' + page]);
+                    } else {
+                        var listurl = urls + '/api/media?';
+                        $.ajax({
+                            url: listurl + 'type=' + type + '&category_id=' + categoryid +
+                                '&page=' + page + '&per_page=16',
+                            type: "get", //请求方式
+                            dataType: "json", //返回数据格式为json
+                            // header: "Access-Control-Allow-Origin:*",
+                            beforeSend: function () {
+                                //等待延迟的函数
+                                layer.load(3, {
+                                    shade: [0.1, '#393D49']
+                                });
+                                // $.DialogByZ.Loading('{:qiniu_domains()}/upload/82/4fd6518ccd3af463a2e56a53e98cc1a074599a4531bed12f219958fb3f84df.png?origin=loading.png');
+                            },
+                            success: function (data) { //请求成功完成后要执行的方法
+                                imgOrvideoOjb[type + '_' + categoryid + '_' + page] = data.data
+                                    .list;
+                                imgOrvideoOjb[type + '_' + categoryid + '_' + page +
+                                    '_last_page'] = data.data.last_page;
+                                // console.log(imgOrvideoOjb)
+                                setTimeout(function () {
+                                    //关闭loading
+                                    // $.DialogByZ.Close();
+                                    layer.closeAll();
+                                    getHtml(data.data.list);
+                                }, 500);
+                            }
+                        });
+                    }
+                }
+            });
+        } else {
+
+            $('.material-img-cont').html('');
+            $('#pageToolbar').html('');
+            var listurl = urls + '/api/media?';
+            $.ajax({
+                url: listurl + 'type=' + type + '&category_id=' + categoryid + '&page=' + page + '&per_page=16',
+                type: "get", //请求方式
+                dataType: "json", //返回数据格式为json
+                // header: "Access-Control-Allow-Origin:*", //设置请求头
+                beforeSend: function () {
+                    layer.load(3, {
+                        shade: [0.1, '#393D49']
+                    });
+                },
+                success: function (data) { //请求成功完成后要执行的方法
+
+                    imgOrvideoOjb[type + '_' + categoryid + '_' + page] = data.data.list;
+                    imgOrvideoOjb[type + '_' + categoryid + '_' + page + '_last_page'] = data.data
+                    .last_page;
+                    // console.log(imgOrvideoOjb)
+                    // console.log(data);
+                    pageNum = data.data.last_page;
+
+                    setTimeout(function () {
+                        // $.DialogByZ.Close();
+                        layer.closeAll();
+                        var num_count = '';
+                        if (imgOrvideoOjb[type + '_' + categoryid + '_' + page + '_last_page']) {
+                            num_count = imgOrvideoOjb[type + '_' + categoryid + '_' + page +
+                                '_last_page'] * 16;
+                        } else {
+                            num_count = data.data.last_page * 16;
+                        }
+                        $('#pageToolbar').Paging({
+                            pagesize: 16,
+                            count: num_count,
+
+                            callback: function (res) {
+                                /*res当前页码*/
+                                page = res;
+
+                                $('.material-img-cont').html('');
+                                if (imgOrvideoOjb[type + '_' + categoryid + '_' +
+                                    page]) {
+                                    getHtml(imgOrvideoOjb[type + '_' + categoryid +
+                                        '_' + page]);
+                                } else {
+                                    $.ajax({
+                                        url: listurl + 'type=' + type +
+                                            '&category_id=' + categoryid +
+                                            '&page=' + page + '&per_page=16',
+                                        type: "get", //请求方式
+                                        dataType: "json", //返回数据格式为json
+                                        // header: "Access-Control-Allow-Origin:*",
+                                        beforeSend: function () {
+                                            //等待延迟的函数
+                                            layer.load(3, {
+                                                shade: [0.1,
+                                                    '#393D49'
+                                                ]
+                                            });
+                                            // $.DialogByZ.Loading('{:qiniu_domains()}/upload/82/4fd6518ccd3af463a2e56a53e98cc1a074599a4531bed12f219958fb3f84df.png?origin=loading.png');
+                                        },
+                                        success: function (
+                                        data) { //请求成功完成后要执行的方法
+                                            imgOrvideoOjb[type + '_' +
+                                                    categoryid + '_' + page
+                                                    ] = data.data.list;
+                                            imgOrvideoOjb[type + '_' +
+                                                    categoryid + '_' +
+                                                    page + '_last_page'] =
+                                                data.data.last_page;
+                                            // console.log(imgOrvideoOjb)
+                                            setTimeout(function () {
+                                                //关闭loading
+                                                // $.DialogByZ.Close();
+                                                layer.closeAll();
+                                                getHtml(data.data
+                                                    .list);
+                                            }, 500);
+                                        }
+                                    });
+                                }
+                            }
+                        });
+                        getHtml(data.data.list);
+                    }, 200);
+                }
+            });
+        }
+    }
+
+    // 获取图片html
+    function getHtml(list) {
+        var imgcont = '';
+        $.each(list, function (index, item) {
+            imgcont +=
+                '<div class="material-img-cont-list-box">' +
+                '<div class="material-img-cont-list"  data-id="' + item.id + '">' +
+                '<div class="img-cont-list-img">' +
+                '<img style="width:100%;" imgurl="' + item.url + '" src="' + item.view_url + '" alt="">' +
+                '</div>' +
+                '<div class="img-cont-list-name">' +
+                '<input type="text" class="input-check" maxlength="10" old-value="' + item.name + '" value="' +
+                item.name + '" disabled>' +
+                '</div>' +
+                '<div class="img-cont-list-modify">' +
+                '<img src="{:qiniu_domains()}/upload/75/eb740e04e780e0eff7aa1baaec2e9bc13f4688e31ce8d9f9fbfad2bf0976d4.png?origin=more.png" alt="">' +
+                '<ul class="img-cont-list-modify-listbox">' +
+                '<li class="img-cont-list-modify-listbox-name">重命名</li>' +
+                '<li class="img-cont-list-modify-listbox-grouping">移动分组</li>' +
+                '<li class="img-cont-list-modify-listbox-del">删除</li>' +
+                '</ul>' +
+                '</div>' +
+                '</div>' +
+                '</div>';
+        });
+        $('.material-img-cont').html(imgcont);
+    }
+
+    //划过list显示高亮及其他功能
+    $('.material-img-cont').on('mouseenter', '.material-img-cont-list', function () {
+        $(this).addClass('material-img-cont-list-hover');
+        $(this).children('.img-cont-list-modify').show();
+        $(this).find('input').prop('disabled', true);
+    });
+
+    //离开list取消高亮及其他功能
+    $('.material-img-cont').on('mouseleave', '.material-img-cont-list', function () {
+        $(this).removeClass('material-img-cont-list-hover');
+        $(this).children('.img-cont-list-modify').hide();
+        $(this).find('.img-cont-list-modify-listbox').hide();
+        $(this).find('input').trigger("blur");
+        $(this).find('input').prop('disabled', true);
+
+
+    });
+
+    //点击设置重命名及分组
+    $('.material-img-cont').on('click', '.img-cont-list-modify', function () {
+        $(this).children('.img-cont-list-modify-listbox').show();
+    });
+
+    //选择设置重命名或分组后关闭列表
+    $('.material-img-cont').on('click', 'li', function (even) {
+        even.stopPropagation();
+        $(this).parent().hide();
+    });
+
+    // 删除素材信息包括图片或视频
+    $('.material-img-cont').on('click', '.img-cont-list-modify-listbox-del', function () {
+        var media_id = $(this).parents('.material-img-cont-list').attr('data-id');
+        var msg = '';
+        if (type == 2) {
+            msg = '是否要删除该视频素材?';
+        } else {
+            msg = '是否要删除该图片素材?';
+        }
+        layer.confirm(msg, {
+            btn: ['确定', '取消']
+        }, function (index, layero) {
+            layer.load(3, {
+                shade: [0.1, '#393D49']
+            });
+            $.ajax({
+                url: urls + '/api/delete-media',
+                type: 'POST',
+                dataType: 'json',
+                data: {
+                    'id': media_id
+                },
+                success: function (result) {
+                    layer.closeAll();
+                    imgOrvideoOjb = {};
+                    layer.msg('删除成功！', {
+                        icon: 6,
+                        time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                    }, function () {
+                        $('.material-img-tab-list').each(function () {
+                            if ($(this).attr('data-id') == categoryid) {
+                                $(this).children('span').eq(1).text($(this)
+                                    .children('span').eq(1).text() * 1 -
+                                    1);
+                            }
+                            if ($(this).attr('data-id') == 0) {
+                                $(this).children('span').eq(0).text($(this)
+                                    .children('span').eq(0).text() * 1 -
+                                    1);
+                            }
+                        });
+
+                        if (type == 1) {
+                            $(".imgnum").text($(".imgnum").text() * 1 - 1);
+                            ImgOrVideoList(type, categoryid, page);
+                        } else {
+                            $(".videonum").text($(".videonum").text() * 1 - 1);
+                            ImgOrVideoList(type, categoryid, page);
+                        }
+                        defaultAjax(url, type);
+                    });
+                },
+                error: function (data) {
+                    layer.closeAll();
+                    layer.msg(data.responseJSON.msg, {
+                        icon: 2
+                    });
+                }
+            });
+        }, function (index) {
+            layer.close(index);
+        });
+    });
+
+    //点击执行重命名功能
+    $('.material-img-cont').on('click', '.img-cont-list-modify-listbox-name', function (even) {
+
+        $(this).parents('.material-img-cont-list').find('input').prop('disabled', false);
+        $(this).parents('.material-img-cont-list').find('input').focus();
+        var newName = '';
+        var dataID = $(this).parents('.material-img-cont-list').attr('data-id');
+        $(this).parents('.material-img-cont-list').find('input').on("blur", function (event) {
+            event.stopPropagation();
+            oldval = $(this).attr("old-value");
+            newName = $(this).val();
+            _that = $(this);
+            if (newName == '') {
+                layer.msg('名称不能为空！', {
+                    time: 2000,
+                    icon: 2
+                }, function () {
+                    _that.val(_that.attr('old-value'));
+                });
+                return false;
+            }
+            var re = /^(?!_)(?!.*?_$)[a-zA-Z0-9_\u4e00-\u9fa5]+$/;
+            if (!re.test(newName)) {
+                layer.msg('不能含有特殊字符！', {
+                    icon: 2
+                }, function () {
+                    _that.val(_that.attr('old-value'));
+                });
+                return false;
+            }
+            if (newName == oldval) {
+                return false;
+            }
+            // console.log(dataID, newName);
+            $.ajax({
+                url: urls + '/api/rename-media',
+                data: {
+                    'id': dataID,
+                    'name': newName
+                },
+                type: "post", //请求方式
+                dataType: "json", //返回数据格式为json
+                // header: "Access-Control-Allow-Origin:*",
+                success: function (data) {
+                    imgOrvideoOjb = {};
+                    layer.msg('操作成功！', {
+                        icon: 6,
+                        time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                    }, function () {
+                        _that.attr('old-value', _that.val());
+                    });
+                },
+                error: function (data) {
+                    layer.msg(data.responseJSON.msg, {
+                        icon: 2,
+                        time: 500
+                    }, function () {});
+                }
+            });
+        });
+    });
+
+    //点击执行移动分组功能
+    $('.material-img-cont').on('click', '.img-cont-list-modify-listbox-grouping', function (even) {
+        var listID = $(this).parents('.material-img-cont-list').attr('data-id');
+        var type = '';
+        $('.mask-box').show();
+        $('.mask').html('');
+        var groupingBox = '';
+        var groupingList = '';
+        if (clickVideoOrImg == 'img') {
+            type = 1;
+            $.each(image, function (index, value) {
+                if (value.category_id != 0) {
+                    if (value.category_id == categoryid) {
+                        groupingList +=
+                            '<div class="grouping-box-list grouping-box-list-opt" data-id="' + value
+                            .category_id + '">' +
+                            value.name + '(<span>' + value.count + '</span>)' +
+                            '</div>';
+                    } else {
+                        groupingList += '<div class="grouping-box-list" data-id="' + value.category_id +
+                            '">' + value.name + '(<span>' + value.count + '</span>)</div>';
+                    }
+                }
+            });
+            if ($('.material-img-box .material-img-tab-list').length <= 1) {
+                layer.msg('暂无其它分组', {
+                    icon: 2,
+                    time: 1000
+                }, function () {
+                    layer.closeAll();
+                    $('.mask-box').hide();
+                });
+                return false;
+            }
+        } else {
+            type = 2;
+            $.each(video, function (index, value) {
+                if (value.category_id != 0) {
+                    if (value.category_id == categoryid) {
+                        groupingList +=
+                            '<div class="grouping-box-list grouping-box-list-opt" data-id="' + value
+                            .category_id + '">' +
+                            value.name + '(<span>' + value.count + '</span>)' +
+                            '</div>';
+                    } else {
+                        groupingList += '<div class="grouping-box-list" data-id="' + value.category_id +
+                            '">' + value.name + '(<span>' + value.count + '</span>)</div>';
+                    }
+                }
+            });
+            if ($('.material-video-box .material-img-tab-list').length <= 1) {
+                layer.msg('暂无其它分组', {
+                    icon: 2,
+                    time: 1000
+                }, function () {
+                    layer.closeAll();
+                    $('.mask-box').hide();
+                });
+                return false;
+            }
+        }
+
+        groupingBox = '<div class="grouping-box">' +
+            '<div class="grouping-box-listbox">' + groupingList + '</div>' +
+            '<div class="grouping-box-btnbox">' +
+            '<input class="grouping-box-btnbox-back" type="button" value="取消">' +
+            '<input class="grouping-box-btnbox-next" type="button" value="确定">' +
+            '</div>' +
+            '</div>';
+
+        $('.mask').html(groupingBox);
+
+        $('.grouping-box').click(function (even) {
+            even.stopPropagation();
+        });
+
+        //点击移动分类取消按钮关闭弹窗
+        $('.grouping-box-btnbox-back').on('click', function () {
+            $('.mask').parent().hide();
+        });
+
+        var tabID = '';
+        $('.grouping-box-list').on('click', function () {
+            $(this).addClass('grouping-box-list-opt').siblings().removeClass('grouping-box-list-opt');
+            tabID = $(this).attr('data-id');
+        });
+
+        $('.grouping-box-btnbox-next').on('click', function () {
+            layer.load(3, {
+                shade: [0.1, '#393D49']
+            });
+            $.ajax({
+                url: urls + '/api/change-media-category',
+                data: {
+                    'id': listID,
+                    'category_id': tabID
+                },
+                type: "post", //请求方式
+                dataType: "json", //返回数据格式为json
+                // header: "Access-Control-Allow-Origin:*",
+                success: function (data) {
+                    layer.closeAll();
+                    if (data.msg == '移动成功') {
+                        imgOrvideoOjb = {};
+                        listID = '';
+                        tabID = '';
+                        $('.mask').parent().hide();
+                        defaultAjax(url, type);
+                        ImgOrVideoList(type, categoryid, page);
+                    }
+                },
+                error: function (data) {
+                    layer.closeAll();
+                    layer.msg(data.responseJSON.msg, {
+                        icon: 2,
+                        time: 500
+                    }, function () {
+                        location.reload();
+                    });
+                }
+            });
+        });
+    });
+
+    //点击预览
+    $('.material-img-cont').on('click', '.img-cont-list-img', function () {
+        //显示遮罩
+        $('.mask-box').show();
+
+        //获取文件路径并截取后缀名
+        var imgsUrl = $(this).children('img').attr('imgurl');
+        var ind = imgsUrl.lastIndexOf(".");
+        var imglast = imgsUrl.substring(ind);
+        var browse = '';
+
+        //判断文件后缀名
+        if (imglast == ".png" || imglast == ".jpg" || imglast == ".jpeg") {
+
+            browse = '<img src="' + imgsUrl + '" alt="">';
+
+        } else if (imglast == ".avi" || imglast == ".mp4") {
+
+            browse = '<video id="playvideo" width="800" height="800" src="' + imgsUrl +
+                '" autoplay="autoplay" muted controls></video>';
+
+        }
+
+        $('.mask').html(browse);
+
+        //阻止冒泡
+        $('.mask').on('click', 'video', function (even) {
+            even.stopPropagation();
+        });
+        $('.mask').on('click', 'img', function (even) {
+            even.stopPropagation();
+        });
+    });
+
+    //关闭遮罩
+    $('.mask').on('click', function (even) {
+        event.stopPropagation();
+        $('.mask-box').hide();
+    });
+
+    //创建新分组
+    $('.newlist-btn').on('click', function () {
+        var types;
+        //判断并记录类型
+        if ($(this).hasClass('newlist-btn-i')) {
+            types = 1;
+        } else {
+            types = 2;
+        }
+        var createHtml = '<div class="grouping-box">' +
+            '<h1>请输入分组名称</h1>' +
+            '<div class="create-list">' +
+            '<input class="create-list-inp input-blur-tit" maxlength="40" type="text" placeholder="请输入分组名称">' +
+            '<p class="create-list-title">不能含有特殊字符！</p>' +
+            '</div>' +
+            '</div>';
+        layer.open({
+            title: "创建新分组",
+            content: createHtml,
+            btn: ["确定", "取消"],
+            yes: function (index) {
+                //点击确定后台发送数据
+                var value = $('.create-list-inp').val();
+                if (value == '') {
+                    layer.msg('分组名称不能为空！', {
+                        time: 2000,
+                        icon: 2
+                    });
+                    return false;
+                }
+                layer.load(3, {
+                    shade: [0.1, '#393D49']
+                });
+                $.ajax({
+                    url: urls + '/api/create-media-category',
+                    data: {
+                        'type': types,
+                        'name': value
+                    },
+                    type: "post", //请求方式
+                    dataType: "json", //返回数据格式为json
+                    // header: "Access-Control-Allow-Origin:*",
+                    success: function (data) {
+                        layer.closeAll();
+                        if (data.msg == '添加成功') {
+                            $('.mask-box').hide();
+                            defaultAjax(url, types);
+                        }
+                    },
+                    error: function (data) {
+                        layer.closeAll();
+                        layer.msg(data.responseJSON.msg, {
+                            icon: 2,
+                            time: 1000
+                        }, function () {});
+                    }
+                });
+                layer.close(index);
+            }
+
+        });
+    });
+
+    //上传图片 批量上传
+    $('#file-i').on('change', function () {
+
+        var file_len = $('#file-i')[0].files.length;
+        if (file_len > 10) {
+            layer.msg('一次最多上传10张图片！', {
+                icon: 2,
+                time: 1000
+            }, function () {
+                layer.closeAll();
+            });
+            return false;
+        }
+        if (file_len == 0) {
+            return false;
+        }
+        var formData = new FormData();
+        var count = 0;
+
+        for (var i = 0; i < $('#file-i')[0].files.length; i++) {
+            count++;
+            formData.append('file' + i, $('#file-i')[0].files[i]);
+        }
+        formData.append('category_id', categoryid);
+        layer.load(3, {
+            shade: [0.1, '#393D49']
+        });
+        $.ajax({
+            url: urls + '/api/shop-multi-image',
+            type: 'POST',
+            cache: false,
+            data: formData,
+            dataType: 'json',
+            processData: false,
+            contentType: false,
+            // async: false,
+            success: function (data) {
+                imgOrvideoOjb = {};
+                layer.closeAll();
+                var failMsg = '';
+                if (count > data.data.succNum) {
+                    errNum = count - data.data.succNum;
+                    failMsg = " 失败 " + errNum + " 张,失败原因如下：<br>" + data.data.errmsg;
+                }
+                if (data.data.succNum == 0) {
+                    return false;
+                }
+                $('.material-img-tab-list').each(function () {
+                    if ($(this).attr('data-id') == categoryid) {
+                        $(this).children('span').eq(1).text($(this).children('span').eq(1)
+                            .text() * 1 + data.data.succNum);
+                    }
+                    if ($(this).attr('data-id') == 0) {
+                        $(this).children('span').eq(0).text($(this).children('span').eq(0)
+                            .text() * 1 + data.data.succNum);
+                    }
+                });
+                $(".imgnum").text($(".imgnum").text() * 1 + data.data.succNum);
+
+                layer.msg('图片上传成功 ' + data.data.succNum + ' 张 ' + failMsg, {
+                    icon: 6,
+                    time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                }, function(){
+                    $(".file").val('');
+                    ImgOrVideoList(type, categoryid, page);
+                });
+            }
+        });
+    });
+
+    // 图片剪切
+    $("#cropper").on('click', function () {
+        imgOrvideoOjb = {};
+        layer.open({
+            type: 2,
+            title: '图片剪切',
+            shadeClose: true,
+            shade: [0.8, '#393D49'],
+            maxmin: true, //开启最大化最小化按钮
+            area: ['60%', '80%'],
+            content: '/index/cropper',
+            success: function (layero, index) {
+                // 图片进行上传服务器
+                var iframeWin = window[layero.find('iframe')[0]['name']];
+                var iframeD = iframeWin.document;
+
+                $(iframeD).find("#download").click(function () {
+                    var dataURL = $(this).attr('down');
+                    var fd = new FormData();
+                    var blob = dataURItoBlob(dataURL);
+                    fd.append('file', blob, 'image.png');
+                    fd.append('category_id', categoryid);
+                    $.ajax({
+                        url: "/api/shop-image",
+                        type: 'POST',
+                        dataType: 'json',
+                        data: fd,
+                        processData: false, // 不会将 data 参数序列化字符串
+                        contentType: false, // 根据表单 input 提交的数据使用其默认的 contentType
+                        success: function (result) {
+                            $(".file").val('');
+                            // console.log(result);
+                            $('.material-img-tab-list').each(function (index) {
+                                if ($(this).attr('data-id') == categoryid) {
+                                    $(this).children('span').eq(1).text(
+                                        $(this).children('span').eq(
+                                            1).text() * 1 + 1);
+                                }
+                                if ($(this).attr('data-id') == 0) {
+                                    $(this).children('span').eq(0).text(
+                                        $(this).children('span').eq(
+                                            0).text() * 1 + 1);
+                                }
+                            });
+                            $(".imgnum").text($(".imgnum").text() * 1 + 1);
+                            getFlush();
+                        },
+                        error: function (data) {
+                            // console.log(data)
+                        }
+                    });
+
+                });
+            }
+        });
+    });
+
+    // 刷新页面
+    function getFlush() {
+        setTimeout(function () {
+            ImgOrVideoList(type, categoryid, page);
+        }, 500)
+    }
+
+    //上传视频
+    $('#file-v').on('change', function () {
+        var formData = new FormData();
+        formData.append('file', $('#file-v')[0].files[0]);
+        formData.append('category_id', categoryid);
+        layer.load(3, {
+            shade: [0.1, '#393D49']
+        });
+        $.ajax({
+            url: urls + '/api/product-main-video',
+            type: 'POST',
+            cache: false,
+            data: formData,
+            dataType: 'json',
+            processData: false,
+            contentType: false,
+            success: function (data) {
+                imgOrvideoOjb = {};
+                layer.closeAll();
+                $(".file").val('');
+                layer.msg('上传成功！', {
+                    icon: 6,
+                    time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                }, function () {
+                    $(".file").val('');
+                    $('.material-img-tab-list').each(function () {
+                        if ($(this).attr('data-id') == categoryid) {
+                            $(this).children('span').eq(1).text($(this).children(
+                                'span').eq(1).text() * 1 + 1);
+                        }
+                        if ($(this).attr('data-id') == 0) {
+                            $(this).children('span').eq(0).text($(this).children(
+                                'span').eq(0).text() * 1 + 1);
+                        }
+
+                    });
+                    $(".videonum").text($(".videonum").text() * 1 + 1);
+                    ImgOrVideoList(type, categoryid, page);
+                });
+            },
+            error: function (data) {
+                layer.closeAll();
+                layer.msg(data.responseJSON.msg, {
+                    icon: 2,
+                    time: 3000
+                }, function () {
+                    // location.reload();
+                    $('#file-v').val('');
+                });
+            }
+        });
+    });
+</script>
+<script>
+    //属性管理点击一级列表
+    $('.one-select').on('click', function (even) {
+        var $this = $(this);
+        $('.two-ul').hide();
+        $.ajax({
+            url: data_url + selectUrl, //请求地址
+            type: "get", //请求方式
+            dataType: "json", //返回数据格式为json
+            success: function (data) { //请求成功完成后要执行的方法
+                var height = 0;
+                $this.find('.material-getAttribute-linkage-select-list-box').show();
+                var contone = '';
+                $.each(data.data.list, function (key, value) {
+                    contone += '<li class="" data-id="' + value.category_id + '">' +
+                        '<span>' + value.category_name + '</span>' +
+                        '</li>';
+                    height += 1;
+                });
+                if (height >= 10) {
+                    $('.one-ul').css('height', '320px');
+                } else {
+                    $('.one-ul').css('height', height * 32 + 'px');
+                }
+                $('.one-select').find('.material-getAttribute-linkage-select-list-box').html(
+                    contone);
+            }
+        });
+    });
+
+    //选择一级列表内容触发二级列表
+    $('.one-ul').on('click', 'li', function (even) {
+        even.stopPropagation();
+        $(this).parent().hide();
+        var textOne = '<span style="color:#000;">' + $(this).find('span').text() + '</span>';
+        $('.one-text').html(textOne);
+        dataID = $(this).attr('data-id');
+        // console.log(dataID);
+        $.ajax({
+            url: data_url + selectUrl + '?category_id=' + dataID,
+            type: "get", //请求方式
+            dataType: "json", //返回数据格式为json
+            // header: "Access-Control-Allow-Origin:*", //设置请求头
+            success: function (data) { //请求成功完成后要执行的方法
+                var conttwo = '';
+                var height = 0;
+                $.each(data.data.list, function (index, item) {
+                    conttwo += '<li class="" data-id="' + item.category_id + '">' +
+                        '<span>' + item.category_name + '</span>' +
+                        '</li>';
+                    height += 1;
+                });
+                if (height >= 10) {
+                    $('.two-ul').css('height', '320px');
+                } else {
+                    $('.two-ul').css('height', height * 32 + 'px');
+                }
+                $('.two-text').text('请输入二级类目');
+                $('.two-ul').show();
+                $('.two-ul').html(conttwo);
+                // console.log(height);
+            }
+        });
+    });
+
+    //直接选择二级或者再次打开二级列表
+    $('.two-select').on('click', function () {
+        $('.one-ul').hide();
+        if (dataID) {
+            $.ajax({
+                url: data_url + selectUrl + '?category_id=' + dataID,
+                type: "get", //请求方式
+                dataType: "json", //返回数据格式为json
+                // header: "Access-Control-Allow-Origin:*", //设置请求头
+                success: function (data) { //请求成功完成后要执行的方法
+                    var conttwo = '';
+                    var height = 0;
+                    $.each(data.data.list, function (index, item) {
+                        conttwo += '<li class="" data-id="' + item.category_id + '">' +
+                            '<span>' + item.category_name + '</span>' +
+                            '</li>';
+                        height += 1;
+                    });
+                    if (height >= 10) {
+                        $('.two-ul').css('height', '320px');
+                    } else {
+                        $('.two-ul').css('height', height * 32 + 'px');
+                    }
+                    $('.two-ul').show();
+                    $('.two-ul').html(conttwo);
+                }
+            });
+        }
+    });
+
+    //选择二级列表内容触发三级列表
+    $('.two-ul').on('click', 'li', function (even) {
+        even.stopPropagation();
+        $('.material-getAttribute-list-box-table-edit').html('');
+        $('.material-getAttribute-list-box-table').show();
+        $('.material-getAttribute-linkage-box-r').addClass('material-getAttribute-linkage-box-r-none');
+        $(this).parent().hide();
+        var textTwo = '<span style="color:#000;">' + $(this).find('span').text() + '</span>';
+        $('.two-text').html(textTwo);
+        dataID_two = $(this).attr('data-id');
+        // console.log(dataID_two);
+        $('.two-ul').hide();
+        List();
+    });
+
+    //全局设置变量传参
+    var type, category_id, id;
+    var type_id = 0;
+
+    //修改类型颜色/尺寸
+    $('.material-getAttribute-list-box-table').on('click', 'span', function () {
+        if ($(this).prev('p').text() != "请设置规格名称") {
+            // 获取修改类型
+            type = $(this).attr('data-type');
+            //获取被修改的三级ID
+            category_id = $(this).parents('.table-list-tr').attr('data-id');
+            //获取type_id;
+            type_id = $(this).parents('td').attr('type-id');
+            // console.log(type, category_id);
+            var add = '<div class="material-getAttribute-linkage add-list">' +
+                '<div class="material-getAttribute-linkage-tit">' +
+                '商品三级类目' +
+                '</div>' +
+                '<div class="material-getAttribute-linkage-select">' +
+                '<div class="material-getAttribute-linkage-select-val"><span style="color:#000;" class="list3-text">' +
+                $(this).parents('tr').find('td').eq(0).text() +
+                '</span></div>' +
+                '</div>' +
+                '</div>';
+            $('.material-getAttribute-linkage-box-l').find('.material-getAttribute-linkage').not(".addlist")
+                .hide();
+            $('.material-getAttribute-linkage-box-l').append(add);
+            $('.material-getAttribute-linkage-box-r').removeClass('material-getAttribute-linkage-box-r-none');
+            $(this).parents('.material-getAttribute-list-box-table').hide();
+            $('.material-getAttribute-list-box-table-edit').show();
+            $.ajax({
+                url: data_url + '/api/product-property-detail' + '?category_id=' + category_id +
+                    '&type_id=' + type_id,
+                type: "get", //请求方式
+                dataType: "json", //返回数据格式为json
+                // header: "Access-Control-Allow-Origin:*", //设置请求头
+                success: function (data) { //请求成功完成后要执行的方法
+                    console.log(data);
+                    var height = 0;
+                    var html = '';
+                    var tabtitle = '<tr class="table-tit">' +
+                        '<th>属性值名称</th>' +
+                        '<th>操作</th>' +
+                        '</tr>';
+                    if (data.data.list.length) {
+                        $.each(data.data.list, function (index, item) {
+                            html += '<tr data-id="' + item.id + '">' +
+                                '<td>' +
+                                '<h3 class="edit-text">' + item.name + '</h3>' +
+                                '<div class="edit-inp-box edit-inp-box-none">' +
+                                '<input class="edit-inp input-check" maxlength="30" type="text" placeholder="请输入属性值">' +
+                                '</div>' +
+                                '</td>' +
+                                '<td>' +
+                                '<span class="edit-btn">编辑</span>' +
+                                '<div class="edit-box edit-box-none">' +
+                                '<button class="edit-T">保存</button>' +
+                                '<button class="edit-F edit-color">取消</button>' +
+                                '</div>' +
+                                '</td>' +
+                                '</tr>';
+                            height += 1;
+                        });
+                        // if (height <= 6) {
+                        //     $('.material-getAttribute-box').css('height', '567px');
+                        // } else {
+                        //     $('.material-getAttribute-box').css('height', (height * 50) + 200 + 'px');
+                        // }
+                    }
+                    $('.material-getAttribute-list-box-table-edit').html(tabtitle + html);
+                }
+            });
+        } else {
+            layer.msg('请先设置规格名称', {
+                time: 1000,
+                icon: 2
+            });
+        }
+    });
+
+    //返回三级
+    $('.back').on('click', function () {
+        $('.material-getAttribute-list-box-table-edit').html('');
+        $('.material-getAttribute-list-box-table').show();
+        $('.material-getAttribute-linkage-box-r').addClass('material-getAttribute-linkage-box-r-none');
+        $('.material-getAttribute-linkage-box-l').children('.add-list').remove();
+        $('.material-getAttribute-linkage-box-l').find('.material-getAttribute-linkage').not(".add-list")
+    .show();
+        List();
+    });
+
+    //添加属性
+    $('.addAttribute').on('click', function () {
+        id = 0;
+        var html = '<tr>' +
+            '<td>' +
+            '<h3 class="edit-text edit-text-none"></h3>' +
+            '<div class="edit-inp-box">' +
+            '<input class="edit-inp input-check" maxlength="30" type="text" placeholder="请输入属性值">' +
+            '</div>' +
+            '</td>' +
+            '<td>' +
+            '<span class="edit-btn edit-btn-none">编辑</span>' +
+            '<div class="edit-box" >' +
+            '<button class="edit-T">保存</button>' +
+            '<button class="edit-F">取消</button>' +
+            '</div>' +
+            '</td>' +
+            '</tr>';
+        $('.material-getAttribute-list-box-table-edit').append(html);
+        // var height = $('.material-getAttribute-list-box-table-edit').find('tr').length;
+        // if (height <= 6) {
+        //     $('.material-getAttribute-box').css('height', '567px');
+        // } else {
+        //     $('.material-getAttribute-box').css('height', 'auto');
+        // }
+    });
+
+    //添加完成保存属性
+    $('.material-getAttribute-list-box-table-edit').on('click', '.edit-T', function () {
+        var value = $(this).parents('td').prev('td').find('.edit-inp').val();
+
+        if (value == '') {
+            layer.msg('规格项不能为空！', {
+                time: 1000,
+                icon: 2
+            });
+            return false;
+        }
+        // var re = /^(?!_)(?!.*?_$)[a-zA-Z0-9_\u4e00-\u9fa5\.]+$/;
+        // if (!re.test(value)) {
+        //     layer.msg('不能含有特殊字符！', {icon: 2});
+        //     return false;
+        // }
+        var that = $(this);
+        $.ajax({
+            url: data_url + '/api/save-product-property',
+            type: "post", //请求方式
+            dataType: "json", //返回数据格式为json
+            data: {
+                'id': id,
+                'name': value,
+                'category_id': category_id,
+                'type': type,
+                'type_id': type_id
+            },
+            // header: "Access-Control-Allow-Origin:*", //设置请求头
+            success: function (data) {
+                console.log(data.data.id, data, 123);
+                console.log($(that).parents('tr'));
+                $(that).parents('tr').attr('data-id', data.data.id);
+                $(that).parents('td').prev('td').find('.edit-text').removeClass('edit-text-none');
+                $(that).parents('td').prev('td').find('.edit-inp-box').addClass(
+                'edit-inp-box-none');
+                $(that).parent('.edit-box').prev('.edit-btn').removeClass('edit-btn-none');
+                $(that).parent('.edit-box').addClass('edit-box-none');
+                $(that).parents('td').prev('td').find('.edit-text').text(value);
+                $(that).next('button').addClass('edit-color');
+                layer.msg('操作成功！', {
+                    icon: 6,
+                    time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                }, function () {
+
+                });
+            },
+            error: function (data) {
+                layer.msg(data.responseJSON.msg, {
+                    icon: 2,
+                    time: 500
+                }, function () {});
+            }
+        });
+    });
+
+    //属性取消删除
+    $('.material-getAttribute-list-box-table-edit').on('click', '.edit-F', function () {
+        $('.material-getAttribute-list-box-table-edit').children().eq(-1).remove();
+        // var height = $('.material-getAttribute-list-box-table-edit').find('tr').length;
+        // if (height <= 6) {
+        //     $('.material-getAttribute-box').css('height', '567px');
+        // } else {
+        //     $('.material-getAttribute-box').css('height', ((height - 1) * 50) + 200 + 'px');
+        // }
+    });
+
+    //属性返回
+    $('.material-getAttribute-list-box-table-edit').on('click', '.edit-color', function () {
+        $(this).parents('.edit-box').addClass('edit-box-none');
+        $(this).parents('.edit-box').prev('.edit-btn').removeClass('edit-btn-none');
+        $(this).parents('tr').find('.edit-inp-box').addClass('edit-inp-box-none');
+        $(this).parents('tr').find('.edit-text').removeClass('edit-text-none');
+    });
+
+    //修改类型颜色/尺寸中的类别
+    $('.material-getAttribute-list-box-table-edit').on('click', '.edit-btn', function () {
+        id = $(this).parents('tr').attr('data-id');
+        $(this).next('.edit-box').removeClass('edit-box-none');
+        $(this).addClass('edit-btn-none');
+        $(this).parent('td').prev('td').find('.edit-text').addClass('edit-text-none');
+        $(this).parent('td').prev('td').find('.edit-inp-box').removeClass('edit-inp-box-none');
+        $(this).next('.edit-box').find('.edit-F').removeClass('edit-F');
+        var value = $(this).parents('td').prev('td').find('.edit-text').text();
+        $(this).parents('td').prev('td').find('.edit-inp').val(value);
+    });
+
+    //修改或设置属性规格
+    $('.material-getAttribute-list-box-table').on('click', '.amend-name', function () {
+        var type = $(this).parents('td').attr('type');
+        var val = $(this).parent('p').text() != "请设置规格名称" ? $(this).parent('p').text() : "";
+
+        category_id = $(this).parents('.table-list-tr').attr('data-id');
+        layer.open({
+            title: ['规格名称', 'font-size:18px;'],
+            content: '<div class="">' +
+                '<input type="text" class="name-inp" placeholder="请输入规格名称" maxlength="8" value="' +
+                val + '">' +
+                '</div>',
+            btn: ['确定', '取消'], //按钮
+            yes: function () {
+                var name = $('.name-inp').val();
+                // var re =  /^(?!_)(?!.*?_$)[a-zA-Z0-9_\u4e00-\u9fa5]+$/;
+                // if(re.test(name)){
+                $.ajax({
+                    url: data_url + '/api/save-product-category-type',
+                    type: 'post',
+                    dataType: 'json',
+                    data: {
+                        category_id: category_id,
+                        type: type,
+                        name: name,
+                    },
+                    success(data) {
+                        console.log(data);
+                        List();
+                        layer.msg('保存成功', {
+                            icon: 1
+                        });
+                    },
+                    error(err) {
+                        console.log(err);
+                    }
+                });
+                // }else{
+                //     layer.msg('请输入正确的规格名称', {
+                //                 icon: 2
+                //             });
+                // }
+            },
+            btn2: function () {
+                layer.close();
+            }
+        });
+    })
+</script>
+<script>
+    $(document).on("blur", ".input-blur-tit", function () {
+        var str = $(this).val();
+        var that = $(this);
+        // textInput(str, that);
+    });
+
+    function textInput(str, that) {
+        //只含有汉字、数字、字母、下划线不能以下划线开头和结尾
+        var re = /^(?!_)(?!.*?_$)[a-zA-Z0-9_\u4e00-\u9fa5]+$/;
+        if (!re.test(str)) {
+            that.val('');
+            $('.create-list-title').show();
+            // layer.msg('不能含有特殊字符！', {icon: 2});
+        } else {
+            $('.create-list-title').hide();
+        }
+    }
+
+
+
+    function dataURItoBlob(base64Data) {
+        var byteString;
+        if (base64Data.split(',')[0].indexOf('base64') >= 0)
+            byteString = atob(base64Data.split(',')[1]);
+        else
+            byteString = unescape(base64Data.split(',')[1]);
+        var mimeString = base64Data.split(',')[0].split(':')[1].split(';')[0];
+        var ia = new Uint8Array(byteString.length);
+        for (var i = 0; i < byteString.length; i++) {
+            ia[i] = byteString.charCodeAt(i);
+        }
+        return new Blob([ia], {
+            type: mimeString
+        });
+    }
+</script>
+<script>
+    $('.img-select').on('click', function () {
+        //console.log($('.material-img-tab-l').clientHeight);
+        if ($(this).text().trim() == '展开') {
+            $('.material-img-tab-l').removeClass('over');
+            $('.material-img-tab-l-list').removeClass('over-list');
+            $(this).html(
+                '收起<img src="{:qiniu_domains()}/upload/99/90141d8d450e2143e9aa082c020e570a52fe3cfac8aacfe6b292820488c068.png?origin=更多复制.png">'
+                )
+        } else {
+            $('.material-img-tab-l').addClass('over');
+            $('.material-img-tab-l-list').addClass('over-list');
+            $(this).html(
+                '展开<img src="{:qiniu_domains()}/upload/3e/0d87c438dae08d3e4a9dc14a96205ad8aa3f2514290327ae21674214c18780.png?origin=更多复制 2.png">'
+                )
+        }
+    });
+</script>
+{/block}

@@ -1,0 +1,128 @@
+{extend name="layout/base" /}
+
+{block name="seo"}
+    <title>{$title|default="画版商户后台管理系统"}</title>
+{/block}
+
+{block name="style"}
+<style>
+.currint{display:flex;justify-content: space-between;align-items: center;padding: 5px 100px 5px 20px;background: #F0F2F5;;margin: 20px auto;}
+
+</style>
+{/block}
+
+{block name="title"}
+    <span>渠道管理</span> /
+    <span class="colorTit">所有代理</span>
+{/block}
+
+<!-- 平台功能区 -->
+{block name="content"}
+<div class="ShopFrontPage-r-bot">
+    <div class="order-box cards">
+        <form action="/agent/index" method="get">
+            <div class="order-search">
+                <div class="form-group">
+                    <div class="form-item">
+                        <label for="date">创建时间</label>
+                        <input type="text" autocomplete="off" placeholder="请选择日期" name="create_time" id="date" value="{$create_time}">
+                        <i></i>
+                    </div>
+                    <div class="form-item">
+                        <label for="date">代理手机号</label>
+                        <input type="text" placeholder="请输入代理商手机号" name="agent_phone" id="agent_phone" value="{$agent_phone}">
+                        <i></i>
+                    </div>
+
+                    <div class="form-item-btn right">
+                        <input type="submit" class="btn btn-fill" value="查询">
+                        <a href="/agent/save" class="btn btn-o">创建新代理</a>
+                        <!--<a href="/agent/shop-qrcode" class="btn btn-o">店铺推广二维码</a>-->
+                    </div>
+                </div>
+            </div>
+        </form>
+
+        <div class="order-table">
+            <div class="currint">
+                <div class="text-link">
+                    店铺自营（分成比例100%）
+                </div>
+                <div class="operate">
+                        <p class="operate-item"><a href="/agent/shop-qrcode"><i class="icon icon-qr"></i>推广二维码</a></p>
+
+                    </div>
+            </div>
+            <table class="order-tb">
+
+                <thead>
+                       
+                                    
+                            
+                <tr class='tr-th'>
+                    <!--<th>序号</th>-->
+                    <th>代理商ID</th>
+                    <th>代理手机号</th>
+                    <th>分成利润比例</th>
+                    <th>创建时间</th>
+                    <th>操作</th>
+                </tr>
+                </thead>
+                <tbody>
+                {foreach $agentList as $key=>$val}
+                    <tr class="tr-bd">
+                        <td>
+                            {$val->user_agent_id}
+                        </td>
+
+                        <td>
+                            <span class="userphone">{:optional($val->agent_phone)->phone}</span>
+                        </td>
+                        <td>
+                            {$val->ratio}%
+                        </td>
+                        <td>
+                            {$val->create_time}
+                        </td>
+                        <td>
+                            <div class="operate">
+                                <p class="operate-item"><a href="/agent/qrcode?id={$val->user_agent_id}"><i class="icon icon-qr"></i>推广二维码</a></p>
+                                <p class="operate-item"><a href="/agent/save?id={$val->id}&type=1"><i class="icon icon-yulan"></i>详情</a></p>
+                                <p class="operate-item">
+                                    <a href="/agent/save?id={$val->id}"><i class="icon icon-edit"></i>编辑</a>
+                                </p>
+                            </div>
+                        </td>
+                    </tr>
+                {/foreach}
+                </tbody>
+
+            </table>
+        </div>
+        {$agentList->render()|raw}
+    </div>
+</div>
+{/block}
+
+{block name='js'}
+<script>
+
+    /*手机号分割显示*/
+    (function userphone(obj) {
+        obj.each(function () {
+            var phoneNum = $(this).text();
+            $(this).html(phoneNum.replace(/(?=(\d{4})+$)/g, " "));
+        })
+    })($(".userphone"));
+    laydate.render({
+        elem:"#date",
+        range:true,
+        change: function (value, date, endDate) {
+            console.log(value); //得到日期生成的值，如：2017-08-18
+            console.log(date); //得到日期时间对象：{year: 2017, month: 8, date: 18, hours: 0, minutes: 0, seconds: 0}
+            console.log(endDate); //得结束的日期时间对象，开启范围选择（range: true）才会返回。对象成员同上。
+        }
+    })
+
+</script>
+{/block}

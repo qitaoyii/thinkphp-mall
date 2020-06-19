@@ -1,0 +1,119 @@
+{extend name="layout/base" /}
+
+{block name="seo"}
+<title>{$title|default="画版商户后台管理系统"}</title>
+{/block}
+
+{block name="style"}
+<link rel="stylesheet" href="__STATIC__/style/freight.css?{:config('huaban.css_version.version')}">
+<link rel="stylesheet" href="__STATIC__/style/newAgent.css?{:config('huaban.css_version.version')}">
+{/block}
+
+{block name="title"}
+<span>渠道管理</span> /
+<span class="colorTit">所有代理</span>
+{/block}
+
+<!-- 平台功能区 -->
+{block name="content"}
+<div class="ShopFrontPage-r-bot">
+    <div class="cards">
+
+        <div class="tpl-box freight-box" style="display: none" id="others-box">
+            <input type="hidden" id="shop_agent_id">
+            <div class="freight-table">
+                <table class="freight-tb">
+                    <thead>
+                    <tr>
+                        <td colspan="2" style="text-align: justify">
+                            <div class="current1">
+                                <i>说明：所有用户的分成比例之和必须为100%;</i>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr class="tr-th">
+                        <td>代理手机号</td>
+                        <td>代理分成比例</td>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <input type="hidden" value="">
+                        <td id="phone"></td>
+                        <td><input type="text" id="pro" onkeyup="dataBander($(this),$('#proportion'))" class="input-s one-inp" disabled><span>%</span></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="freight-table">
+                <div class="tpl-title flex">
+                    <p>其他分成用户</p>
+                </div>
+                <table class="freight-tb">
+                    <thead>
+                    <tr class="tr-th">
+                        <td>代理手机号</td>
+                        <td>代理分成比例</td>
+                        <!--<td>操作</td>-->
+                    </tr>
+                    </thead>
+                    <tbody id="freight-tb">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="tpl-btn">
+            <input type="button" value="关闭" class="btn btn-o btn-lg" onclick="cancel()">
+        </div>
+    </div>
+</div>
+{/block}
+
+{block name='js'}
+<script src="{:qiniu_domains()}/upload/67/1d2d0ecc6ad56a71cece7cda0231343a469f2ab75b54529407c4293896a914.js?origin=template.js"></script>
+
+<script id="create-others" type="text/html">
+    <%for (var k = 0; k < others.length; k++) {%>
+    <tr class="others">
+        <input type="hidden" name='' value="<%:=others[k].id%>" class="data-id">
+        <td><input type="text" maxlength="11" class="input-sm phone-check" placeholder="请输入代理手机号" value="<%:=others[k].phone%>" disabled></td>
+        <td><input type="text" class="input-sm portion" placeholder="请设置分成比例" value="<%:=others[k].ratio%>" disabled><span>%</span></td>
+    </tr>
+    <%}%>
+</script>
+
+<script>
+    var obj = {$agentData|raw};
+
+    if (obj.shop_agent_id){
+        $("#shop_agent_id").val(obj.shop_agent_id);
+        // 一级代理
+        if (obj.main) {
+            $("#main-box").hide();
+            $("#phone").prev().val(obj.main.id);
+            $("#phone").text(obj.main.phone);
+            $("#pro").val(obj.main.ratio);
+            $("#others-box").show();
+        }
+        // 其他代理
+        if (obj.others) {
+            createOthers();
+        }
+    }
+    function createOthers(){
+        let html = template(document.getElementById('create-others').innerHTML, {others:obj.others});
+        $('#freight-tb').html(html);
+    }
+
+    function cancel() {
+        layer.confirm('是否要关闭？', {
+            btn: ['立即关闭', '再想想'],
+            btnAlign: 'c',
+        }, function(index) {
+            location.href = '/agent/index'; //返回首页
+        }, function(index) {
+            layer.close(index);
+        })
+    }
+</script>
+{/block}

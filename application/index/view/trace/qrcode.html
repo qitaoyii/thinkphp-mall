@@ -1,0 +1,550 @@
+{extend name="layout/base" /}
+
+{block name="seo"}
+<title>{$title|default="品牌厂家直供平台"}</title>
+{/block}
+
+{block name="style"}
+<link rel="stylesheet" href="__STATIC__/style/qrcode.css?{:config('huaban.css_version.version')}">
+<link rel="stylesheet" href="__STATIC__/style/myPage.css?{:config('huaban.css_version.version')}">
+<link rel="stylesheet" href="__STATIC__/style/tracing.min.css?{:config('huaban.css_version.version')}">
+{/block}
+
+{block name="title"}
+<span>商品管理</span> /
+<span class="colorTit">配置一物一码</span>
+{/block}
+
+{block name="content"}
+    <!-- 内容盒子 -->
+    <div class="content">
+        <div class="content-box">
+            <!-- 头部下拉框盒子 -->
+            <form action="/trace/qrcode" method="get" id="myform">
+                <div class="content-select-box">
+                    <div class="form-group">
+                        <div class="form-item">
+                            <label for="name">防伪标配置状态</label>
+                            <select name="status">
+                                <option value="all" {:isset($status)?($status=='all'?'selected':''):''}>全部</option>
+                                <option value="0" {:isset($status)?($status=='0'?'selected':''):''}>等待配置</option>
+                                <option value="1" {:isset($status)?($status=='1'?'selected':''):''}>已配置</option>
+                            </select>
+                        </div>
+                        <div class="form-item-btn">
+                            <input type="submit" value="查询" class="btn btn-fill"><i></i>
+                        </div>
+                    </div>
+                </div>
+            </form>
+            <!-- 列表内容 -->
+            <div class="content-table-box">
+                <table  cellspacing="0" cellpadding="0">
+                    <tr class="title-th">
+                        <th>序号</th>
+                        <th>二维码</th>
+                        <th>序列号</th>
+                        <th>物权登记密码</th>
+                        <th>一物一码配置状态</th>
+                        <th>操作</th>
+                    </tr>
+                    {foreach $qrcodeLists as $key=>$val}
+                    <tr class="tr-td">
+                        <td>{$qrcodeLists->num++}</td>
+                        <!--<td><img src="{:qiniu_domains().$val->qrcode_url}" alt="{:qiniu_domains().$val->qrcode_url}" width="40" height="40" style="margin: 10px;"></td>-->
+                        <td><img src="{:qiniu_domains().'/upload/a0/e72ccce12c979998481c43614c8cb29e081dfc1673c19b8dbe67d4c07aaf82.png?origin=label1.png'}" width="40" height="40" style="margin: 10px;"></td>
+                        <td>{$val->qrcode_number}</td>
+                        <td>{$val->password}</td>
+                        <td>{$val->status_text}</td>
+                        <td>
+                            <div class="operate">
+                                {if $val->status == 1}
+                                <p class="operate-item">
+                                    <a href="javascript:void(0);" class="preview" data-type="1" data-id="{$val->shop_trace_source_content_id}">
+                                        <i class="icon icon-yulan"></i>预览
+                                    </a>
+                                </p>
+                                <p class="operate-item">
+                                    <a href="javascript:void(0);" class="preview" data-type="2" data-id="{$val->shop_trace_source_content_id}">
+                                        <i class="icon icon-edit"></i>编辑
+                                    </a>
+                                </p>
+                                {else/}
+                                <p class="operate-item" onclick="">
+                                    <a href="javascript:void(0);" class="add-trace-content" data-product-id="{:optional($val->property)->product_id}"
+                                    data-product-name="{:optional(optional($val->property)->product)->product_name}" data-qrcode-number="{:optional($val->property)->qrcode_number}"
+                                    data-production-date="{:optional($val->property)->production_date}" data-production-count="{:optional($val->property)->production_count}"
+                                    data-works-id="{:optional($val->works)->works_id}" data-works-name="{:optional($val->works)->works_name}" data-works-cover="{:qiniu_domains().optional($val->works)->works_cover}"
+                                    data-artist-name="{:optional(optional($val->works)->artister)->real_name}" data-qrcode-id="{$val->id}">
+                                        <i class="icon icon-yulan"></i>立即配置
+                                    </a>
+                                </p>
+                                {/if}
+                            </div>
+                        </td>
+                    </tr>
+                    {/foreach}
+                </table>
+            </div>
+            <!-- 分页留空 -->
+            {$qrcodeLists->render()|raw}
+        </div>
+    </div>
+
+<!--立即配置-->
+<div id="layer-add-trace-content" class="layer-box" style="display:none;">
+    <div class="tracing-info">
+        <div class="info-top">
+            <div class="label-type-title"> 防伪标溯源详情页信息</div>
+            <div class="info-list" id="source-html">
+
+            </div>
+            <div class="label-type-title">自定义文字溯源信息</div>
+            <div class="addbox-list">
+                <input type="button" class="addtrace" value="＋" onclick="addTrace($(this).parents('.info-top'))">
+            </div>
+            <div class="add-trace">
+            </div>
+            <div class="label-type-title">自定义图片溯源信息</div>
+            <div class="addimg-list">
+                <input class="file" type="file" style="opacity: 0" multiple name="" id="" accept="image/jpeg, image/jpg, image/png" onchange="changeFile($(this))">
+                <div class="addimg" onclick="uploadImg($(this))">
+                    <img class="long-file-img" src="{:qiniu_domains()}/upload/7f/1afb3c68fcbb0d68421b558c8fb28ba88e7e93f2837996e67f581dabe3b393.png?origin=add.png">
+                </div>
+                <p class="text-gray">此处可上传多张鉴定证书等溯源图片信息</p>
+                <ul class="ul1">
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+<!--立即配置-->
+
+<!--预览-->
+<div id="layer-info" style="display: none;"></div>
+<!--预览-->
+{/block}
+
+{block name='js'}
+<script src="{:qiniu_domains()}/upload/67/1d2d0ecc6ad56a71cece7cda0231343a469f2ab75b54529407c4293896a914.js?origin=template.js"></script>
+<script id="trace_html" type="text/html">
+    <div class="tracing-info">
+        <div class="info-top">
+            <%if (traceData.content.items.length > 0) {%>
+            <div class="label-type-title">
+                防伪标溯源详情页信息
+            </div>
+            <input type="hidden" id="content-id" value="<%:=traceData.id%>">
+            <div class="info-list">
+                <%for (var i = 0; i < traceData.content.items.length; i++) {%>
+                <%if (traceData.content.items[i].val) {%>
+                <div class="info-item trace-item">
+                    <span><%:=traceData.content.items[i].key%></span>：
+                    <p><%:=traceData.content.items[i].val%></p>
+                </div>
+                <%}%>
+                <%}%>
+                <div class="info-item">
+                    <span style="letter-spacing: 12px">版谷</span>：
+                    <p class="works-flex" id="works-info" data-works-id="<%:=traceData.works_id%>">
+                        <img src="{:qiniu_domains()}<%:=traceData.work.works_cover%>" alt="" width="100px" height="100px" style="background: #ccc">
+                        <span><%:=traceData.work.artister.real_name%></span>
+                        <span style="font-size:16px">《<%:=traceData.work.works_name%>》</span>
+                    </p>
+                </div>
+            </div>
+            <%}%>
+            <%if (traceData.type == 1) {%>
+                <%if (traceData.content.custom_items.length > 0) {%>
+                <div class="label-type-title">自定义文字溯源信息</div>
+                <div class="info-list">
+                    <%for (var j = 0; j < traceData.content.custom_items.length; j++) {%>
+                    <div class="info-item">
+                        <span style="letter-spacing: 12px"><%:=traceData.content.custom_items[j].key%></span>：
+                        <p><%:=traceData.content.custom_items[j].val%></p>
+                    </div>
+                    <%}%>
+                </div>
+                <%}%>
+                <%if (traceData.content.imgs.length > 0) {%>
+                <div class="label-type-title">自定义图片溯源信息</div>
+                <div class="img-list">
+                    <%for (var k = 0; k < traceData.content.imgs.length; k++) {%>
+                        <img src="<%:=traceData.content.imgs[k].img_url%>" width="150px">
+                    <%}%>
+                </div>
+                <%}%>
+            <%}else{%>
+                <div class="label-type-title">自定义文字溯源信息</div>
+                <div class="addbox-list">
+                    <input type="button" class="addtrace" value="＋" onclick="addTrace($(this).parents('.info-top'))">
+                </div>
+                <div class="add-trace">
+                    <%for (var j = 0; j < traceData.content.custom_items.length; j++) {%>
+                        <div class="addbox-list" style="margin-top:20px;">
+                            <div class="addbox-item">名称：
+                                <input type="text" class="input-s" maxlength="8" value="<%:=traceData.content.custom_items[j].key%>" placeholder="如：产地">
+                                <input type="text" class="input-sm" maxlength="25" value="<%:=traceData.content.custom_items[j].val%>" placeholder="如：鄂尔多斯">
+                            </div>
+                            <input type="button" class="del-trace" value="-" onclick="delTrace($(this))">
+                        </div>
+                    <%}%>
+                </div>
+                <div class="label-type-title">自定义图片溯源信息</div>
+                <div class="addimg-list">
+                    <input class="file" type="file" style="opacity: 0" multiple name="" accept="image/jpeg, image/jpg, image/png" onchange="changeFile($(this))">
+                    <div class="addimg" onclick="uploadImg($(this))">
+                        <img class="long-file-img" src="{:qiniu_domains()}/upload/7f/1afb3c68fcbb0d68421b558c8fb28ba88e7e93f2837996e67f581dabe3b393.png?origin=add.png">
+                    </div>
+                    <p class="text-gray">此处可上传多张鉴定证书等溯源图片信息</p>
+                    <ul class="ul1">
+                        <%for (var k = 0; k < traceData.content.imgs.length; k++) {%>
+                        <li class="trace-imgs">
+                            <img src="<%:=traceData.content.imgs[k].img_url%>" width="150px">
+                            <span class="img-del" style="cursor: pointer;color:red;" onclick="delImg($(this))">
+                                <img src="{:qiniu_domains()}/upload/00/42dd6b62a6b259c35308168e041c371a364cf408bdcb69105ddbc0ca0d3c74.png?origin=删除.png">
+                            </span>
+                        </li>
+
+                        <%}%>
+                    </ul>
+                </div>
+            <%}%>
+        </div>
+    </div>
+</script>
+
+<script>
+    var data = {
+        "source_data": {
+            // 自定义溯源图片信息
+            "imgs": [
+                //{"img_url": "xxx.jpg"},{"img_url": "xxx.jpg"}
+            ],
+            // 自定义溯源信息
+            "items": [
+                //{"key": "value"},{"key": "value"}
+            ],
+            // 已有的溯源信息
+            "custom_items": [
+                //{"key": "value"},{"key": "value"}
+            ]
+        }
+    };
+
+    // 预览  type=1 预览  type=2 编辑
+    $(".preview").click(function () {
+        var id = $(this).data('id');
+        var type = $(this).attr('data-type')*1;
+        $.ajax({
+            url: "/trace/preview",
+            type: 'GET',
+            dataType: 'json',
+            data: {'id': id},
+            success: function(result) {
+                result.data.type = type;
+                console.log(result)
+                getTraceReload(result.data);
+                if (type == 1) {
+                    //捕获页
+                    layer.open({
+                        type: 1,
+                        shade: false,
+                        title: "预览",
+                        area:['800px','900px'],
+                        // btn:["关闭"],
+                        content: $('#layer-info'), //捕获的元素，注意：最好该指定的元素要存放在body最外层，否则可能被其它的相对元素所影响
+                        yes:function(index){
+                            layer.closeAll();
+                        }
+                    });
+                } else {
+                    //捕获页
+                    layer.open({
+                        type: 1,
+                        shade: false,
+                        title: "编辑",
+                        area:['800px','900px'],
+                        btn:["确定","取消"],
+                        content: $('#layer-info'),
+                        yes:function(index){
+
+                            // 获取已有的溯源信息
+                            getItems();
+                            // 获取自定义的溯源信息
+                            getCustomItems();
+                            // 获取溯源图片信息
+                            getImages();
+                            layer.load(3, {shade: [0.1, '#393D49']});
+                            $.ajax({
+                                url: "/trace/custom",
+                                type: 'POST',
+                                dataType: 'json',
+                                data: data,
+                                success: function(res) {
+                                    layer.msg(res.msg, {
+                                        icon: 6,
+                                        time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                                    }, function () {
+                                        layer.closeAll();
+                                        location.reload();
+                                    });
+                                },
+                                error: function (res) {
+                                    layer.msg(res.msg, {icon: 2}, function () {
+                                        layer.closeAll();
+                                    });
+                                }
+                            });
+                        },
+                        cancel: function(){}
+                    });
+                }
+            },
+            error: function(data) {
+                layer.msg(data.responseJSON.msg, {icon: 2});
+            }
+        });
+    });
+
+    // 立即配置
+    $(".add-trace-content").click(function () {
+        var product_id = $(this).attr('data-product-id'),
+            product_name = $(this).attr('data-product-name'),
+            qrcode_number = $(this).attr('data-qrcode-number'),
+            production_date = $(this).attr('data-production-date'),
+            production_count = $(this).attr('data-production-count'),
+            works_id = $(this).attr('data-works-id'),
+            works_name = $(this).attr('data-works-name'),
+            works_cover = $(this).attr('data-works-cover'),
+            artist_name = $(this).attr('data-artist-name');
+
+        data.qrcode_id = $(this).data('qrcode-id');
+
+        var source_html = '';
+        source_html += '<div class="info-item  trace-item">' +
+            '<span>商品名称</span>：' +
+            '<p id="product_name">' + product_name + '</p>' +
+            '</div>';
+        if (qrcode_number) {
+            source_html += '<div class="info-item  trace-item">' +
+                '<span>商品条码</span>：' +
+                '<p id="qrcode_number">' + qrcode_number + '</p>' +
+                '</div>';
+        }
+        if (production_date) {
+            source_html += '<div class="info-item  trace-item">' +
+                '<span>生产日期</span>：' +
+                '<p id="production_date">' + production_date + '</p>' +
+                '</div>';
+        }
+        if (production_count*1) {
+            source_html += '<div class="info-item  trace-item">' +
+                '<span>生产量</span>：' +
+                '<p id="production_count">' + production_count + '</p>' +
+                '</div>';
+        }
+        source_html += '<div class="info-item" >' +
+            '<span style="letter-spacing: 12px">版谷</span>：' +
+            '<p class="works-flex" id="works-info" data-works-id="' + works_id + '">' +
+            '<img id="works_cover" src="' + works_cover + '" alt="" width="100px" height="100px" style="background: #ccc">' +
+            '<span id="artist_name">' + artist_name + '</span>' +
+            '<span id="works_name" style="font-size:16px">《' + works_name + '》</span>' +
+            '</p>' +
+            '</div>';
+        $("#source-html").html(source_html);
+
+        //捕获页
+        layer.open({
+            type: 1,
+            shade: false,
+            title: '立即配置', //不显示标题
+            area:['800px','900px'],
+            btn:["确定","取消"],
+            content: $('#layer-add-trace-content'), //捕获的元素，注意：最好该指定的元素要存放在body最外层，否则可能被其它的相对元素所影响
+            yes:function(index){
+                // 获取已有的溯源信息
+                getItems();
+                // 获取自定义的溯源信息
+                getCustomItems();
+                // 获取溯源图片信息
+                getImages();
+                layer.load(3, {shade: [0.1, '#393D49']});
+                $.ajax({
+                    url: "/trace/custom",
+                    type: 'POST',
+                    dataType: 'json',
+                    data: data,
+                    success: function(res) {
+                        layer.msg(res.msg, {
+                            icon: 6,
+                            time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                        }, function () {
+                            layer.closeAll();
+                            location.reload();
+                        });
+                    },
+                    error: function (res) {
+                        layer.msg(res.msg, {icon: 2}, function () {
+                            layer.closeAll();
+                        });
+                    }
+                });
+            },
+            cancel: function(){}
+        });
+    });
+
+    // 获取已有的溯源信息
+    function getItems() {
+        var items = [];
+        $(".trace-item").each(function (index, item) {
+            var name = $(item).find('span').html().trim();
+            var value = $(item).find('p').html().trim();
+            items.push({'key':name,'val':value});
+        });
+        // 给数据结构赋值
+        data.source_data.items = items;
+        // 获取版谷works_id
+        data.works_id = $("#works-info").attr('data-works-id');
+        data.content_id = $("#content-id").val();
+    }
+
+    // 获取自定义的溯源信息
+    function getCustomItems() {
+        var custom_items = [];
+        if ($(".addbox-item").length > 0) {
+            $(".addbox-item").each(function (index, item) {
+                var name = $(item).find('.input-s').val();
+                var value = $(item).find('.input-sm').val();
+                if (name == "") {
+                    layer.msg("自定义第"+(index+1)+"行的名称不能为空", {icon: 2});
+                    return false;
+                }
+
+                if (value == "") {
+                    layer.msg("自定义第"+(index+1)+"行的值不能为空", {icon: 2});
+                    return false;
+                }
+                custom_items.push({'key':name,'val':value});
+            });
+        }
+        // 给数据结构赋值
+        data.source_data.custom_items = custom_items;
+    }
+
+    // 获取溯源图片信息
+    function getImages() {
+        var images = [];
+        if ($(".trace-imgs").length > 0) {
+            $(".trace-imgs").each(function (index, item) {
+                var value = $(item).find('img').attr('src');
+                images.push({'img_url':value});
+            });
+        }
+        // 给数据结构赋值
+        data.source_data.imgs = images;
+    }
+
+</script>
+<script>
+    // 添加自定义溯源信息
+    function addTrace(obj){
+        console.log(obj);
+        var add_trace = '';
+        add_trace += '<div class="addbox-list" style="margin-top:20px;">' +
+            '<div class="addbox-item">名称：' +
+            '<input type="text" class="input-s" maxlength="8" placeholder="如：产地">' +
+            '<input type="text" class="input-sm" maxlength="25" placeholder="如：鄂尔多斯">' +
+            '</div>'+
+            '<input type="button" class="del-trace" value="-" onclick="delTrace($(this))">'+
+            '</div>';
+        obj.find(".add-trace").append(add_trace);
+    }
+
+    // 删除自定义节点
+    function delTrace(o){
+        o.parent('.addbox-list').remove();
+    }
+
+
+    // 溯源上传图片
+    function uploadImg(o){
+        o.parents('.addimg-list').find('input').trigger('click');
+    }
+
+    //上传图片功能
+    function changeFile(o) {
+
+        var file_len = o[0].files.length;
+        if (file_len == 0) {
+            return false;
+        }
+        if (file_len > 10) {
+            layer.msg('一次最多上传10张图片！', {icon: 2, time: 1000}, function () {
+                layer.closeAll();
+            });
+            return false;
+        }
+        var formData = new FormData();
+        var count = 0;
+
+        for(var i=0; i<o[0].files.length; i++){
+            count++;
+            formData.append('file'+i, o[0].files[i]);
+        }
+        var load = layer.load(3, {shade: [0.1, '#393D49'], time: 1000});
+        $.ajax({
+            url: '/api/trace-multi-image',
+            type: 'POST',
+            cache: false,
+            data: formData,
+            dataType: 'json',
+            processData: false,
+            contentType: false,
+            // async: false,
+            success: function(data) {
+                var failMsg = '';
+                if (count > data.data.succNum) {
+                    errNum = count-data.data.succNum;
+                    failMsg = " 失败 " + errNum + " 张,失败原因如下：<br>" + data.data.errmsg;
+                }
+                layer.confirm('图片上传成功 ' + data.data.succNum + ' 张 ' + failMsg, {
+                    btn: ['取消','确定'] //可以无限个按钮
+                }, function(index, layero){
+                    //按钮【按钮一】的回调
+                    layer.close(index);
+                    layer.close(load);
+                    o.val('');
+                }, function(index){
+                    //按钮【按钮二】的回调
+                    // 修改当前分类的数量
+                    o.val('');
+                    var img_html = '';
+                    for (var i=0; i<data.data.urlArr.length; i++) {
+                        img_html += '<li class="trace-imgs">' +
+                            '<img style="width:120px;" src="'+data.data.urlArr[i]+'">' +
+                            '<span class="img-del" style="cursor: pointer;color:red;" onclick="delImg($(this))">' +
+                            '<img src="{:qiniu_domains()}/upload/00/42dd6b62a6b259c35308168e041c371a364cf408bdcb69105ddbc0ca0d3c74.png?origin=删除.png"></span>'+
+                            '</li>';
+                    }
+                    o.siblings(".ul1").append(img_html);
+                });
+            }
+        });
+    }
+
+    // 删除图片
+    function delImg(o){
+        o.parent('li').remove();
+    }
+
+    // 预览溯源信息
+    function getTraceReload(data){
+        let trace_html = template(document.getElementById('trace_html').innerHTML, {
+            traceData: data
+        });
+        $("#layer-info").html(trace_html);
+    }
+</script>
+{/block}

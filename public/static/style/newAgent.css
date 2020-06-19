@@ -1,0 +1,341 @@
+/*按钮*/
+.btn {
+  width: auto;
+  height: auto;
+  border-radius: 14px;
+  padding: 4px 20px;
+  border: none;
+  background: none;
+  text-align: center;
+  box-sizing: content-box;
+}
+.btn.btn-fill {
+  background-image: linear-gradient(-152deg, rgba(255, 0, 0, 0.49) 0%, #FFB900 100%);
+  color: #fff;
+}
+.btn.btn-o {
+  border: 1px solid #ff8544;
+  color: #ff8544;
+}
+.btn.btn-normal {
+  display: inline-flex;
+  border: 1px solid #E8E8E8;
+  border-radius: 3px;
+  width: 80px;
+  height: 28px;
+  justify-content: space-around;
+  align-items: center;
+  float: left;
+  margin-top: 15px;
+  padding: 0;
+  cursor: pointer;
+  color: #54667A;
+}
+.btn.btn-normal .direction {
+  display: inline-flex;
+  flex-direction: column;
+  justify-content: center;
+  float: right;
+}
+.btn.btn-normal .direction .fa.active {
+  color: #ff8544;
+}
+.btn.btn-lg {
+  padding: 15px 96px;
+  border-radius: 48px;
+}
+/*卡片*/
+.cards {
+  width: 100%;
+  height: auto;
+  background: #fff;
+  border-radius: 4px;
+  padding: 15px;
+}
+/*文字颜色*/
+.text-gray {
+  color: #898E93;
+}
+.text-link {
+  color: #2F323E;
+}
+.text-blue {
+  color: #1797FF;
+}
+.text-o {
+  color: #FF8544;
+}
+.text-red {
+  color: #f00;
+}
+a {
+  color: #333;
+  text-decoration: none;
+}
+ahover {
+  color: #000;
+}
+aactive {
+  color: #000;
+}
+/*表单*/
+/*查询式表单*/
+.form-group {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-content: center;
+  margin-bottom: 28px;
+}
+.form-group:last-child {
+  padding-bottom: 28px;
+}
+.form-group .form-item {
+  width: 20%;
+  min-width: 270px;
+  border: 1px solid #E8E8E8;
+  border-radius: 3px;
+  display: flex;
+}
+.form-group .form-item label {
+  background: #f0f2f8;
+  height: 34px;
+  width: auto;
+  padding: 0 10px;
+  display: inline-block;
+  line-height: 34px;
+  color: #54667A;
+  font-size: 12px;
+}
+.form-group .form-item input:not([type='button']),
+.form-group .form-item select {
+  border: none;
+  background: none;
+  color: #54667A;
+  flex: 1;
+  padding-left: 5px;
+}
+.form-group .form-item-btn {
+  width: 20%;
+  line-height: 34px;
+}
+.form-group .form-item-btn input {
+  margin-left: 16px;
+}
+.form-checkbox {
+  position: relative;
+  display: inline-block;
+  height: 100%;
+  margin-left: 10px;
+}
+.form-checkbox label {
+  padding-left: 25px;
+}
+.form-checkbox input[type='checkbox'] {
+  position: absolute;
+  z-index: 2;
+  opacity: 0;
+  width: 20px;
+  height: 20px;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  margin: auto;
+  cursor: pointer;
+}
+.form-checkbox input[type='checkbox']:checked + span {
+  background: url(../imgs/checked.png) no-repeat center center;
+  background-size: auto;
+}
+.form-checkbox span {
+  position: absolute;
+  z-index: 1;
+  width: 20px;
+  height: 20px;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  margin: auto;
+  display: block;
+  background: url(../imgs/check.png) no-repeat center center;
+  background-size: auto;
+}
+.form-radio {
+  position: relative;
+  display: inline-block;
+  height: 100%;
+  margin-left: 10px;
+}
+.form-radio label {
+  padding-left: 25px;
+}
+.form-radio input[type='radio'] {
+  position: absolute;
+  z-index: 2;
+  opacity: 0;
+  width: 16px;
+  height: 16px;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  margin: auto;
+  cursor: pointer;
+}
+.form-radio input[type='radio']:checked + span {
+  background: url(../imgs/radio.png) no-repeat center top;
+  background-size: cover;
+}
+.form-radio span {
+  position: absolute;
+  z-index: 1;
+  width: 16px;
+  height: 16px;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  margin: auto;
+  display: block;
+  background: url(../imgs/radio.png) no-repeat center bottom;
+  background-size: cover;
+}
+/*表格*/
+.table {
+  width: 100%;
+  table-layout: auto;
+}
+.table .tr-th {
+  background: #E8F3FF;
+  height: 40px;
+}
+select {
+  border: none;
+  background: none;
+  color: #54667a;
+  flex: 1;
+  padding-left: 5px;
+}
+/*清除iIE的默认选择框样式*/
+.agent-item {
+  margin-top: 34px;
+}
+label {
+  font-family: MicrosoftYaHei;
+  font-size: 14px;
+  color: #54667A;
+  line-height: 19px;
+}
+.input-a {
+  width: 232px;
+  height: 34px;
+  text-align: justify;
+  border: 1px solid #E8E8E8;
+  border-radius: 3px;
+  margin: 0 20px;
+  padding-left: 12px;
+}
+.input-a::-webkit-input-placeholder {
+  font-family: MicrosoftYaHei;
+  font-size: 12px;
+  color: #C7C8C9;
+}
+.input-a::-moz-placeholder {
+  font-family: MicrosoftYaHei;
+  font-size: 12px;
+  color: #C7C8C9;
+}
+.input-a::-ms-input-placeholder {
+  font-family: MicrosoftYaHei;
+  font-size: 12px;
+  color: #C7C8C9;
+}
+.mt57 {
+  margin-top: 57px;
+}
+.mt57 .explain {
+  margin-left: 27px;
+  font-family: MicrosoftYaHei;
+  font-size: 12px;
+  color: #898E93;
+  letter-spacing: 0.8px;
+}
+.current1 .ratio,
+.current2 .ratio,
+.current3 .ratio {
+  margin: 40px 0 14px 45px;
+  position: relative;
+}
+.current1 .ratio .common,
+.current2 .ratio .common,
+.current3 .ratio .common {
+  font-family: MicrosoftYaHei;
+  font-size: 12px;
+  color: #2F323E;
+}
+.current1 .ratio .sort,
+.current2 .ratio .sort,
+.current3 .ratio .sort {
+  font-family: MicrosoftYaHei;
+  font-size: 14px;
+  color: #54667A;
+  line-height: 19px;
+}
+.current1 .ratio .yi,
+.current2 .ratio .yi,
+.current3 .ratio .yi {
+  position: absolute;
+  left: 2.9rem;
+  top: -20px;
+}
+.current1 .ratio .er,
+.current2 .ratio .er,
+.current3 .ratio .er {
+  position: absolute;
+  left: 4.3rem;
+  top: -20px;
+}
+.current1 i,
+.current2 i,
+.current3 i {
+  background: url(../imgs/hint_icon.png) no-repeat left;
+  background-size: 16px 16px;
+  font-size: 12px;
+  color: #898E93;
+  text-align: center;
+  padding-left: 2em;
+  margin-left: 63px;
+}
+.adduser-box1,
+.adduser-box2,
+.adduser-box3 {
+  margin-top: 50px;
+}
+.adduser-box1 .adduser-item,
+.adduser-box2 .adduser-item,
+.adduser-box3 .adduser-item {
+  border-top: 1px dashed #ccc;
+  display: flex;
+  justify-content: space-around;
+  padding: 50px 0 70px;
+  align-items: center;
+}
+.adduser-box1 .adduser-item .item-hint,
+.adduser-box2 .adduser-item .item-hint,
+.adduser-box3 .adduser-item .item-hint {
+  position: relative;
+}
+.adduser-box1 .adduser-item .item-hint i,
+.adduser-box2 .adduser-item .item-hint i,
+.adduser-box3 .adduser-item .item-hint i {
+  background: url(../imgs/hint_icon.png) no-repeat left;
+  background-size: 16px 16px;
+  font-size: 12px;
+  color: #898E93;
+  text-align: center;
+  padding-left: 2em;
+  position: absolute;
+  left: -1em;
+  top: 45px;
+}
+.tpl-btn {
+  margin-top: 154px;
+}

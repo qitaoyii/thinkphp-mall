@@ -1,0 +1,186 @@
+{extend name="layout/base" /}
+
+{block name="seo"}
+<title>{$title|default="品牌厂家直供平台"}</title>
+{/block}
+
+{block name="style"}
+<link rel="stylesheet" href="__STATIC__/style/qrcode.css?{:config('huaban.css_version.version')}">
+{/block}
+
+{block name="title"}
+<span>商品管理</span> /
+<span class="colorTit">溯源管理列表</span>
+{/block}
+
+{block name="content"}
+    <!-- 内容盒子 -->
+    <div class="content">
+        <div class="content-box">
+            <!-- 图片商品详情展示盒子 -->
+            <div class="content-dl">
+                <div class="content-dd">
+                    <img src="{:qiniu_domains().$productInfo->image}" alt="">
+                </div>
+                <div class="content-dt">
+                    <h1>{$productInfo->product_name}</h1>
+                    <p>ID:{$productInfo->product_id}</p>
+                </div>
+            </div>
+            <!-- 头部添加申请盒子 -->
+            <div class="content-num-tit">
+                <p class="content-num-tit-p">已申请防伪标总量 <span>{$count}</span>个</p>
+                <button class="content-num-tit-btn" data-product-id="{$productInfo->product_id}">添加新申请</button>
+            </div>
+            <!-- 列表盒子 -->
+            <div class="content-table-box">
+                    <table  cellspacing="0" cellpadding="0">
+                        <tr class="title-th">
+                            <th>序号</th>
+                            <th>防伪标申请时间</th>
+                            <th>防伪标样式</th>
+                            <th>防伪标数量</th>
+                            <th>审核状态</th>
+                            <th>操作</th>
+                        </tr>
+                        {foreach $traceLists as $key=>$val}
+                        <tr class="tr-td">
+                            <td>{$traceLists->num++}</td>
+                            <td>{$val->create_time}</td>
+                            <td>
+                                <img src="{:qiniu_domains().$val->tag_url}" alt="{:qiniu_domains().$val->tag_url}"  width="40px" height="40px">
+                                <span>{$val->tag_type_text}</span>
+                            </td>
+                            <td>{$val->total_num}</td>
+
+                            <td>
+                                {$val->status_text}
+                                {if 6 == $val->status}
+                                    <span style="color:red;"> 拒绝原因：{$val->refuse_reason}</span>
+                                {/if}
+                            </td>
+
+                            <td>
+                                <div class="operate">
+                                    <p class="operate-item">
+                                        <a href="javascript:void(0);" class="trace_detail" data-apply-id="{$val->id}" data-product_id="{$productInfo->product_id}">
+                                            <i class="icon icon-yulan"></i>查看
+                                        </a>
+                                    </p>
+                                    {if 3 == $val->tag_type}
+                                    <p class="operate-item">
+                                        <a href="javascript:void(0);" class="trace_set" data-apply-id="{$val->id}" data-product_id="{$productInfo->product_id}">
+                                            <i class="icon icon-edit"></i>立即配置
+                                        </a>
+                                    </p>
+                                    {/if}
+                                    <p class="operate-item">
+                                        <a href="javascript:void(0);" class="update_trace" data-apply-id="{$val->id}" data-product-id="{$productInfo->product_id}"
+                                           data-product-name="{$productInfo->product_name}"><i class="icon icon-update"></i>更新</a>
+                                    </p>
+                                    {if $val->status == 6}
+                                    <!--status->2:拒绝 可以编辑、删除-->
+                                    <p class="operate-item">
+                                        <a href="javascript:void(0);" class="trace_del" data-apply-id="{$val->id}" data-tag-type="{$val->tag_type}"
+                                           data-product_id="{$productInfo->product_id}"><i class="icon icon-detel"></i>删除</a>
+                                    </p>
+                                    {/if}
+                                    {if in_array($val->status, [5])}
+                                    <!--status->3:已生成 可以下载-->
+                                    <p class="operate-item">
+                                        <a href="{:qiniu_domains().$val->package_url}" class="product_sale">
+                                            <i class="icon icon-xiajia"></i>下载
+                                        </a>
+                                    </p>
+                                    {/if}
+                                </div>
+                            </td>
+                        </tr>
+                        {/foreach}
+                    </table>
+                </div>
+            <!--分页-->
+            <!--{$traceLists->render()|raw}-->
+        </div>
+    </div>
+{/block}
+
+{block name='js'}
+<script>
+    // 查看详情
+    $(".trace_detail").on('click', function(){
+        var apply_id = $(this).data('apply-id'),
+            product_id = $(this).data('product_id');
+        window.location.href = '/trace/detail?apply_id='+apply_id+'&product_id='+product_id;
+    });
+
+    // 添加新申请
+    $(".content-num-tit-btn").click(function () {
+        var product_id = $(this).attr('data-product-id');
+        window.location.href = '/trace/index?product_id='+product_id;
+    });
+
+    // 立即配置 （一物一码）
+    $(".trace_set").click(function () {
+        var apply_id = $(this).data('apply-id'),
+            product_id = $(this).data('product_id');
+        window.location.href = '/trace/qrcode?apply_id='+apply_id+'&product_id='+product_id;
+    });
+
+    // 一键更新 溯源防伪信息
+    $('.update_trace').on('click', function() {
+        var apply_id = $(this).data('apply-id'),
+            product_id = $(this).data('product-id'),
+            product_name = $(this).data('product-name');
+            //tag_type = $(this).data('tag-type');
+
+        layer.confirm('确定要更新吗？', {
+            title: ['系统提示', 'font-size:18px;'],
+            btn: ['确定','取消'] //按钮
+        }, function(){
+            $.ajax({
+                type: 'POST',
+                url: '/trace/update-content',
+                data:{'apply_id':apply_id,'product_id':product_id,'product_name':product_name},
+                success: function(res){
+                    layer.msg(res.msg, {icon: 1});
+                    setTimeout(function(){
+                        location.reload();
+                    },1000)
+                },
+                error: function(){
+                    layer.msg(res.msg, {icon: 2});
+                }
+            });
+        });
+    });
+
+    // 删除溯源防伪标
+    $('.trace_del').on('click', function() {
+        var apply_id = $(this).data('apply-id'),
+            product_id = $(this).data('product_id'),
+            tag_type = $(this).data('tag-type');
+        layer.confirm('确定要删除吗？', {
+            title: ['系统提示', 'font-size:18px;'],
+            btn: ['确定','取消'] //按钮
+        }, function(){
+            $.ajax({
+                type: 'POST',
+                url: '/trace/del-trace',
+                data:{'apply_id':apply_id,'product_id':product_id,'tag_type':tag_type},
+                success: function(res){
+                    layer.msg(res.msg, {icon: 1});
+                    setTimeout(function(){
+                        location.reload();
+                    },1000)
+                },
+                error: function(){
+                    layer.msg(res.msg, {icon: 2});
+                }
+            });
+
+
+        });
+    });
+</script>
+{/block}

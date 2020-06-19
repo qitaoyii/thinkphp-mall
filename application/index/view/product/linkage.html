@@ -1,0 +1,384 @@
+{extend name="layout/base" /}
+
+{block name="seo"}
+    <title>品牌厂家直供平台</title>
+{/block}
+
+{block name="style"}
+    <style></style>
+{/block}
+
+{block name="title"}
+    <span>生产管理</span> /
+    <span class="colorTit">生产新商品</span>
+{/block}
+
+{block name="content"}
+    <!-- 平台功能区 -->
+    <div class="linkage-box">
+        <!--<div class="linkage-process-box">-->
+            <!--<div class="linkage-process-l">-->
+                <!--<img class="process-l-img" src="{:qiniu_domains()}/upload/44/21f23106a4b5e2853cbf0d449c3bcae34611cc20064297a1ec34ba38fa529f.png?origin=process-l.png" alt="">-->
+                <!--<p class="process-l-p-1">商品上架</p>-->
+                <!--<p class="process-l-p-2">流程介绍</p>-->
+            <!--</div>-->
+            <!--<div class="linkage-process-r">-->
+                <!--<div class="linkage-process-r-t">-->
+                    <!--<div class="process-r-img-box process-img-r">-->
+                        <!--<img src="{:qiniu_domains()}/upload/e1/c139dd23b836b0e5de34bdc7b50501a27a11277fadb9f4fc0579b4096202a2.png?origin=process-r.png" alt="">-->
+                    <!--</div>-->
+                    <!--<div class="process-r-img-box process-img-one">-->
+                        <!--<img src="{:qiniu_domains()}/upload/df/efe8c4672da5b497dce4a5392d354c6b620a28844ecb4c922c3a9b64f9d1e7.png?origin=process-one.png" alt="">-->
+                    <!--</div>-->
+                    <!--<div class="process-r-img-box process-img-two">-->
+                        <!--<img src="{:qiniu_domains()}/upload/6c/70d32bb9884d73087881e44f6318a7082ac73e8cffd3bbd00e827cddab8b6f.png?origin=process-two.png" alt="">-->
+                    <!--</div>-->
+                    <!--<div class="process-r-img-box process-img-three">-->
+                        <!--<img src="{:qiniu_domains()}/upload/da/99aa8e426a2362fad80f9e6d5767909ebc57c582a1730cd76261e0c0b62b20.png?origin=process-three.png" alt="">-->
+                    <!--</div>-->
+                <!--</div>-->
+                <!--<div class="linkage-process-r-b">-->
+                    <!--<div class="process-r-img-box process-img-r">-->
+                        <!--<img src="{:qiniu_domains()}/upload/e1/c139dd23b836b0e5de34bdc7b50501a27a11277fadb9f4fc0579b4096202a2.png?origin=process-r.png" alt="">-->
+                    <!--</div>-->
+                    <!--<div class="process-r-img-box process-img-one">-->
+                        <!--<img src="{:qiniu_domains()}/upload/df/efe8c4672da5b497dce4a5392d354c6b620a28844ecb4c922c3a9b64f9d1e7.png?origin=process-one.png" alt="">-->
+                    <!--</div>-->
+                    <!--<div class="process-r-img-box process-img-two">-->
+                        <!--<img src="{:qiniu_domains()}/upload/6c/70d32bb9884d73087881e44f6318a7082ac73e8cffd3bbd00e827cddab8b6f.png?origin=process-two.png" alt="">-->
+                    <!--</div>-->
+                    <!--<div class="process-r-img-box process-img-three">-->
+                        <!--<img src="{:qiniu_domains()}/upload/da/99aa8e426a2362fad80f9e6d5767909ebc57c582a1730cd76261e0c0b62b20.png?origin=process-three.png" alt="">-->
+                    <!--</div>-->
+                <!--</div>-->
+            <!--</div>-->
+        <!--</div>-->
+        <div class="linkage-flexbox">
+            <div class="one-linkage">
+                <h2 class="linkage-tit"><input type="text" placeholder="输入名称：查询一级分类" class="input-sm" style="text-align: center;" onkeyup="search($(this),event)"></h2>
+                
+                <ul class="linkage-cont  cont-one">
+
+                </ul>
+            </div>
+            <div class="two-linkage">
+                <h2 class="linkage-tit"><input type="text" placeholder="输入名称：查询二级分类" class="input-sm" style="text-align: center" onkeyup="search($(this),event)"></h2>
+                
+                <ul class="linkage-cont cont-two">
+
+                </ul>
+            </div>
+            <div class="three-linkage">                    
+                <h2 class="linkage-tit"><input type="text" placeholder="输入名称：查询三级分类" class="input-sm" style="text-align: center" onkeyup="search($(this),event)"></h2>
+                
+                <ul class="linkage-cont cont-three">
+
+                </ul>
+            </div>
+        </div>
+        <h3 class="linkage-prompt">
+            说明：如未找到您想要发布的商品分类，需要修改或添加主营类目，请联系您的品牌经理。
+        </h3>
+        <div class="linkage-btnbox">
+            <button class="linkage-btn">确定创建该分类商品</button>
+        </div>
+    </div>
+{/block}
+
+{block name='js'}
+    <script>
+        var url = "/api/product-category";
+        var idOne = window.sessionStorage.getItem('listOne-id') ? window.sessionStorage.getItem('listOne-id') : ""; //存储一级id
+        var idTwo = window.sessionStorage.getItem('listTwo-id') ? window.sessionStorage.getItem('listTwo-id') : ""; //存储二级id
+        var idThree = window.sessionStorage.getItem('listThree-id') ? window.sessionStorage.getItem('listThree-id') : ""; //存储三级id
+        var textone = ''; //存储一级数据
+        var texttwo = ''; //存储二级数据
+        var textthree = ''; //存储三级数据
+
+        //请求并渲染默认数据
+        $.ajax({
+            url: url, //请求数据路径
+            type: "get", //请求方式
+            dataType: "json", //返回数据格式为json
+            success: function(data) { //请求成功完成后要执行的方法
+                var search = window.location.search;
+                var cateid = search.split('&')[0];
+                var searchArray = '';
+                var storageOne = '';
+                var storageTwo = '';
+                var storageThree = '';
+                window.sessionStorage.setItem('listOne-id','');
+                window.sessionStorage.setItem('listTwo-id','');
+                window.sessionStorage.setItem('listThree-id','');
+                idOne = '';
+                idTwo = '';
+                idThree = '';
+                if (search) {
+                    searchArray = cateid.split('=')[1].split('_');
+                    storageOne = searchArray[0];
+                    storageTwo = searchArray[1];
+                    storageThree = searchArray[2];
+                    idOne = searchArray[0];
+                    idTwo = searchArray[1];
+                    idThree = searchArray[2];
+                }
+                //console.log(idOne, idTwo, idThree);
+                var contone = '';
+                //循环数据并渲染初始值
+                var num = 0;
+                $.each(data.data.categories, function(key, value) {
+                    //console.log(value);
+                    contone += '<li class="" id="'+key+'" num="'+(num += 1)+'">'+
+                        '<span>'+value+'</span>'+
+                        '<img src="{:qiniu_domains()}/upload/34/6b5ec680d2b7ca16840e737d3096d5e9a3b20e6b3448d323989dfc486c1a00.png?origin=right.png" alt="">'+
+                        '</li>';
+                      
+                });
+                $('.cont-one').html(contone);
+              
+
+                //设置二级三级默认背景
+                $('.cont-two').html('<img class="coffeeimg" src="{:qiniu_domains()}/upload/99/aa14992d01b77727cce48ec43aa0eea47042a573a8a1b8f921d73e323f65ca.png?origin=coffee.png" alt="">');
+                $('.cont-three').html('<img class="coffeeimg" src="{:qiniu_domains()}/upload/99/aa14992d01b77727cce48ec43aa0eea47042a573a8a1b8f921d73e323f65ca.png?origin=coffee.png" alt="">');
+
+                //点击一级循环数据找到匹配数据并渲染到二级
+                $('.cont-one').on('click', 'li', function() {
+                    // console.log($(this).offset().top)
+                    // console.log($(this).attr('num'));
+                    window.sessionStorage.setItem('scrollTop1', $(this).attr('num'));
+                    idOne = $(this).attr('id');
+                    idTwo = '';
+                    idThree = '';
+                    // console.log(idOne)
+                    textone = $(this).find('span').text().trim();
+                    texttwo = '';
+                    textthree = '';
+                    $(this).find('span').css('color', '#FF8544').parents('li').siblings().find('span').css('color', '#2F323E');
+                    $('.cont-three').html('<img class="coffeeimg" src="{:qiniu_domains()}/upload/99/aa14992d01b77727cce48ec43aa0eea47042a573a8a1b8f921d73e323f65ca.png?origin=coffee.png" alt="">');
+                    var conttwo = '';
+                    $.ajax({
+                        url: url + '?id=' + idOne,
+                        type: "get", //请求方式
+                        dataType: "json", //返回数据格式为json
+                        success: function(data) { //请求成功完成后要执行的方法
+                            var num = 0;
+                            $.each(data.data.categories, function(index, item) {
+                                conttwo += '<li class="" id="'+index+'" num="'+(num += 1)+'">'+
+                                     '<span>'+item+'</span>'+
+                                     '<img src="{:qiniu_domains()}/upload/34/6b5ec680d2b7ca16840e737d3096d5e9a3b20e6b3448d323989dfc486c1a00.png?origin=right.png" alt="">'+
+                                 '</li>';                  
+                                 });
+                    $('.cont-two').html(conttwo);
+                            // $('.cont-two').scrollTop(100000)
+                        }
+                    });
+                });
+
+                //点击二级循环数据找到匹配数据并渲染到三级
+                $('.cont-two').on('click', 'li', function() {
+                    // console.log($(this).attr('num'));
+                    window.sessionStorage.setItem('scrollTop2', $(this).attr('num'));
+                    idTwo = $(this).attr('id');
+                    idThree = '';
+                    // console.log(idTwo);
+                    texttwo = $(this).find('span').text().trim();
+                    textthree = '';
+                    $(this).find('span').css('color', '#FF8544').parents('li').siblings().find('span').css('color', '#2F323E');
+
+                    var contthree = '';
+
+                    $.ajax({
+                        url: url + '?id=' + idTwo,
+                        type: "get", //请求方式
+                        dataType: "json", //返回数据格式为json
+                        success: function(data) { //请求成功完成后要执行的方法
+                            var num = 0;
+                            $.each(data.data.categories, function(index, item) {
+                                contthree += '<li class="" id="'+index+'" num="'+(num += 1)+'">'+
+                                    '<span>'+item+'</span>'+
+                                 '</li>';
+                            });
+                            $('.cont-three').html(contthree);
+                        }
+                    });
+                });
+
+                // 点击三级获取内容
+                $('.cont-three').on('click', 'li', function() {
+                    // console.log($(this).attr('num'));
+                    window.sessionStorage.setItem('scrollTop3', $(this).attr('num'));
+                    idThree = $(this).attr('id');
+                    // console.log(idThree);
+                    textthree = $(this).find('span').text().trim();
+                    $(this).find('span').css('color', '#FF8544').parents('li').siblings().find('span').css('color', '#2F323E');
+                });
+
+                //判断是否为修改
+                if (storageOne && storageTwo && storageThree) {
+                    // console.log(storageOne, storageTwo, storageThree);
+                    var contone = '';
+                    //循环数据并渲染初始值
+                    var num = 0;
+                    $.each(data.data.categories, function(key, value) {
+                        if (storageOne == key) {
+                            contone += '<li class="" id="' + key + '"  num="' + (num += 1) + '">' +
+                                '<span style="color: rgb(255, 133, 68);">' + value + '</span>' +
+                                '<img src="{:qiniu_domains()}/upload/34/6b5ec680d2b7ca16840e737d3096d5e9a3b20e6b3448d323989dfc486c1a00.png?origin=right.png" alt="">' +
+                                '</li>';
+                            storageOne = key;
+                        } else {
+                            contone += '<li class="" id="' + key + '"  num="' + (num += 1) + '">' +
+                                '<span>' + value + '</span>' +
+                                '<img src="{:qiniu_domains()}/upload/34/6b5ec680d2b7ca16840e737d3096d5e9a3b20e6b3448d323989dfc486c1a00.png?origin=right.png" alt="">' +
+                                '</li>';
+                        }
+                    });
+                    $('.cont-one').html(contone);
+                    $('.cont-one').scrollTop((window.sessionStorage.getItem('scrollTop1') - 1) * 43);
+
+                    var conttwo = '';
+                    $.ajax({
+                        url: url + '?id=' + storageOne,
+                        type: "get", //请求方式
+                        dataType: "json", //返回数据格式为json
+                        success: function(data) { //请求成功完成后要执行的方法
+                            var num = 0;
+                            $.each(data.data.categories, function(index, item) {
+                                if (storageTwo == index) {
+                                    conttwo += '<li class="" id="'+index+'"  num="'+(num += 1)+'">'+
+                                        '<span style="color: rgb(255, 133, 68);">'+item+'</span>'+
+                                        '<img src="{:qiniu_domains()}/upload/34/6b5ec680d2b7ca16840e737d3096d5e9a3b20e6b3448d323989dfc486c1a00.png?origin=right.png" alt="">'+
+                                    '</li>';
+                                    storageTwo = index;
+                                    // console.log(idTwo)
+                                } else {
+                                    conttwo += '<li class="" id="'+index+'"  num="'+(num += 1)+'">'+
+                                        '<span>'+item+'</span>'+
+                                        '<img src="{:qiniu_domains()}/upload/34/6b5ec680d2b7ca16840e737d3096d5e9a3b20e6b3448d323989dfc486c1a00.png?origin=right.png" alt="">'+
+                                    '</li>';
+                                }
+                            });
+                            $('.cont-two').html(conttwo);
+                            $('.cont-two').scrollTop((window.sessionStorage.getItem('scrollTop2') - 1) * 43);
+                        }
+                    });
+
+                    var contthree = '';
+                    $.ajax({
+                        url: url + '?id=' + storageTwo,
+                        type: "get", //请求方式
+                        dataType: "json", //返回数据格式为json
+                        success: function(data) { //请求成功完成后要执行的方法
+                            var num = 0;
+                            $.each(data.data.categories, function(index, item) {
+                                if (storageThree == index) {
+                                    contthree += '<li class="" id="'+index+'"  num="'+(num += 1)+'">'+
+                                        '<span style="color: rgb(255, 133, 68);">'+item+'</span>'+
+                                    '</li>';
+                                    idThree = index;                                   
+                                } else {
+                                    contthree += '<li class="" id="'+index+'"  num="'+(num += 1)+'">'+
+                                        '<span>'+item+'</span>'+
+                                    '</li>';
+                                }
+                            });
+                            $('.cont-three').html(contthree);
+                            $('.cont-three').scrollTop((window.sessionStorage.getItem('scrollTop3') - 1) * 43);
+                        }
+                    });
+                    // console.log(storageOne, storageTwo, storageThree);
+                }
+            }
+        });
+
+
+        $('.linkage-btn').on('click', function() {
+            window.sessionStorage.setItem('listOne-id', idOne);
+            window.sessionStorage.setItem('listTwo-id', idTwo);
+            window.sessionStorage.setItem('listThree-id', idThree);
+            // console.log(textone, texttwo, textthree);
+            console.log(idOne, idTwo, idThree);
+
+
+            if(!idOne){
+                layer.msg('亲，请选择一级分类！', {
+                    icon: 0,
+                    time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                });
+                return false;
+            }
+            if(!idTwo){
+                layer.msg('亲，请选择二级分类！', {
+                    icon: 0,
+                    time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                });
+                return false;
+            }
+            if(!idThree){
+                layer.msg('亲，请选择三级分类！', {
+                    icon: 0,
+                    time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                });
+                return false;
+            }
+
+            // 判断是否有颜色规格属性 设置了，如果没有给提示
+            var categories = idOne+'_'+idTwo+'_'+idThree;
+            // var categories_1 = idOne+'_'+textone+'-'+idTwo+'_'+texttwo+'-'+idThree+'_'+textthree;
+            var product_id = {$product_id};
+
+            // window.sessionStorage.setItem('listOne-id', '');
+            // window.sessionStorage.setItem('listTwo-id', '');
+            // window.sessionStorage.setItem('listThree-id', '');
+            if (product_id) {
+                window.location.href="save?categories="+categories+"&product_id="+product_id+'&type=2&copy=1';
+            } else {
+                window.location.href="save?categories="+categories+"&product_id="+product_id+'&type=1';
+            }
+
+            // $.ajax({
+            //     url: "set-attr",
+            //     type: 'GET',
+            //     dataType: 'json',
+            //     data: {'categories': categories},
+            //     success: function (result) {
+            //         window.sessionStorage.setItem('listOne-id', '');
+            //         window.sessionStorage.setItem('listTwo-id', '');
+            //         window.sessionStorage.setItem('listThree-id', '');
+            //         window.location.href="save?categories="+categories+"&product_id="+product_id+'&type=1';
+            //     },error: function (data) {
+            //         layer.confirm('该分类下尚未创建规格属性，请先创建！', {
+            //             btn: ['立即去创建', '好的，稍后创建']
+            //         }, function(index, layero){
+            //             window.location.href="/index/material?categories="+categories_1;
+            //         }, function(index){
+            //             layer.close(index);
+            //         });
+            //     }
+            // });
+        });
+        function search(obj,e){
+            var flag=obj.parent('.linkage-tit').siblings('ul').find("li").length;
+            if(flag==0){
+                layer.msg("没有分类可供搜索，请先选择上级分类");
+                return false;
+            }
+            var text = obj.val();//获取文本框输入
+            if($.trim(text) != ""){
+                if(e.keyCode==13){
+
+                    obj.parent('.linkage-tit').siblings('ul').find("li").hide();
+                    var _flag=obj.parent('.linkage-tit').siblings('ul').find("li").filter(":contains('"+text+"')").length;
+                    if(_flag==0){
+                        layer.msg("没有找到您搜索的分类，请联系您的品牌经理添加");
+                        return false;
+                    }
+                    obj.parent('.linkage-tit').siblings('ul').find("li").filter(":contains('"+text+"')").show();
+                }
+					
+			}else{
+				obj.parent('.linkage-tit').siblings('ul').find("li").show();
+            }
+        }
+    </script>
+{/block}

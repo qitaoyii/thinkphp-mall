@@ -1,0 +1,163 @@
+{extend name="layout/base" /}
+
+{block name="seo"}
+<title>{$title|default="品牌厂家直供平台"}</title>
+{/block}
+
+{block name="style"}
+
+{/block}
+
+{block name="title"}
+<span>订单管理</span> /
+<span class="colorTit">提现记录</span>
+{/block}
+
+{block name="content"}
+    <div class="ShopFrontPage-r-bot">
+    <div class="order-box cards">
+        <form action="/order/cash-out" method="get">
+            <div class="order-search">
+                <div class="form-group" style="
+                justify-content: flex-start;
+                align-items: center;">
+                    <div class="form-item">
+                        <label for="create_time">提现日期</label>
+                        <input type="text" readonly placeholder="请选择日期" autocomplete="off" id="date" name="create_time" value="{$create_time}">
+                        <i></i>
+                    </div>
+                    <div class="form-item">
+                        <label for="status">提现状态</label>
+                        <select name="status" id="status">
+                            <option value="">全部</option>
+                            {foreach \app\index\model\ShopCashOut::STATUSES as $k => $v}
+                            <option value="{$k}" <?= $k == $status ? 'selected' : '' ?>>{$v}</option>
+                            {/foreach}
+                        </select>
+                    </div>
+                    <div>
+                        <input type="submit" value="查询" class="btn btn-fill">
+                        {haspermission:close key="view-export-cash-out-order"}
+                        <a href="javascript:;" class="btn btn-o btn-icon btn-export" id="export"><i class="fa fa-download"></i>导出</a>
+                        {/haspermission:close}
+                        <i></i>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="text-left" style="margin-left:15px;">
+                        共<span class="text-blue"> {$cash_count} </span>笔提现申请记录&nbsp;&nbsp;<br><br>
+                        申请提现总金额（元）：
+                        <span class="text-o">{$cash_sum}</span>
+                    </div>
+                </div>
+            </div>
+        </form>
+
+        <div class="order-table">
+            <table class="order-tb">
+                <thead>
+                <tr class="tr-th">
+                    <th>序号</th>
+                    <th>申请提现时间</th>
+                    <th>申请提现金额（元）</th>
+                    <th>提现状态</th>
+                    <th>开户名称</th>
+                    <th>银行帐号</th>
+                    <th>开户行</th>
+                    <th>处理完成时间</th>
+                    <th>付款凭证</th>
+                </tr>
+                </thead>
+                <tbody>
+                {foreach name='applyList' item='value'}
+                    <tr class="tr-bd">
+                        <td>{$applyList->num++}</td>
+                        <td>{$value->create_time}</td>
+                        <td>{$value->cash_price}</td>
+                        <td>
+                            <span style="color:{if 2 == $value->status} blue {else /} red {/if};">
+                                {$value->status_text}
+                            <span>
+
+                            {if 3 == $value->status}
+                                <img id="view_tips" reason="{$value->refuse_reason}" style="width:18px;height:18px;vertical-align: bottom;" src="{:qiniu_domains()}/upload/1f/68d4ae0f966ed9daae217f4fb2f789f62998daff83030ea8153b102b2caabf.png?origin=hint_icon.png">
+                            {/if}
+                        </td>
+                        <td>{:optional($value->bankCard)->account_name}</td>
+                        <td>{:optional($value->bankCard)->account}</td>
+                        <td>{:optional(optional($value->bankCard)->bank)->bank_name}</td>
+                        <td>
+                            {if 1 == $value->status}
+                                ------
+                            {else /}
+                                {$value->update_time}
+                            {/if}
+                        </td>
+                        <td>
+                            {if 2 == $value->status}
+                                {foreach( \app\index\model\ShopCashOut::voucherUrlHandler($value->voucher_url) as $key => $vo )}
+                                    <img src="{:qiniu_domains().$vo}?imageView2/0/w/60" onclick="enlarge(this)" data-url="{:qiniu_domains().$vo}" alt="商品图" width='60px'>
+                                {/foreach}
+                            {else /}
+                                ------
+                            {/if}
+                        </td>
+                    </tr>
+                {/foreach}
+                </tbody>
+            </table>
+
+        </div>
+
+        <!--分页-->
+        <div class="pragination-group" id="pageToolbar">
+            {$applyList->render() | raw}
+        </div>
+
+    </div>
+</div>
+{/block}
+
+{block name='js'}
+    <script>
+
+        // 查看拒绝原因
+        $('#view_tips').on('click', function(){
+            refuse_reason = '拒绝原因：' + $('#view_tips').attr('reason');
+            layer.tips(refuse_reason, '#view_tips',{
+                tips: [1, '#3595CC'],
+                time: 2000
+            });
+        });
+
+        // 导出Excel表信息
+        $("#export").click(function () {
+            var create_time = $("#date").val();
+            var status = $("#status option:selected").val();
+            window.location.href = '/order/cash-out-export?create_time='+create_time+'&status='+status;
+        });
+
+        // 放大显示查看付款凭证
+        function enlarge(obj) {
+            var url = [];
+            $(obj).parent('td').find('img').each(function(index,item){
+                url.push({src:$(item).attr('data-url')});
+            });
+
+            var idx = $(obj).index();
+
+            var json = {
+                "start": idx, //初始显示的图片序号，默认0' +
+                "data":  url,//相册包含的图片，数组格式' +
+            };
+            layer.photos({
+                photos: json,
+                shade:0,
+                closeBtn:1,
+                area: ['500px', '500px'],
+                anim: 5 //0-6的选择，指定弹出图片动画类型，默认随机（请注意，3.0之前的版本用shift参数）
+            });
+        }
+
+    </script>
+{/block}

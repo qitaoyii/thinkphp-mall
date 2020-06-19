@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>500</title>
+</head>
+<body>
+<div style="width: 100vw;margin-top:30px;">
+    <img src="https://qiniu1.ac.vip/upload/de/5ece07b1ca18ce09542eb73ca9f7f8070cf3a75816126701c5683254e32abe.png?origin=500.png" width="50%" height="auto" style="display: block;margin: 0 auto;">
+</div>
+<div class="" style="font-size: 36px;margin: 0 auto;text-align: center;color: #323232;">
+    服务器开小差了~ 还有
+    <span id="dd" style="color:darkorange;font-weight: bold;">3</span>
+    秒，页面将自动跳转上一页...
+</div>
+<!--倒计时-->
+<script type="text/javascript">
+    function run(){
+        var s = document.getElementById("dd");
+        if(s.innerHTML == 0){
+            // window.location.href='/';
+            window.history.go(-1);
+            return false;
+        }
+        s.innerHTML = s.innerHTML * 1 - 1;
+    }
+    window.setInterval("run();", 1000);
+</script>
+</body>
+</html>

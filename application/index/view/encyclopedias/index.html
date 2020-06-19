@@ -1,0 +1,184 @@
+{extend name="layout/base" /}
+
+{block name="seo"}
+<title>{$title|default="画版商户后台管理系统"}</title>
+{/block}
+
+{block name="style"}
+<style>
+.h3{font-family: MicrosoftYaHei-Bold;font-size: 20px;color: #555555;font-weight:bold;margin-bottom:20px;}
+.choose-item{position: relative;}
+.choose-item.active>a{color:#FF7D2C;}
+.status-list{position: absolute;top:50px;left:0;width:100%;height:auto;display:none;background: #fff; border-radius: 6px;box-shadow: 1px 1px 5px #CCC;}
+.status-list li{height:40px;line-height:40px;text-align:center;color:#555;}
+.status-list li:hover a{color:#FF7D2C;}
+</style>
+
+{/block}
+
+{block name="title"}
+<span>基本信息</span> /
+<span class="colorTit">品牌馆百科</span>
+{/block}
+<!-- 平台功能区 -->
+{block name="content"}
+<div class="ShopFrontPage-r-bot">
+    <div class="order-box cards">
+        <div class="h3">我的百科</div>
+        <div class="choose-list">
+            <div class="choose-item status active"><a
+                    href="">
+                    {if 0==$status}
+                    所有版本
+                    {/if}
+                    {if 1==$status}
+                    审核中
+                    {/if}
+                    {if 2==$status}
+                    已生效
+                    {/if}
+                    {if 3==$status}
+                    审核拒绝
+                    {/if}
+                </a>
+                <ul class="status-list">
+                        <li><a href="/encyclopedias/index?status=0">所有版本</a> </li>
+                    {foreach \app\index\model\Baike::STATUSES as $k => $v}
+                    <li><a href="/encyclopedias/index?status={$k}">{$v}</a> </li>
+                    {/foreach}
+                </ul>
+                </div>
+            <div class="choose-item"><a href="/encyclopedias/atlas">图册</a></div>
+        </div>
+        <div class="form-item-btn">
+            {if $count == 0}
+            <button type="button" class="btn btn-fill baike-add">
+                创建我的百科
+            </button>
+            {else /}
+                {if $lastId > 0}
+                    <button type="button" class="btn btn-fill baike-edit" data-id="{$lastId}">
+                        编辑我的百科
+                    </button>
+                {/if}
+            {/if}
+        </div>
+        <div class="order-table" style="margin-top:10px;">
+                <table class="order-tb">
+                    <thead>
+                    <tr class="tr-th">
+                        <th>更新时间</th>
+                        <th>编辑账号</th>
+                        <th>版本状态</th>
+                        <th style="width:450px;">修改原因</th>
+                        <th>生效时间</th>
+                        <th>操作</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+
+                        {foreach $baiKeList as $val}
+                        <tr>
+                            <td>{$val->create_time}</td>
+                            <td>{$val->editor} ({$val->phone})</td>
+                            <td>
+                                {if 1==$val->status}
+                                    <span class="text-o">
+                                {/if}
+                                {if 3==$val->status}
+                                    <span class="text-red">
+                                {/if}
+                                {if 2==$val->status}
+                                    {if $val->id == $newId}
+                                    <span class="text-blue">
+                                    {else /}
+                                    <span class="text-blue" style="color:#8c8c8c">
+                                    {/if}
+                                {/if}
+                                {$val->status_text}
+                                </span>
+                                {if 3==$val->status}
+                                <img reason="{$val->refuse_describe}" style="width:18px;height:18px;vertical-align: bottom;" src="{:qiniu_domains()}/upload/1f/68d4ae0f966ed9daae217f4fb2f789f62998daff83030ea8153b102b2caabf.png?origin=hint_icon.png" onclick="refuse($(this))">
+                                {/if}
+                            </td>
+                            <td>{:cut_str($val->update_describe, 24)}</td>
+                            <td>{$val->examine_time}</td>
+                            <td>
+                                <div class="operate" >
+                                    <p class="operate-item">
+                                        <a href="/encyclopedias/create?id={$val->id}&type=1" ><i class="icon icon-yulan"></i>查看</a>
+                                    </p>
+                                    {if 2==$val->status}
+                                        <p class="operate-item" data-version_number="{$val->version_number}" data-version_code="{$val->version_code}" data-time="{$val->examine_time}" data-editor="{$val->editor}({$val->phone})" onclick="seeDetail($(this))" >
+                                            <a href="javascript:;"><i class="icon icon-detail"></i>版本详情</a>
+                                        </p>
+                                    {/if}
+                                </div>
+                            </td>
+                        </tr>
+                        {/foreach}
+                    </tbody>
+                </table>
+            </div>
+        <!--分页-->
+        {$baiKeList->render()|raw}
+    </div>
+</div>
+<div id="layer-showqr-box"></div>
+{/block}
+
+{block name='js'}
+<script>
+$(".choose-list").on('mouseenter','.status.active',function(){
+   $(".status-list").fadeIn();
+}).on("mouseleave",function(){
+    $('.status-list').fadeOut()
+});
+// 查看版本详情
+function seeDetail(o){
+    var number=o.attr('data-version_number'),
+        code=o.attr('data-version_code'),
+        editor=o.attr('data-editor'),
+        time=o.attr('data-time');
+        var html='';
+        
+        html+='<p class="qr-item"><label class="item-label">百科版本号：</label><span class="item-value">'+number+'</span></p>';
+        html+='<p class="qr-item"><label class="item-label">版本信息：</label><span class="item-value">'+code+'</span></p>';
+        html+='<p class="qr-item"><label class="item-label">编辑账号：</label><span class="item-value">'+editor+'</span></p>';
+        html+='<p class="qr-item"><label class="item-label">生效时间：</label><span class="item-value">'+time+'</span></p>';
+              
+        $("#layer-showqr-box").html(html);
+                layer.open({
+            type: 1,
+            content: $("#layer-showqr-box"),
+            title: '百科版本详情',
+            btn: ['关闭'],
+            btnAlign:'cc',
+            shadowClose: true,
+            area: "500px",
+            yes: function(index) {
+                layer.close(index);               
+            }
+        });
+}
+// 查看拒绝原因
+ function refuse(o){
+    refuse_reason = '拒绝原因：' + o.attr('reason');
+    layer.tips(refuse_reason, o,{
+        tips: [1, '#3595CC'],
+        time: 2000
+    });
+ }
+
+ // 创建百科
+ $(".baike-add").click(function () {
+     window.location.href = "/encyclopedias/create";
+ });
+
+// 编辑百科
+$(".baike-edit").click(function () {
+    var id = $(this).attr('data-id');
+    window.location.href = "/encyclopedias/create?id="+id;
+});
+</script>
+{/block}

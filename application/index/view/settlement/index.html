@@ -1,0 +1,225 @@
+{extend name="layout/base" /}
+
+{block name="seo"}
+<title>{$title|default="品牌厂家直供平台"}</title>
+{/block}
+
+{block name="style"}
+<style></style>
+{/block}
+
+{block name="title"}
+<span>订单管理</span> /
+<span class="colorTit">已结算订单</span>
+{/block}
+{block name="content"}
+<!-- 平台功能区 -->
+<div class="ShopFrontPage-r-bot">
+    <div class="order-box cards">
+        <form action="/settlement/index" method="get">
+            <div class="order-search">
+                <div class="form-group" style="
+                justify-content: flex-start;
+                align-items: center;">
+                    <div class="form-item">
+                        <label for="create_time">交易时间</label>
+                        <input type="text" readonly placeholder="请选择日期" autocomplete="off" name="pay_time" value="{$pay_time}" id="date">
+                        <i></i>
+                    </div>
+
+                    <div class="form-item">
+                        <label for="product_name">订单号</label>
+                        <input type="text" placeholder="请输入订单号" name="order_sn" id="order_sn" value="{$order_sn}">
+                        <i></i>
+                    </div>
+
+                    <div >
+                        <input type="submit" value="查询" class="btn btn-fill">
+                        {haspermission:close key="view-export-settled-order"}
+                        <a href="javascript:;" class="btn btn-o btn-icon btn-export" id="export"><i class="fa fa-download"></i>导出</a>
+                        
+                        {/haspermission:close}
+                        <i></i>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="text-left" style="margin-left:15px;">
+                        共<span class="text-blue"> {$num} </span>笔订单&nbsp;&nbsp;<br><br>
+                        已结算总金额(元)：
+                        <span class="text-o">￥{$total_price}</span>
+                    </div>
+                </div>
+            </div>
+
+        </form>
+
+        <div class="goods-table">
+            <!--<table class="order-tb">-->
+                <!--<thead>-->
+                <!--<tr class="tr-th">-->
+                    <!--&lt;!&ndash;<th>序号</th>&ndash;&gt;-->
+                    <!--<th>交易时间</th>-->
+                    <!--<th>交易订单号</th>-->
+                    <!--<th>结算金额（元）</th>-->
+                    <!--&lt;!&ndash;<th>确认收货时间</th>&ndash;&gt;-->
+                    <!--<th>可提现时间</th>-->
+                    <!--<th>操作</th>-->
+                <!--</tr>-->
+                <!--</thead>-->
+                <!--<tbody>-->
+                <!--{foreach name='list' item='val'}-->
+                <!--<tr class="tr-bd">-->
+                    <!--&lt;!&ndash;<td>{$list->num++}</td>&ndash;&gt;-->
+                    <!--<td>{$val->pay_time}</td>-->
+                    <!--<td>{$val->transaction_id}</td>-->
+                    <!--<td>{$val->supply_price_text}</td>-->
+                    <!--&lt;!&ndash;<td>{$val->confirm_receipt_time_text}</td>&ndash;&gt;-->
+                    <!--<td>{:optional($val->commission_order_info, '——')->freeze_end_time}</td>-->
+                    <!--<td>-->
+                        <!--<div class="operate">-->
+                            <!--<p class="operate-item">-->
+                                <!--<a href="/order/detail?order_id={$val->order_id}"><i class="icon icon-yulan"></i>详情</a>-->
+                            <!--</p>-->
+                        <!--</div>-->
+                    <!--</td>-->
+                <!--</tr>-->
+                <!--{/foreach}-->
+                <!--</tbody>-->
+            <!--</table>-->
+            <table class="goods-tb">
+                <thead>
+                    <tr class="tr-th" style="vertical-align: middle">
+                        <th width="15%">订单号</th>
+                        <th>订单金额（元）</th>
+                        <th>运费金额（元）</th>
+                        <th width="20%">商品名称</th>
+                        <th width="8%">购买数量</th>
+                        <th width="8%">结算金额（元）</th>
+                        <th>交易时间</th>
+                        <th>状态</th>
+                        <th>可提现时间</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                {foreach $list as $val}
+                <tbody>
+
+                <tr class="tr-bd">
+                    <td rowspan="{:count($val->order_items)}">
+                        <div class="">
+                            {$val->order_sn}
+                        </div>
+                    </td>
+                    <td rowspan="{:count($val->order_items)}">
+                        <div class="">
+                            {$val->total_price}
+                        </div>
+                    </td>
+                    <td rowspan="{:count($val->order_items)}">
+                        <div class="goods-name">
+                            {$val->freight_price}
+                        </div>
+                    </td>
+
+                    <td colspan="3">
+                        {if count($val->order_items) > 0}
+                        {foreach $val->order_items as $value}
+                        <div class="goods-info">
+                            <div class="goods-item" style="flex:5">
+                                {$value->product_name}
+                            </div>
+                            <div class="goods-price" style="flex:3">{$value->num}</div>
+                            <div class="goods-price" style="flex:2">{$value->supply_price * $value->num}</div>
+                        </div>
+                        {/foreach}
+                        {/if}
+                    </td>
+
+                    <td rowspan="{:count($val->order_items)}">
+                        <div class="goods-name">
+                            {$val->pay_time}
+                        </div>
+                    </td>
+                    <td rowspan="{:count($val->order_items)}">
+                        <div class="goods-name">
+                            {if in_array($val->refund_status,[1,2,3,4])}
+                            {$val->refund_status_text}
+                            {/if}
+                            {if 0 == $val->refund_status}
+                                正常
+                            {/if}
+                            <!--{:optional($val->commission_order_info, '')->freeze_end_time}-->
+                        </div>
+                    </td>
+
+                    <td rowspan="{:count($val->order_items)}">
+                        <div class="goods-name">
+                            {$val->freeze_end_time_text}
+                            <!--{:optional($val->commission_order_info, '')->freeze_end_time}-->
+                        </div>
+                    </td>
+                    <td rowspan="{:count($val->order_items)}" >
+                        <div class="operate">
+                            <p class="operate-item">
+                                <a href="/order/detail?order_id={$val->order_id}"><i class="icon icon-yulan"></i>详情</a>
+                            </p>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+                {/foreach}
+            </table>
+        </div>
+        <!--分页-->
+        <div class="pragination-group" id="pageToolbar">
+            {$list->render()|raw}
+        </div>
+        <!--<div class="btn-group">-->
+            <!--<a href="javascript:;" class="btn btn-o btn-lg" onclick="window.history.back()">关闭</a>-->
+        <!--</div>-->
+    </div>
+</div>
+{/block}
+
+{block name='js'}
+<script>
+    laydate.render({
+        elem: '#date_year',
+        type: 'year',
+        max: getNowFormatDate()
+    });
+    laydate.render({
+        elem: '#date_month',
+        type: 'month',
+        max: getNowFormatDate()
+    });
+
+    function getNowFormatDate() {
+        var date = new Date();
+        var seperator1 = "-";
+        var seperator2 = ":";
+        var month = date.getMonth() + 1;
+        var strDate = date.getDate();
+        if (month >= 1 && month <= 9) {
+            month = "0" + month;
+        }
+        if (strDate >= 0 && strDate <= 9) {
+            strDate = "0" + strDate;
+        }
+        var currentdate = date.getFullYear() + seperator1 + month + seperator1 + strDate + " " + date.getHours() + seperator2 + date.getMinutes() + seperator2 + date.getSeconds();
+        return currentdate;
+    }
+
+    // 导出Excel表信息
+    $("#export").click(function () {
+        var search = window.location.search;
+        var page = '';
+        if (search) {
+            page = search.replace('?', '');
+        }
+        var pay_time = $("#date_month").val();
+        var order_sn = $("#order_sn").val();
+        window.location.href = '/settlement/export?pay_time='+pay_time+'order_sn='+order_sn+page;
+    });
+</script>
+{/block}

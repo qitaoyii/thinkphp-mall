@@ -1,0 +1,196 @@
+{extend name="layout/base" /}
+
+{block name="seo"}
+<title>{$title|default="品牌厂家直供平台"}</title>
+{/block}
+
+{block name="style"}
+
+{/block}
+
+{block name="title"}
+<span>订单管理</span> /
+<span class="colorTit">已卖出的商品</span>
+{/block}
+
+{block name="content"}
+<!-- 平台功能区 -->
+<div class="ShopFrontPage-r-bot">
+    <div class="order-box cards">
+        <div class="order-search">
+            <form action="/order/complete" method="get">
+                <div class="form-group" style="justify-content: flex-start;align-items:center;">
+                    <div class="form-item">
+                        <label for="create_time">订单创建时间</label>
+                        <input type="text" placeholder="请选择日期" autocomplete="off" name="create_time" value="{$create_time}" id="date">
+                        <i></i>
+                    </div>
+                    <div class="form-item">
+                        <label for="order_sn">交易订单号</label>
+                        <input type="text" placeholder="交易订单号" name="order_sn" value="{$order_sn}">
+                        <i></i>
+                    </div>
+                    <div class="form-item">
+                        <label for="product_name">商品标题</label>
+                        <input type="text" placeholder="商品标题" name="product_name" value="{$product_name}">
+                        <i></i>
+                    </div>
+                    <div class="form-item">
+                        <label for="transaction_id">支付订单号</label>
+                        <input type="text" placeholder="请输入支付订单号" name="transaction_id" id="date1" value="{$transaction_id}">
+                        <i></i>
+                    </div>
+                    
+                </div>
+                <div class="form-group" style="justify-content: flex-start;align-items: center;">
+                    
+
+                    <div class="form-item">
+                        <label for="pay_type">支付方式</label>
+                        <select id="select" name="pay_type">
+                            <option value="0" selected>全部</option>
+                            {foreach \app\index\model\Order::PAY_TYPES as $k => $v}
+                            <option value="{$k}" <?= $k == $pay_type ? 'selected' : '' ?>>{$v}</option>
+                            {/foreach}
+                        </select>
+                    </div>
+                    <div class="form-item-btn">
+                        <input type="submit" value="查询" class="btn btn-fill">
+                        <!--<input type="button" value="高级查询" class="btn btn-o" id="h-search">-->
+                        <i></i>
+                    </div>
+                    
+                   
+                </div>
+            </form>
+        </div>
+        <div class="order-table">
+            <table class="order-tb">
+                <thead>
+                <!--<tr>-->
+                    <!--<th colspan="9">-->
+                        <!--<div class="form-group">-->
+                            <!--<div class="form-checkbox" id="allCheck">-->
+                                <!--<label for="">-->
+                                    <!--<input type="checkbox" class="allcheck">-->
+                                    <!--<span></span> 全选-->
+                                <!--</label>-->
+                            <!--</div>-->
+                            <!--<div class="form-item-btn">-->
+                                <!--<a href="javascript:;" class="btn btn-o btn-icon btn-export"><i class="fa fa-download"></i>导出</a>-->
+                            <!--</div>-->
+                        <!--</div>-->
+                    <!--</th>-->
+                <!--</tr>-->
+                <tr>
+                    <th style="width:12%">商品ID</th>
+                    <th style="width:18%">商品标题</th>
+                    <th style="width:12%">规格</th>
+                    <th style="width:6%">售价（元）</th>
+                    <th style="width:6%">可获积分</th>
+                    <th style="width: 6%">数量</th>
+                    <th style="width:20%">买家信息</th>
+                    <th style="width:10%">订单状态</th>
+                    <th style="width:10%">订单金额</th>
+                </tr>
+                </thead>
+                {foreach $orders as $order}
+                <tbody>
+                <tr class="scope-tr"></tr>
+                <tr class="tr-th">
+                    <td colspan='9'>
+                        <!--<div class="form-checkbox">-->
+                            <!--<label for="">-->
+                                <!--<input type="checkbox" name="order_ids[]" class="item-check" value="{$order->order_id}">-->
+                                <!--<span></span>-->
+                            <!--</label>-->
+                        <!--</div>-->
+                        <span class="number">交易订单号：{$order->order_sn}</span>
+                        {if strlen($order->transaction_id) && $order->settlement_price != '0.00'}
+                        <span class="time">支付订单号：{$order->transaction_id}</span>
+                        {/if}
+                        <span class="time">订单创建时间：{$order->create_time}</span>
+                    </td>
+                </tr>
+                <tr class="tr-bd">
+                    <td colspan="6">
+                        {foreach $order->order_items as $orderItem}
+                        <div class="goods-info">
+                            <div style="flex:2">{$orderItem->product_id}</div>
+                            <div class="goods-item" style="flex:3;min-width:0;-webkit-flex:3;-moz-flex:3;max-width: none;padding-right:0" >
+                                <div class="goods-img">
+                                    <img src="{:qiniu_domains().$orderItem->product_sku_img}" alt="商品图" width='60px' height="60px">
+                                </div>
+                                <div class="goods-title">
+                                    {$orderItem->product_name}
+                                </div>
+                            </div>
+                            <div style="flex: 2;margin-left:-15px">
+                                <p>{$orderItem->property_name}</p>
+                            </div>
+                            <div style="flex:1">
+                                ￥{$orderItem->sell_price}
+                            </div>
+                            <div style="flex:1">{$orderItem->score}</div>
+                            <div style="flex:1">{$orderItem->num}</div>
+                        </div>
+                        {/foreach}
+                    </td>
+                    <td>
+                        <div class="user-info">
+                            <p>{$order->consignee}</p>
+                            <p>{$order->full_address}</p>
+                            <p>{$order->tel}</p>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="order-status">
+                            <p class="text-gray">{$order->status_text}</p>
+                            <p><span style="cursor: pointer;" onclick="window.location.href='/order/detail?order_id={$order->order_id}'">详情</span></p>
+                            <br>
+                            <p>
+                                {if 2 == $order->order_status}
+                                <a href="/order/delivery?id={$order->order_id}" class="btn btn-fill">发货</a>
+                                {/if}
+                            </p>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="order-price">
+                            <p class="text-link">￥{$order->total_price+$order->freight_price}</p>
+                            <p class="text-gray">含运费：{$order->freight_price}</p>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+                {/foreach}
+            </table>
+        </div>
+        <!--分页-->
+        {$orders->render()|raw}
+
+    </div>
+</div>
+{/block}
+
+{block name='js'}
+    <script>
+        $(".btn-export").click(function () {
+            var order_ids = [];
+            $("input[name='order_ids[]']").each(function() {
+                if ($(this).is(':checked')) {
+                    order_ids.push($(this).val());
+                }
+            });
+
+            if (order_ids.length == 0) {
+                layer.msg('您没有勾选信息，无法进行操作！', {
+                    icon: 0,
+                    time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                });
+                return false;
+            }
+            window.location.href = '/order/export?order_ids='+order_ids.join(',');
+        });
+    </script>
+{/block}

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="__STATIC__/style/login-pass.css?{:config('huaban.css_version.version')}">
+    <title>品牌厂家直供平台</title>
+</head>
+<body>
+<div class="login-pass-wrap">
+    <!-- 头部 -->
+    <div class="login-pass-top">
+        <div class="login-pass-top-l">
+            <div class="login-pass-top-logo">
+                <img src="{:qiniu_domains()}/upload/aa/f8b72d529506ff5ad4bbc900de978303590afe2e8592306bac42cd8e4f2edb.png?origin=logos.png" alt="">
+            </div>
+            <em>|</em>
+            <h2>品牌厂家直供平台</h2>
+
+            <h1>请选择您要登录的版主</h1>
+
+        </div>
+    </div>
+
+
+
+    <!-- 店铺选项 -->
+    <div class="login-shop-box">
+        {foreach name='moderatorList' item='val'}
+        <div class="login-shop-list-box loginIn" moderator_id="{$val['id']}">
+            <div class="login-shop-list">
+                <div class="login-shop-list-img-box">
+                    <img class="login-shop-list-img" src="{$val['moderator_header']}" alt="">
+                </div>
+                <h3>{$val['moderator_name']}</h3>
+            </div>
+        </div>
+        {/foreach}
+    </div>
+    <!-- 底部按钮 -->
+    <div class="login-shop-footer">
+        <button class="login-shop-footer-back">取消登录</button>
+    </div>
+
+
+</div>
+<script src="{:qiniu_domains()}/upload/4f/e68fa216176e6d1f4580e924bafecc9f519984ecc06b1a840a08b0d88c95de.js?origin=jquery-3.3.1.min.js"></script>
+<script src="__STATIC__/lib/layer/layer.js?{:config('huaban.css_version.version')}"></script>
+<script>
+    $('.login-shop-box').on('mouseenter', '.login-shop-list', function() {
+        $(this).addClass('login-shop-list-hover').parent('.login-shop-list-box').siblings().find('.login-shop-list').removeClass('login-shop-list-hover')
+    });
+
+    // 选择店铺进入
+    $(".loginIn").click(function () {
+        var moderator_id = $(this).attr('moderator_id');
+        layer.load(0, {
+            shade: [0.1,'black'] //0.1透明度的白色背景
+        });
+        $.ajax({
+            url: "/moderator-select",
+            type: 'post',
+            dataType: 'json',
+            data: {'moderator_id':moderator_id},
+            success: function (result) {
+                layer.msg(result.msg, {
+                    icon: 6,
+                    time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                }, function(){
+                    layer.closeAll();
+                    window.location.href='/moderator-share';
+                });
+            },error: function (data) {
+                layer.msg(data.responseJSON.msg,{icon: 2}, function () {
+                    layer.closeAll();
+                });
+            }
+        });
+    });
+
+    $(".login-shop-footer-back").click(function () {
+        window.location.href="/logout";
+    });
+
+</script>
+</body>
+</html>

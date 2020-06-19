@@ -1,0 +1,1220 @@
+.card {
+    background: #fff;
+
+    .step {
+        width: 1000px;
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-box-pack: justify;
+        -ms-flex-pack: justify;
+        justify-content: space-between;
+        margin: auto;
+        padding-top: 30px;
+
+        .step_item {
+            position: relative;
+            width: 100px;
+            font-size: 14px;
+            color: #666666;
+            text-align: center;
+            cursor: pointer;
+
+            .serial {
+                width: 30px;
+                height: 30px;
+                background: #E5E5E5;
+                border-radius: 30px;
+                text-align: center;
+                line-height: 30px;
+                margin: 10px auto;
+            }
+
+            &.active {
+                color: #0091FF;
+
+                .serial {
+                    background: #0091ff;
+                    color: #fff;
+                }
+
+                &:after {
+                    background: #0091ff;
+                }
+            }
+
+            &:after {
+                position: absolute;
+                height: 4px;
+                width: 68px;
+                content: "";
+                background: #e5e5e5;
+                top: 20px;
+                left: 100%;
+                margin: auto;
+            }
+
+            &:last-child {
+                &:after {
+                    display: none;
+                }
+            }
+        }
+    }
+
+    .step-content {
+        padding: 40px;
+
+        &>div {
+            display: none;
+        }
+
+        .step1-box {
+            width: 600px;
+            height: auto;
+            margin: auto;
+            display: -webkit-box;
+            display: -ms-flexbox;
+            display: flex;
+            -webkit-box-pack: justify;
+            -ms-flex-pack: justify;
+            justify-content: space-between;
+            -ms-flex-wrap: wrap;
+            flex-wrap: wrap;
+
+            .step1-item {
+                width: 278px;
+                height: 200px;
+                background: #fff;
+                border-radius: 10px;
+                overflow: hidden;
+                background: no-repeat;
+                background-size: 100px 55px;
+                background-position: left top;
+                border: 1px solid #e8e8e8;
+                border-radius: 3px;
+                margin-bottom: 40px;
+
+                >label {
+                    width: 100%;
+                    height: 100%;
+                    display: inline-block;
+                    padding-top: 45px;
+                    padding-left: 0;
+                    cursor: pointer;
+                }
+
+                &:hover {
+                    -webkit-box-shadow: 1px 1px 10px #e8e8e8;
+                    box-shadow: 1px 1px 10px #e8e8e8;
+                }
+
+                &:first-child {
+                    background-image: url("https://qiniu4.ac.vip/upload/81/fec5b499e3fcd8cabcd98d7f218742e68413c4b51fb5dffe4891bb90c82afc.png?origin=01.png");
+
+                }
+
+                &:nth-child(2) {
+                    background-image: url("https://qiniu4.ac.vip/upload/fe/8e5f443106a7433b4382262e01969e04e5ff3dbceefa239ebb35dc4bc09e61.png?origin=02.png");
+
+                }
+
+                &:nth-child(3) {
+                    background-image: url("https://qiniu4.ac.vip/upload/16/06c1588f5c7641133b3263f2d931440e3f7e40cc196df55e0e4e3882c90871.png?origin=03.png");
+
+                }
+
+                &:last-child {
+                    background-image: url("https://qiniu4.ac.vip/upload/39/b217c9776bcb02a2c8cf2a7d150d1300025b94d3fff8e6b40349a1b4655ec5.png?origin=04.png");
+                }
+
+                .item-choose {
+                    display: -webkit-box;
+                    display: -ms-flexbox;
+                    display: flex;
+                    -ms-flex-pack: distribute;
+                    justify-content: space-around;
+                    -webkit-box-align: center;
+                    -ms-flex-align: center;
+                    align-items: center;
+                    position: relative;
+                    width: 70%;
+                    margin: auto;
+                }
+
+                .item-text {
+                    width: 100%;
+                    text-align: center;
+
+                    h3 {
+                        font-size: 18px;
+                        color: #111;
+                        font-weight: bolder;
+                        margin: 10px auto;
+                    }
+                }
+            }
+        }
+
+        .step2-box {
+            width: 600px;
+            height: auto;
+            margin: auto;
+
+            .form-radio {
+                input {
+                    top: 0;
+                    bottom: none;
+                }
+
+                input+span {
+                    top: 0;
+                    bottom: unset;
+                }
+            }
+
+            .label_title {
+                font-size: 16px;
+                color: #2F323E;
+                padding-left: 1em;
+                position: relative;
+                height: 30px;
+                line-height: 30px;
+                margin-left: -60px;
+
+                &:after {
+                    position: absolute;
+                    content: "";
+                    height: 1em;
+                    width: 4px;
+                    background: #FF8544;
+                    top: 0;
+                    bottom: 0;
+                    left: 0;
+                    margin: auto;
+                }
+            }
+
+            .label-type {
+                padding-left: 60px;
+                .label-type-item {
+                    display: -webkit-box;
+                    display: -ms-flexbox;
+                    display: flex;
+                    -webkit-box-pack: justify;
+                    -ms-flex-pack: justify;
+                    justify-content: space-between;
+                }
+            }
+        }
+
+        .step3-box {
+            width: 950px;
+            margin: auto;
+
+            .content {
+                .label_title {
+                    margin: 20px;
+                    margin-left: 0
+                }
+            }
+
+            .box-top {
+
+                width: 100%;
+                height: 400px;
+                display: -webkit-box;
+                display: -ms-flexbox;
+                display: flex;
+                -webkit-box-pack: justify;
+                -ms-flex-pack: justify;
+                justify-content: space-between;
+
+                .content1 {
+                    width: 440px;
+
+                    .content-list {
+                        display: -webkit-box;
+                        display: -ms-flexbox;
+                        display: flex;
+                        -ms-flex-wrap: wrap;
+                        flex-wrap: wrap;
+                        -webkit-box-pack: justify;
+                        -ms-flex-pack: justify;
+                        justify-content: space-between;
+
+                        &.content-list2 {
+                            -webkit-box-orient: vertical;
+                            -webkit-box-direction: normal;
+                            -ms-flex-direction: column;
+                            flex-direction: column;
+                        }
+                    }
+
+
+                }
+
+                .content2 {
+                    width: 350px;
+                }
+            }
+
+            .box-bottom {
+                .content-box {
+                    background: #FCFCFC;
+                    border: 1px solid #E8E8E8;
+                    border-radius: 5px;
+                    width: 900px;
+                    padding: 24px;
+                    padding-top: 0;
+                    display: -webkit-box;
+                    display: -ms-flexbox;
+                    display: flex;
+                    -webkit-box-orient: vertical;
+                    -webkit-box-direction: normal;
+                    -ms-flex-direction: column;
+                    flex-direction: column;
+                    margin-bottom: 10px;
+                    &>p {
+                        height: 30px;
+                        line-height: 30px;
+                        color: #222;
+                        margin-top: 20px;
+                    }
+
+                    .agency-choose {
+                        width: 150px;
+                        height: 34px;
+                    }
+
+                    .sku-allot-list {
+                        width: 700px;
+                        display: -webkit-box;
+                        display: -ms-flexbox;
+                        display: flex;
+                        -webkit-box-align: center;
+                        -ms-flex-align: center;
+                        align-items: center;
+
+                        .allot-item {
+                            display: -webkit-box;
+                            display: -ms-flexbox;
+                            display: flex;
+                            -webkit-box-pack: justify;
+                            -ms-flex-pack: justify;
+                            justify-content: space-between;
+                            -webkit-box-align: center;
+                            -ms-flex-align: center;
+                            align-items: center;
+                            width: 500px;
+                            height:40px;
+                            position: relative;
+                            input.del-btn{position: absolute;
+                                width: 32px;
+                                height: 30px;
+                                background:no-repeat center;
+                                background-size: 18px;
+                                right: -42px;
+                                background-color: #FF8544;
+                                background-image: url('https://qiniu3.ac.vip/upload/11/ca8118a9957d127c4aff67502eb79710b8455bbfa4a319137586d4c1275dbf.png?origin=del.png');
+                                cursor: pointer;
+                                top:0;
+                                bottom:0;
+                                margin:auto;
+                            }
+                        }
+
+                        span {
+                            font-size: 12px;
+                        }
+
+                        select {
+                            width: 200px;
+                            height: 32px;
+                        }
+
+                        input:not(.addsku) {
+                            width: 150px;
+                            height: 30px;
+                            background: #fff;
+                            border: 1px solid #e8e8e8;
+                            border-radius: 3px;
+                            text-align: center;
+                        }
+
+                        input.addsku {
+                            width: 32px;
+                            height: 32px;
+                            color: #fff;
+                            background: #FF8544;
+                            border-width: 0;
+                            border-radius: 3px;
+                            margin-left: 10px;
+                            font-size: 20px;
+                            cursor: pointer;
+                        }
+                        input.proct-inp{
+                            width: 179px;
+                        }
+                    }
+
+
+                }
+            }
+        }
+
+        .step4-box {
+            width: 950px; 
+            .box-top {
+                height: auto;
+                width: 100%;
+                display: -webkit-box;
+                display: -ms-flexbox;
+                display: flex;
+                -webkit-box-pack: justify;
+                    -ms-flex-pack: justify;
+                        justify-content: space-between;
+                &>div{
+                    -webkit-box-flex: 1;
+                        -ms-flex: 1;
+                            flex: 1;
+                    &.left{
+                        .label_title{margin-left:-10px;margin-bottom: 20px}
+                        .choose-img{
+                            margin-top:80px;
+                        }
+                    }
+                    
+                }
+            }
+            .box-bottom{
+                width:100%;
+                height: auto;
+                .label-type-item{
+                    width:100%;
+                    background: #FCFCFC;
+                    border: 1px solid #E8E8E8;
+                    margin-top: 20px;
+                    padding:20px;.table-box{p{height: 30px;line-height: 30px;margin: 10px 0;}}
+                }
+            }
+            .choose-works{
+                width:auto;
+                height:auto;
+                display:-webkit-box;
+                display:-ms-flexbox;
+                display:flex;
+                -webkit-box-pack: justify;
+                    -ms-flex-pack: justify;
+                        justify-content: space-between;
+                div.flex{
+                    -webkit-box-flex:1;
+                        -ms-flex:1;
+                            flex:1;
+                    p:first-child{color:16px}
+                    p:last-child{color:14px};
+                    padding-left:10px;
+                }                
+                &>img{width:100px;height:auto;border:1px dashed #C9D1DC;}
+            }
+
+        }
+        .step5-box{
+            width: 950px; 
+        }
+
+
+    }
+
+    .step-btn {
+        width: 600px;
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -ms-flex-pack: distribute;
+        justify-content: space-around;
+        margin-top: 20px;
+        padding-bottom: 20px;
+        margin: auto;
+    }
+}
+// 配置溯源详情样式
+#layer-add-trace-content,#layer-info{
+width: 600px;
+margin: auto;
+&>*{width: 100%}
+}
+.tracing-info{
+    width:950px;
+    margin:auto;  
+    .label_title{margin:20px 0;}  
+    .info-top{
+        width:600px;height: auto;
+        padding-bottom:50px;
+        .info-item{
+            display: -webkit-box;
+            display: -ms-flexbox;
+            display: flex;
+            min-height:30px;
+            color: #2F323E;
+            -webkit-box-align: center;
+                -ms-flex-align: center;
+                    align-items: center;
+            span{width:auto;max-width:20em;text-align: justify;letter-spacing: 6px!important;word-break: break-all;}
+            p {
+               width: auto;
+                &.works-flex {
+                    display: -webkit-box;
+                    display: -ms-flexbox;
+                    display: flex;
+                    -webkit-box-orient: vertical;
+                    -webkit-box-direction: normal;
+                    -ms-flex-direction: column;
+                    flex-direction: column;
+                    -webkit-box-align: center;
+                        -ms-flex-align: center;
+                            align-items: center;
+                            -webkit-box-pack: center;
+                                -ms-flex-pack: center;
+                                    justify-content: center;
+                    span{width: auto;display: inline-block;}
+                }
+            }
+        }
+        .addimg {
+            width: 120px;
+            height: 120px;
+            border: 1px dashed #C9D1DC;
+            display:-webkit-box;
+            display:-ms-flexbox;
+            display:flex;
+            -webkit-box-pack: center;
+                -ms-flex-pack: center;
+                    justify-content: center;
+            -webkit-box-align: center;
+                -ms-flex-align: center;
+                    align-items: center;
+            -webkit-box-orient: vertical;
+            -webkit-box-direction: normal;
+                -ms-flex-direction: column;
+                    flex-direction: column;
+            &:after{
+                content:"添加上传图片";
+                width:auto;
+                font-size:14px;
+                color:#C9D1DC;
+            }
+            img {
+                width: 60px;
+                height: 60px;
+            }
+        }
+        .ul1{
+            width: 100%;
+            height: auto;
+            margin-top: 10px;
+            padding-top: 20px;
+            overflow: hidden;
+            li{float: left;margin-right:20px;width: 120px;height:auto;position: relative;.img-del{width:20px;height:20px;position: absolute;right:-10px;top:-10px;img{width: 100%;}}}
+        }
+        
+    }
+}
+.info-list{
+    .info-item{
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    min-height:30px;
+    color: #2F323E;
+    -webkit-box-align: center;
+        -ms-flex-align: center;
+            align-items: center;
+    span{width:auto;max-width:20em;text-align: justify;letter-spacing: 6px!important;word-break: break-all;}
+    p {
+       width: auto;
+        &.works-flex {
+            display: -webkit-box;
+            display: -ms-flexbox;
+            display: flex;
+            -webkit-box-orient: vertical;
+            -webkit-box-direction: normal;
+            -ms-flex-direction: column;
+            flex-direction: column;
+            -webkit-box-align: center;
+                -ms-flex-align: center;
+                    align-items: center;
+                    -webkit-box-pack: center;
+                        -ms-flex-pack: center;
+                            justify-content: center;
+            span{width: auto;display: inline-block;}
+        }
+    }
+}}
+// 带三角左边框title样式
+.label-type-title {
+    position: relative;
+    padding-left: 1.5em;
+    margin-top: 38px;
+    margin-bottom: 20px;
+    &:after {
+        position: absolute;
+        content: "";
+        width: 0;
+        height: 0;
+        border-width: 6px;
+        border-style: solid;
+        border-color: transparent transparent transparent #222;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        margin: auto;
+        -webkit-transform: scaleY(0.8);
+        transform: scaleY(0.8)
+    }
+}
+
+.btn {
+    cursor: pointer;
+}
+
+.btn:disabled {
+    background: #e8e8e8 !important;
+    color: #fff;
+    cursor: not-allowed;
+}
+
+// 带左边框的标题
+.label_title {
+    font-size: 16px;
+    color: #2F323E;
+    padding-left: 1em;
+    position: relative;
+    height: 30px;
+    line-height: 30px;
+    margin-left: -60px;
+    &:after {
+        position: absolute;
+        content: "";
+        height: 1em;
+        width: 4px;
+        background: #FF8544;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        margin: auto;
+    }
+}
+// 添加自定义溯源样式
+.custom-addbox{
+    background: #FCFCFC;
+    border: 1px solid #E8E8E8;
+    border-radius: 6px;
+    padding:20px;
+    margin-top:20px;
+    .label-type-title{margin:0;}
+    .addimg-list{
+        height:auto;
+        .addimg {
+            width: 120px;
+            height: 120px;
+            border: 1px dashed #C9D1DC;
+            display:-webkit-box;
+            display:-ms-flexbox;
+            display:flex;
+            -webkit-box-pack: center;
+                -ms-flex-pack: center;
+                    justify-content: center;
+            -webkit-box-align: center;
+                -ms-flex-align: center;
+                    align-items: center;
+            -webkit-box-orient: vertical;
+            -webkit-box-direction: normal;
+                -ms-flex-direction: column;
+                    flex-direction: column;
+            &:after{
+                content:"添加上传图片";
+                width:auto;
+                font-size:14px;
+                color:#C9D1DC;
+            }
+            img {
+                width: 60px;
+                height: 60px;
+            }
+        }
+        .ul1{
+            width: 100%;
+            height: auto;
+            margin-top: 10px;
+            padding-top: 20px;
+            overflow: hidden;
+            li{float: left;margin-right:20px;width: 120px;height:auto;position: relative;.img-del{width:20px;height:20px;position: absolute;right:-10px;top:-10px;img{width: 100%;}}}
+        }
+    }
+}
+.addbox-list {
+    width: 500px;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+
+    .addbox-item {
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-box-pack: justify;
+        -ms-flex-pack: justify;
+        justify-content: space-between;
+        -webkit-box-align: center;
+        -ms-flex-align: center;
+        align-items: center;
+        width: 500px;
+       
+    }
+    // input:not(.addtrace) {
+    //     width: 150px;
+    //     height: 30px;
+    //     background: #fff;
+    //     border: 1px solid #e8e8e8;
+    //     border-radius: 3px;
+    //     text-align: center;
+    // }
+
+    input.addtrace,input.del-trace {
+        width: 32px;
+        height: 32px;
+        color: #fff;
+        background: #FF8544;
+        border-width: 0;
+        border-radius: 3px;
+        margin-left: 10px;
+        font-size: 20px;
+        cursor: pointer;
+    }
+    
+}
+
+// 防伪标使用场景
+.content-item {
+    width: 200px;
+    height: 140px;
+    background: #fff;
+    border-radius: 10px;
+    overflow: hidden;
+    background: no-repeat;
+    background-size: 90px 45px;
+    background-position: left top;
+    border: 1px solid #e8e8e8;
+    border-radius: 3px;
+    margin-bottom: 40px;
+
+    &._1 {
+        background-image: url("https://qiniu4.ac.vip/upload/81/fec5b499e3fcd8cabcd98d7f218742e68413c4b51fb5dffe4891bb90c82afc.png?origin=01.png");
+
+    }
+
+   &._2 {
+        background-image: url("https://qiniu4.ac.vip/upload/fe/8e5f443106a7433b4382262e01969e04e5ff3dbceefa239ebb35dc4bc09e61.png?origin=02.png");
+
+    }
+
+    &._3 {
+        background-image: url("https://qiniu4.ac.vip/upload/16/06c1588f5c7641133b3263f2d931440e3f7e40cc196df55e0e4e3882c90871.png?origin=03.png");
+
+    }
+
+    &._4 {
+        background-image: url("https://qiniu4.ac.vip/upload/39/b217c9776bcb02a2c8cf2a7d150d1300025b94d3fff8e6b40349a1b4655ec5.png?origin=04.png");
+    }
+
+    .item-choose {
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -ms-flex-pack: distribute;
+        justify-content: space-around;
+        -webkit-box-align: center;
+        -ms-flex-align: center;
+        align-items: center;
+        position: relative;
+        width: 70%;
+        margin: auto;
+        padding-top: 30px;
+    }
+
+    .item-text {
+        width: 100%;
+        text-align: center;
+
+        h3 {
+            font-size: 18px;
+            color: #111;
+            font-weight: bolder;
+            margin: 10px auto;
+        }
+    }
+}
+/*手机预览框架样式*/
+.iframe-box{
+    position: absolute;bottom:20px;right:50px;margin:auto;
+    .trace-see{
+        width: 350px;
+        height:720px;
+        background: url("https://qiniu3.ac.vip/upload/e3/90a17efb880f1a11a7239a39397be78ea0e5e7e3d9d9ba3f0f974fa14a3ae2.png?origin=iphone.png") no-repeat;
+        background-size:320px auto;
+        .trace-see-box{
+            position: relative;
+            height: 100%;
+            width: 100%;
+            .see-box-fix{
+                position: absolute;
+                top: 74px;
+                left:20px;
+                .trace_info-top {
+                    width: 100%;
+                    height: auto;
+                    border: 1px solid #222;
+                    border-radius: 10px;
+                    margin: auto;
+                    padding: 16px;
+                    font-size: 12px; 
+                    transform: scale(.9);  
+                    -webkit-transform: scale(.9);  
+                    word-break: break-all;                   
+                    .info-title {
+                        width: 100%;
+                        height: 30px;
+                        font-size: 14px;
+                        text-align: center;
+                        &:after{display:none;}
+                    }
+            
+                    .info-item {
+                        display: -webkit-box;
+                        display: -ms-flexbox;
+                        display: flex;
+                        -webkit-box-pack: justify;
+                        -ms-flex-pack: justify;
+                        justify-content: space-between;
+                       min-height: 30px;
+                       height: auto;
+                        -webkit-box-align: center;
+                        -ms-flex-align: center;
+                        align-items: center;
+                        font-size: 14px;
+            
+                        .item-label {
+                            width: 80px;
+                            color: #555;
+                            text-align: left;
+                            word-break: break-all;
+                        }
+            
+                        .item-value {
+                            text-align: left;
+                            padding-left: 1em;
+                            -webkit-box-flex: 1;
+                            -ms-flex: 1;
+                            flex: 1;
+                            color: #222;
+                        }
+                    }
+            
+                    .trace-works {
+                        display: -webkit-box;
+                        display: -ms-flexbox;
+                        display: flex;
+                        -webkit-box-pack: justify;
+                        -ms-flex-pack: justify;
+                        justify-content: space-between;
+                        -webkit-box-align: center;
+                        -ms-flex-align: center;
+                        align-items: center;
+                        font-size: 14px;            
+                        .works-label {
+                            width: 80px;
+                            color: #555;
+                            text-align: left;
+                        }
+            
+                        .works-info {
+                            -webkit-box-flex: 1;
+                            -ms-flex: 1;
+                            flex: 1;
+                            display: -webkit-box;
+                            display: -ms-flexbox;
+                            display: flex;
+                            -webkit-box-pack: start;
+                            -ms-flex-pack: start;
+                            justify-content: flex-start;
+                            -webkit-box-align: center;
+                            -ms-flex-align: center;
+                            align-items: center;
+            
+                            img {
+                                width: 30px;
+                                height: 30px;
+                                border: 1px solid #e8e8e8;
+                            }
+            
+                            p {
+                                color: #222;
+                                text-align: left;
+                                -webkit-box-flex: 1;
+                                -ms-flex: 1;
+                                flex: 1;
+                                color: #222;
+                                text-align: left;
+                                height: 100%;
+                                display: -webkit-box;
+                                display: -ms-flexbox;
+                                display: flex;
+                                -webkit-box-orient: vertical;
+                                -webkit-box-direction: normal;
+                                -ms-flex-direction: column;
+                                flex-direction: column;
+                                font-size:12px;
+                                -ms-flex-pack: distribute;
+                                    justify-content: space-around;
+                                -webkit-transform: scale(0.9);
+                                        transform: scale(0.9)
+                            }
+                        }
+                    }
+                    
+                    &>p {
+                        color: #555;
+                        font-size: 12px;
+                        text-align: justify;
+                        line-height: 1.5
+                    }
+                }
+            }
+        }
+        
+    }
+}
+.trace-table{
+    width:900px;
+    margin:auto;
+    table-layout: fixed;
+    border-spacing: 0;
+    text-align:center;
+    td{border: 1px solid #E8E8E8;height:40px;}
+    .tr-th{background: #F5F8FD;
+        border: 1px solid #E5EDF7;height: 40px;}
+        caption{height:40px;width:100%;p{margin-right:20px;}display: -webkit-box;display: -ms-flexbox;display: flex;-webkit-box-pack: start;-ms-flex-pack: start;justify-content: flex-start;}    
+}
+.product-info{
+    height:40px;
+    padding-left: 30px;
+    p{font-size:12px;display:inline-block;margin-right:40px;}
+}
+// 溯源详情页面
+.trace_detail{
+    width: 940px;
+    margin: auto;
+    padding-top: 30px;
+    &>div{width: 100%}
+    .label_title{margin: 15px 0}
+    .trace-status{
+        .status{
+            height: 100px;
+            display:-webkit-box;
+            display:-ms-flexbox;
+            display:flex;-webkit-box-orient: vertical;-webkit-box-direction: normal;-ms-flex-direction: column;flex-direction: column;-webkit-box-pack: center;-ms-flex-pack: center;justify-content: center;-webkit-box-align: center;-ms-flex-align: center;align-items: center;p{color:#222;font-size:12px;}
+            h3{display: -webkit-box;display: -ms-flexbox;display: flex;-webkit-box-align: center;-ms-flex-align: center;align-items: center;font-size: 16px;height: 40px}
+
+            &-blue{background: #F5FBFF;
+                border: 1px solid #0091FF;}
+                &-o{background: #FFFDFC;
+                    border: 1px solid #FF8544;}
+        }
+        
+    }
+    .trace-card-box{
+        background: #FCFCFC;
+        border: 1px solid #E8E8E8;
+        padding:10px 20px;
+        margin: 10px auto;
+        .trace-card-item{
+            display: -webkit-box;
+            display: -ms-flexbox;
+            display: flex;
+            justify-items: flex-start;
+            -webkit-box-align: baseline;
+                -ms-flex-align: baseline;
+                    align-items: baseline;
+            .label-type-title{
+                width:150px;
+                margin: 10px 0;
+                display:inline-block;
+                height:auto;
+            }
+            .works-item{
+                width: auto;
+                -ms-flex-item-align: start;
+                    align-self: flex-start;
+                    text-align: center;
+                
+            }
+        }
+    }
+    .step-btn{
+        margin-top: 30px;
+    }
+    .box-bottom{
+        position: relative;
+        .float-right{position: absolute;top:0;right: 10px;}
+    }
+}
+.box-top {
+    width: 100%;
+    height: 400px;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-pack: justify;
+    -ms-flex-pack: justify;
+    justify-content: space-between;
+
+    .content1 {
+        width: 440px;
+
+        .content-list {
+            display: -webkit-box;
+            display: -ms-flexbox;
+            display: flex;
+            -ms-flex-wrap: wrap;
+            flex-wrap: wrap;
+            -webkit-box-pack: justify;
+            -ms-flex-pack: justify;
+            justify-content: space-between;
+
+            &.content-list2 {
+                -webkit-box-orient: vertical;
+                -webkit-box-direction: normal;
+                -ms-flex-direction: column;
+                flex-direction: column;
+            }
+        }
+
+
+    }
+
+    .content2 {
+        width: 350px;
+    }
+}
+.step-btn{
+    margin-top: 30px;
+}
+// 步骤三选择经销商样式
+.agency-choose-inp-box,.proct-inp-box{
+    position: relative;   
+    .distributors-type-title,input.proct-inp{
+        height: 34px;
+        display: inline-block;
+        padding: 2px 12px;
+        font-size: 14px;
+        line-height: 24px;
+        color: #555;
+        background-color: #fff;
+        background-image: none;
+        border: 1px solid #ccc;
+        border-radius: 3px;
+        -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+        box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+        -webkit-transition: border-color ease-in-out 0.15s, -webkit-box-shadow ease-in-out 0.15s;
+        transition: border-color ease-in-out 0.15s, -webkit-box-shadow ease-in-out 0.15s;
+        transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
+        transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s, -webkit-box-shadow ease-in-out 0.15s;
+        &:focus{
+            border-color: #66afe9;
+    outline: 0;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(102, 175, 233, 0.6);
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(102, 175, 233, 0.6);
+
+        }
+    }
+    .goods-spec-list-box,.proct-box{
+        width: 179px;
+        max-height: 210px;
+        background: #fff;
+        border-radius: 2px;
+        overflow-y: auto;
+        border: 1px solid #ccc;
+        position: absolute;
+        z-index: 99;
+        top: 34px;
+        .list-item,.proct-item{
+            height: 30px;
+            background: #fff;
+            padding: 0 0 0 10px;
+            cursor: pointer;
+            &:hover{background:#add2f1;}
+            &.disabled{
+                color:#fff;background:#ccc;
+                cursor: not-allowed;
+            }
+        }
+    }
+}
+.agentCon{
+    position: relative;
+    .del-box{
+        width:30px;
+        height:30px;
+        text-align: center;
+        img{width: 24px;}
+        position: absolute;
+        top:-15px;
+        right:-15px;
+        cursor: pointer;
+        display: none;
+    }
+}
+// 手机预览首页
+
+.goods-box {
+    width: 100%;
+    height: auto;
+    padding-top: 50px;
+    background: #fff;
+
+    .goods-name {
+        width: 100%;
+        margin: auto;
+        text-align: center;
+
+        h2 {
+            font-size: 16px;
+            color: #222;
+            font-weight: 600;
+            margin-bottom: 14px;
+        }
+
+        h1 {
+            font-weight: 700;
+            color: #222;
+            font-size: 20px;
+            letter-spacing: 5px;
+            margin-top: 25px;
+        }
+
+        .goods-img {
+            width: 200px;
+            height: 200px;
+            max-width: 420px;
+            background: #ccc;
+            margin: auto;
+
+            img {
+                width: 100%;
+                height: auto;
+            }
+        }
+    }
+
+    .form {
+        width: 100%;
+        margin-top: 40px;
+        padding-bottom: 20px;
+
+        .form-input {
+            width: 240px;
+            height: 45px;
+            margin: auto;
+            position: relative;
+            border: 1px solid #222;
+            border-radius: 6px;
+            display: -webkit-box;
+            display: -ms-flexbox;
+            display: flex;
+            -webkit-box-align: center;
+            -ms-flex-align: center;
+            align-items: center;
+            margin-top: 10px;
+            .select {
+                position: absolute;
+                height: 100%;
+                width: 60px;
+                left: 0;
+                top: 0;
+                bottom: 0;
+                margin: auto;
+                border: none;
+                background: none;
+                display: -webkit-box;
+                display: -ms-flexbox;
+                display: flex;
+                -webkit-box-align: center;
+                -ms-flex-align: center;
+                align-items: center;
+                -webkit-box-pack: center;
+                -ms-flex-pack: center;
+                justify-content: center;
+            }
+
+            .change {
+                width: 60px;
+                position: absolute;
+                left: 0;
+                top: 0;
+                height: 100%;
+                z-index: 111;
+            }
+
+            input {
+                display: inline-block;
+                position: absolute;
+                height: 1.5em;
+                top: 0;
+                right: 0;
+                bottom: 0;
+                margin: auto;
+                background: none;
+                border: none;
+                width: 200px;
+                max-width: 500px;
+                outline: none;
+                border-left: 1px solid #222;
+                padding-left: 1em;
+            }
+
+            &.input_btn {
+                margin-top: 24px;
+                border-color: #fff;
+                height: 45px;
+                width:240px;
+                overflow: hidden;
+                input {
+                    width: 100%;
+                    color: #fff;
+                    background: #DC423E;
+                    height: 45px;
+                    border: 0;
+                }
+            }
+        }
+
+    }
+}
+// .goods-detail {
+//     width: 100%;
+//     margin-top: 10px;
+//     text-align: center;
+//     background: #fff;&#trace_info{
+//         margin: 0;padding-top: 30px;margin-bottom:-10px;
+//     }
+//     .goods-detail-title {
+//         font-size: 16px;
+//         height: 40px;
+//         line-height: 40px;
+//         color: #222;
+//     }
+// }

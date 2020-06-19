@@ -1,0 +1,78 @@
+{extend name="layout/base" /}
+
+{block name="seo"}
+<title>{$title|default="品牌厂家直供平台"}</title>
+{/block}
+
+{block name="style"}
+<style></style>
+{/block}
+
+{block name="title"}
+<span>客户管理</span> /
+<span class="colorTit">积分管理</span>
+{/block}
+{block name="content"}
+<!-- 平台功能区 -->
+<div class="ShopFrontPage-r-bot">
+    <div class="order-box cards">
+        <form action="/score/index" method="get">
+            <div class="order-search">
+
+            </div>
+        </form>
+        <div class="order-table">
+            <table class="order-tb">
+                <thead>
+                <tr class="tr-th">
+                    <th>积分时间</th>
+                    <th>积分内容</th>
+                    <th>本次积分</th>
+                    <th>操作员ID</th>
+                    <th>积分备注</th>
+                </tr>
+                </thead>
+                <tbody>
+                {foreach $scoreDetail as $key=>$val}
+                <tr class="tr-bd">
+                    <td>
+                        {$val->create_time}
+                    </td>
+                    <td>
+                        {if 1 == $val->type}线上消费{/if}
+                        {if 2 == $val->type}厂商赠送{/if}
+                        {if 3 == $val->type}销减积分{/if}
+                        {if 4 == $val->type}拍照积分{/if}
+                    </td>
+                    <td>{if 3 == $val->type} - {else /} + {/if} {$val->score}</td>
+                    <td>
+                        {$val->operator?$val->operator:'--'}
+                        {$val->shop_user_id?$val->shop_user_id:'--'}
+                    </td>
+                    <td>
+                        {$val->score_desc}
+                    </td>
+                </tr>
+                {/foreach}
+                </tbody>
+            </table>
+        </div>
+        <!--分页-->
+        <div class="pragination-group" id="pageToolbar">
+            {$scoreDetail->render()|raw}
+        </div>
+    </div>
+</div>
+{/block}
+
+{block name='js'}
+<script>
+    /*手机号分割显示*/
+    (function userphone(obj) {
+        obj.each(function () {
+            var phoneNum = $(this).text();
+            $(this).html(phoneNum.replace(/(?=(\d{4})+$)/g, " "));
+        })
+    })($(".userphone"));
+</script>
+{/block}

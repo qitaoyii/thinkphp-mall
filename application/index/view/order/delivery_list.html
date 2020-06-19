@@ -1,0 +1,216 @@
+{extend name="layout/base" /}
+
+{block name="seo"}
+    <title>{$title|default="品牌厂家直供平台"}</title>
+    <meta name="keywords" content="{$keywords|default='网站关键字'}">
+    <meta name="description" content="{$desc|default='网站描述'}">
+{/block}
+
+{block name="style"}
+
+{/block}
+
+{block name="title"}
+    <span>订单管理</span> /
+    <span class="colorTit">去发货</span>
+{/block}
+
+{block name="content"}
+    <!-- 平台功能区 -->
+    <div class="ShopFrontPage-r-bot">
+        <div class="order-box cards">
+            <div class="choose-list">
+                <div class="choose-item {if $type == 1} active {/if}"><a href="/order/delivery-list?type=1">待发货</a></div>
+                <div class="choose-item {if $type == 2} active {/if}"><a href="/order/delivery-list?type=2">即将延迟发货</a></div>
+                <div class="choose-item {if $type == 3} active {/if}"><a href="/order/delivery-list?type=3">已延迟发货</a></div>
+            </div>
+            <div class="order-search">
+                <form action="/order/delivery-list" method="get" id="myform">
+                    <input type="hidden" name="type" value="{$type}"/>
+                    <div class="form-group" style="justify-content: flex-start;align-items: center">
+                        <!--<div class="form-item">-->
+                            <!--<label for="product_id">商品ID</label>-->
+                            <!--<input type="text" placeholder="请输入商品ID" name="product_id" value="{$product_id}" id="product_id">-->
+                            <!--<i></i>-->
+                        <!--</div>-->
+                        <div class="form-item">
+                            <label for="product_name">商品名称</label>
+                            <input type="text" placeholder="商品名称" name="product_name" value="{$product_name}">
+                            <i></i>
+                        </div>
+                        <div class="form-item">
+                            <label for="user_phone">收货人手机号</label>
+                            <input type="text" placeholder="收货人手机号" name="tel" value="{$tel}">
+                            <i></i>
+                        </div>
+                        <div class="form-item">
+                            <label for="order_id">订单号</label>
+                            <input type="text" placeholder="请输入订单号" name="order_id" value="{$order_id}">
+                            <i></i>
+                        </div>
+                        
+                    </div>
+                    <div class="form-group" style="justify-content: flex-start;align-items: center">                        
+                        <div class="form-item">
+                            <label for="consignee">收货人姓名</label>
+                            <input type="text" placeholder="请输入收货人姓名" name="consignee" value="{$consignee}">
+                        </div>
+                        <div class="form-item">
+                            <label for="promise_time" style="width:8em">承诺发货时间</label>
+                            <select id="select" name="promise_type">
+                                <option value="0" selected>全部</option>
+                                {foreach \app\index\model\Order::PROMISE_DELIVERY_TYPES as $k => $v}
+                                <option value="{$k}" <?= $k == $promise_type ? 'selected' : '' ?>>{$v}</option>
+                                {/foreach}
+                            </select>
+                        </div>
+                        <div class="form-item">
+                            <label for="status">订单类型</label>
+                            <select name="pre_sale" id="pre_sale">
+                                <option value="0" selected>全部</option>
+                                <option value="1" {if 1 == $pre_sale} selected {/if}>排号预售订单</option>
+                                <option value="2" {if 2 == $pre_sale} selected {/if}>普通订单</option>
+                            </select>
+                        </div>
+                        <div>
+                            <input type="submit" value="查询" class="btn btn-fill">
+                            <!--<input type="button" value="高级查询" class="btn btn-o" id="h-search">-->
+                            <i></i>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="order-table">
+                <table class="order-tb">
+                    <thead>
+                        <tr>
+                            <th style="width: 20%">商品名称</th>
+                            <th style="width: 8%">售价（元）</th>
+                           <!-- <th style="width: 8%">可获积分</th>-->
+                            <th style="width: 4%">数量</th>
+                            <th style="width: 10%">订单金额（元）</th>
+                            <th style="width:10%">支付金额（元）</th>
+                            <!--<th style="width:20%">买家信息</th>-->
+                            <th style="width:10%">订单状态</th>
+                            <th style="width: 10%">操作</th>
+                        </tr>
+                    </thead>
+                    {foreach $orders as $order}
+                    <tbody>
+                        <tr class="scope-tr"></tr>
+                        <tr class="tr-th">
+                            <td colspan='9'>
+                                <div class="form-checkbox" style="visibility: hidden">
+                                    <label for="">
+                                        <input type="checkbox" checked name="order_ids[]" class="item-check"
+                                            value="{$order->order_id}">
+                                        <span></span>
+                                    </label>
+                                </div>
+                                <span class="number">交易订单号：{$order->order_sn}</span>
+                                <!--{if strlen($order->transaction_id) && $order->settlement_price != '0.00'}
+                                <span class="time">支付订单号：{$order->transaction_id}</span>
+                                {/if}-->
+                                <span class="time">
+                                    {switch name="$order->order_status"}
+                                        {case value="1"}创建时间：{$order->create_time}{/case}
+                                        {case value="2"}支付时间：{$order->pay_time}{/case}
+                                        {case value="3"}发货时间：{$order->deliver_time}{/case}
+                                        {case value="4"}收货时间：{$order->confirm_receipt_time}{/case}
+                                        {case value="5"}取消时间：{$order->cancel_time}{/case}
+                                        {case value="6"}关闭时间：{$order->cancel_time}{/case}
+                                        {default /}
+                                    {/switch}
+                                </span>
+                                <span class="time">收货人：{$order->consignee}（{$order->tel}）</span>
+                                <span class="time">收货地址：{$order->full_address}</span>
+                            </td>
+                        </tr>
+                        <tr class="tr-bd">
+                            <td colspan="3" style="position: relative">
+                                {foreach $order->order_items as $orderItem}
+                                <div class="goods-info">
+
+                                    <div class="goods-item" style="flex: 5;max-width: none;padding-right:0">
+                                        {if $order->pre_sale == 1}
+                                        <img style="width:50px; position: absolute;top: 10px; left:-2px" src="{:qiniu_domains()}/upload/43/cf76a959e8696365d3575889943c1603587cd49b045c7996b8a20aa17b6aaa.png?attname=pre_sale.png">
+                                        {/if}
+                                        <div class="goods-img" style="border:1px solid #e8e8e8">
+                                            <img src="{:qiniu_domains().$orderItem->product_sku_img}" alt="商品图"
+                                                width='60px' height="60px">
+                                        </div>
+                                        <div class="goods-title">
+                                            <p title="{$orderItem->product_name}">{:cut_str($orderItem->product_name,20)}</p>
+                                            <!--<p class="text-gray" style="font-size: 13px">ID:{$orderItem->product_id}</p>-->
+                                            <p class="text-gray" style="font-size: 13px">规格：{$orderItem->property_name}</p>
+                                            {if $order->pre_sale == 1}
+                                            <p style="color:#ff8544;font-size: 13px;">排号：{$orderItem->row_number}</p>
+                                            {/if}
+                                        </div>
+
+                                    </div>
+                                    <div style="flex:2">
+                                        ￥{$orderItem->sell_price}
+                                    </div>
+                                    <!--<div style="flex:2">{$orderItem->score}</div>-->
+                                    <div style="flex:1">x {$orderItem->num}</div>
+                                </div>
+                                {/foreach}
+                            </td>
+                            <td style="width:10%">
+                                <p class="text-link">￥{$order->total_price}</p>
+                                <p class="text-gray">（含运费：{$order->freight_price}）</p>
+                            </td>
+                            <td style="width:10%">
+                                <p class="text-link">
+                                    {if 8 == $order->pay_type}
+                                    紫谷兑换：￥{:optional(optional($order->payment_order_item)->payment_order)->purple_price}
+                                    {else /}
+                                    现金支付：￥{:optional(optional($order->payment_order_item)->payment_order)->channel_pay_price}
+                                    {/if}
+                                </p>
+                                <p class="text-red">
+                                    <!--{if $order->red_packet_record_id > 0}-->
+                                    <!--红包：-->
+                                    <!--{else /}-->
+                                    <!--优惠券：-->
+                                    <!--{/if}-->
+                                    <!-- -￥{$order->discount_amount}-->
+
+                                    五谷优惠： -￥{$order->discount_amount}
+                                </p>
+                            </td>
+                            <!--<td style="width:20%">
+                                <div class="user-info">
+                                    <p>{$order->consignee}</p>
+                                    <p>{$order->full_address}</p>
+                                    <p>{$order->tel}</p>
+                                </div>
+                            </td>-->
+                            <td style="width:10%">
+                                <p class="text-gray">{$order->status_text}</p>
+                            </td>
+                            <td>
+                                <p><span style="cursor: pointer;"
+                                        onclick="window.location.href='/order/detail?order_id={$order->order_id}'">详情</span>
+                                </p><br>
+                                <p>
+                                    {haspermission:close key="edit-product-delivery"}
+                                    {if 2 == $order->order_status}
+                                    <a href="/order/delivery?id={$order->order_id}" class="btn btn-fill">发货</a>
+                                    {/if}
+                                    {/haspermission:close}
+                                </p>
+                            </td>
+                        </tr>
+                    </tbody>
+                    {/foreach}
+                </table>
+            </div>
+            <!--分页-->
+            {$orders->render()|raw}
+        </div>
+    </div>
+{/block}
+
+{block name='js'}{/block}

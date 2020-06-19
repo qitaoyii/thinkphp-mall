@@ -1,0 +1,22 @@
+.webuploader-container {
+    position: relative;
+}
+
+.webuploader-pick-hover {
+    /* background: #00a2d4; */
+}
+
+.webuploader-pick-disable {
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+.webuploader-element-invisible {
+    width: 0px;
+    height: 0px;
+    opacity: 0;
+}
+
+#dndArea {
+    /* opacity: 0; */
+}

@@ -1,0 +1,218 @@
+<!--
+ * @Creat: Created by VS Code
+ * @Author: Jun
+ * @Date: 2019-08-19 18:03:50
+ * @LastEditors: Jun
+ * @LastEditTime: 2019-08-23 19:56:51
+ -->
+{extend name="layout/base" /}
+
+{block name="seo"}
+<title>{$title|default="品牌厂家直供平台"}</title>
+{/block}
+
+{block name="style"}
+<link rel="stylesheet" href="__STATIC__/style/sale.min.css?{:config('huaban.css_version.version')}">
+{/block}
+
+{block name="title"}
+    <span>销售管理</span> /
+    <span class="colorTit">商品详情</span>
+{/block}
+
+{block name="content"}
+<div class="ShopFrontPage-r-bot">
+    <div class="order-box cards">
+        <div class="table-special">
+            <div class="sale-goods-box">
+                <div class="sale-goods">
+                    <div class="sale-goods-img">
+                        <img class="sale-goods-img" src="{:qiniu_domains().$list.thumb_image}" alt="{$list->product_name}">
+                    </div>
+                    <div class="sale-goods-info">
+                        <p>{$list->product_name}</p>
+                        <p>ID: {$list->product_id}</p>
+                    </div>
+                </div>
+                <div class="sale-goods"></div>
+                <div class="sale-goods"></div>
+
+                <!--商品状态：{$list->status_text}-->
+                <a class="btn btn-default"  href="/sale/upper-set?product_id={$list.product_id}">
+                    <img src="{:qiniu_domains()}/upload/9b/f0911ea4f5fc8d6325307d3a8ec1b4a92306bdfb8752b33611f76b27cdcd97.png?origin=supplement.png" style="width:40px;height:40px;">
+                    <span style="color:#FF8544;vertical-align: 40%;">编辑</span>
+                </a>
+                <!--<div class="sale-goods-btn"></div>-->
+            </div>
+            <table class="sale-goods-table">
+                <thead><tr class="text-gray">
+                        <th width="15%">规格</th>
+                        <th>生产日期</th>
+                        <th>生产量</th>
+                        <th>认证版谷</th>
+                        <th>结算价</th>
+                        <th>库存</th>
+                        <th>已售出</th>
+                        <th>状态</th>
+                        <th>操作时间</th>
+                        {if in_array($list->product_status, [3,6])}
+                            <th>操作</th>
+                        {/if}
+                    </tr></thead>
+                <tbody>
+                    {volist name="$list->product_property_details" id='vo'}
+                    <tr>
+                        <td>
+                            <div class="sku-info">
+                                <img src="{:qiniu_domains().$vo->image_url}" alt="sku图">
+                                <p>
+                                    <span>{$vo->property_name_text}</span>
+                                    <span class="text-gray">条码：{$vo->sku_code}</span>
+                                </p>
+                            </div>
+                        </td>
+                        <td>{$vo->production_date}</td>
+                        <td>{$vo->production_count}</td>
+                        <td>
+                            <div class="sku-info">
+                                <img src="{:qiniu_domains().$vo->work->works_cover}" width="30" height="30">
+                                <div class="works-info">
+                                    <p>{:optional(optional($vo->work)->artister)->real_name}</p>
+                                    <p>《{:optional($vo->work)->works_name}》</p>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            {if $vo->supply_price != '0.00'}
+                                {$vo->supply_price}
+                            {/if}
+                        </td>
+                        <td>
+                            <input id="editStockNum" class="stock-num input-s" data-id="{$vo->id}" data-product_id="{$list->product_id}" data-old_stock="{$vo->stock}" type="text"
+                                   size="4" value="{$vo->stock}" oninput="value=value.replace(/[^\d]/g,'').replace(/^0+(?=\d)/,'')">
+                        </td>
+                        <td>{$vo->SumSale}</td>
+                        <td>{$vo->status_text}</td>
+                        <td>{$vo->create_time}</td>
+                        {if in_array($list->product_status, [3,4,6])}
+                            <td>
+                                <div class="operate">
+                                <p class="operate-item">
+                                    <a class="sku_sale" style="cursor: pointer;" data-product_id="{$list->product_id}" data-id="{$vo->id}" data-is_sale="{$vo->is_sale}">
+                                        {if $vo->is_sale == 0}
+                                        <i class="icon icon-shangjia"></i>上架
+                                        {else}
+                                        <i class="icon icon-xiajia"></i>下架
+                                        {/if}
+                                    </a>
+                                </p>
+                                </div>
+                            </td>
+                        {/if}
+                    </tr>
+                    {/volist}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+{/block}
+
+{block name='js'}
+
+<script>
+    // 商品SKU上架/下架
+    $(".sku_sale").on("click", function(){
+        var product_id = $(this).data("product_id"),
+            id = $(this).data('id'),
+            is_sale = $(this).data('is_sale');
+        var str = is_sale==1?'下架':'上架';
+        var act = is_sale==1?'lower':'upper';
+        layer.confirm("确定要"+str+"该SKU商品吗？",{
+            btn:["确定", "取消"]
+        }, function () {
+            // 增加加载层
+            layer.load(0, {
+                shade: [0.1,'black'] //0.1透明度的白色背景
+            });
+            $.post('/sale/sku-sale', {
+                'product_id': product_id,
+                'id': id,
+                'act' : act,
+            },function(res){
+                if(res){
+                    layer.msg(res.msg, {
+                        icon: 6,
+                        time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                    }, function () {
+                        layer.closeAll();
+                    });
+
+                    setTimeout(function(){
+                        location.reload();
+                    }, 1000);
+                } else{
+                    layer.msg(res.msg, {
+                        icon: 2,
+                        time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                    }, function () {
+                        layer.closeAll();
+                    });
+                }
+            })
+        })
+    });
+    // 修改商品库存
+    $(".stock-num").blur(function(){
+        var product_id = $(this).data("product_id"),
+            id = $(this).data('id'),
+            old_stock_num = $(this).data('old_stock'),
+            stock = $(this).val();
+        // if(stock < 1) {
+        //     layer.msg('商品库存不能小于1',{icon:2});
+        //     return false;
+        // }
+        if (stock == '') {
+            stock = 0;
+        }
+
+        if(old_stock_num != stock){
+            layer.confirm("确定要修改该商品SKU库存吗？",{
+                btn:["确定", "取消"]
+            }, function () {
+                // 增加加载层
+                layer.load(0, {
+                    shade: [0.1,'black'] //0.1透明度的白色背景
+                });
+                $.post('/sale/edit-stock-num', {
+                   'id': id,
+                   'product_id': product_id,
+                   'stock': stock,
+                }, function (res) {
+                   if (res) {
+                       layer.msg(res.msg, {
+                           icon: 6,
+                           time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                       }, function () {
+                           layer.closeAll();
+                       });
+                       setTimeout(function(){
+                           location.reload();
+                       }, 1000);
+                   } else {
+                       layer.msg("操作失败！", {
+                           icon: 6,
+                           time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                       }, function () {
+                           layer.closeAll();
+                       });
+                   }
+                })
+            })
+        }
+        return false;
+    });
+
+</script>
+{/block}

@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <link rel="stylesheet" href="__STATIC__/style/login-pass.css?{:config('huaban.css_version.version')}">
+        <title>品牌厂家直供平台</title>
+    </head>
+    <body>
+        <div class="login-pass-wrap">
+            <!-- 头部 -->
+            <div class="login-pass-top">
+                <div class="login-pass-top-l">
+                    <div class="login-pass-top-logo">
+                        <img src="{:qiniu_domains()}/upload/aa/f8b72d529506ff5ad4bbc900de978303590afe2e8592306bac42cd8e4f2edb.png?origin=logos.png" alt="">
+                    </div>
+                    <em>|</em>
+                    <h2>品牌厂家直供平台</h2>
+                    {if session('shop_user.last_login_time') == null && session('shop_user.is_shop_owner') == 1}
+                    <h1>设置新密码</h1>
+                    {else /}
+                    <h1>请选择您要登录的厂家</h1>
+                    {/if}
+                </div>
+            </div>
+
+
+            {if session('shop_user.last_login_time') == null && session('shop_user.is_shop_owner') == 1}
+                <!--修改密码-->
+            <div class="login-pass-cont"  id="pass-cont_two">
+                <div class="login-pass-cont-box">
+                    <div class="login-pass-cont-num" style="padding-left: 14px;">
+                        <input type="hidden" id="phone" value="{:session('shop_user.phone')}">
+                        <span>新密码&nbsp;&nbsp;:</span>
+                        <input type="password" maxlength="23" id="newpass" placeholder="请设置新密码">
+                    </div>
+                    <div class="login-pass-cont-num">
+                        <span style="margin-left:150px;color:#afb9c3">6-23位字母及数字组合的密码</span>
+                    </div>
+                    <div class="login-pass-cont-num">
+                        <span>确认密码&nbsp;&nbsp;:</span>
+                        <input type="password" maxlength="23" id="repass" placeholder="请再次输入密码">
+                    </div>
+                </div>
+                <div class="login-pass-btn-box">
+                    <button class="ogin-pass-btn-next" id="pass-update">提交</button>
+                </div>
+            </div>
+            {else /}
+                <!-- 店铺选项 -->
+                <div class="login-shop-box">
+                    {foreach name='shopList' item='val'}
+                    <div class="login-shop-list-box loginIn" shop_id="{$val->shop_id}">
+                        <div class="login-shop-list">
+                            <div class="login-shop-list-img-box">
+                                <img class="login-shop-list-img" src="{$val->shop_logo_url}" alt="">
+                            </div>
+                            <h3>{$val->shop_name}</h3>
+                        </div>
+                    </div>
+                    {/foreach}
+                </div>
+                <!-- 底部按钮 -->
+                <div class="login-shop-footer">
+                    <button class="login-shop-footer-back">取消登录</button>
+            </div>
+            {/if}
+
+        </div>
+        <script src="{:qiniu_domains()}/upload/4f/e68fa216176e6d1f4580e924bafecc9f519984ecc06b1a840a08b0d88c95de.js?origin=jquery-3.3.1.min.js"></script>
+        <script src="__STATIC__/lib/layer/layer.js?{:config('huaban.css_version.version')}"></script>
+        <script>
+            $('.login-shop-box').on('mouseenter', '.login-shop-list', function() {
+                $(this).addClass('login-shop-list-hover').parent('.login-shop-list-box').siblings().find('.login-shop-list').removeClass('login-shop-list-hover')
+            });
+
+            // 选择店铺进入
+            $(".loginIn").click(function () {
+                var shop_id = $(this).attr('shop_id');
+               window.location.href = '/login-in?shop_id=' + shop_id;
+            });
+
+            $(".login-shop-footer-back").click(function () {
+                window.location.href="/logout";
+            });
+
+            // 点击提交按钮
+            $("#pass-update").click(function () {
+                var phone = $("#phone").val();
+                var newpass = $("#newpass").val();
+                var repass = $("#repass").val();
+
+                if (newpass == '') {
+                    layer.msg('请填写新密码！',{icon: 2});
+                    return false;
+                }
+                if (false == checkPassword(newpass)) {
+                    layer.msg('请输入6-23位字母及数字的组合密码', {
+                        icon: 2
+                    });
+                    return false;
+                }
+                if (repass == '') {
+                    layer.msg('请填写确认密码！',{icon: 2});
+                    return false;
+                }
+                if (false == checkPassword(repass)) {
+                    layer.msg('请输入6-23位字母及数字的组合密码', {
+                        icon: 2
+                    });
+                    return false;
+                }
+                if (newpass !== repass) {
+                    layer.msg('两次密码不一致！',{icon: 2});
+                    return false;
+                }
+
+                $.ajax({
+                    url: "/new-pass",
+                    type: 'post',
+                    dataType: 'json',
+                    data: {'phone':phone, 'new_password':newpass, 'confirm_password':repass, 'type':1},
+                    success: function (result) {
+                        layer.msg(result.msg, {
+                            icon: 6,
+                            time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                        }, function(){
+                            window.location.href='/login';
+                        });
+                    },error: function (data) {
+                        layer.msg(data.responseJSON.msg,{icon: 2});
+                    }
+                });
+            });
+
+
+            function checkPassword(value)
+            {
+                var vReg = /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,}$/;
+                if ( vReg.test( value ) )
+                {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+        </script>
+    </body>
+</html>

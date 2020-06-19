@@ -1,0 +1,145 @@
+{extend name="layout/base" /}
+
+{block name="seo"}
+<title>{$title|default="品牌厂家直供平台"}</title>
+{/block}
+
+{block name="style"}
+<link rel="stylesheet" href="__STATIC__/style/promotion_detail.css?{:config('huaban.css_version.version')}">
+<link rel="stylesheet" href="__STATIC__/style/receive_detail.css?{:config('huaban.css_version.version')}">
+{/block}
+
+{block name="title"}
+<span>分红管理</span> /
+<span class="colorTit">分红详情</span>
+{/block}
+
+{block name="content"}
+<!-- 平台功能区 -->
+<div class="ShopFrontPage-r-bot">
+    <div class="cards">
+        <!--<form action="" type="post">-->
+        <div class="tpl-box">
+            <!-- <div class="tpl-title">活动基础信息</div> -->
+            <h1 class="new-product-box-tit">
+                <span></span> 订单商品
+            </h1>
+            <div class="table-b">
+                <div class="table-box">
+                    <!--<div class="table-box-t">
+                        <div class="table-box-t-information" style="margin-right: 175px;">
+                            <span>收货人</span>
+                            <p>
+                                {:optional($data['order'], '————')->consignee}
+                                （{:optional($data['order'], '————')->tel}）
+                            </p>
+                        </div>
+                        <div class="table-box-t-information">
+                            <span>收货地址</span>
+                            <p>{$data['order']->full_address}</p>
+                        </div>
+                    </div>
+                    -->
+                    {foreach $data['order']['order_items'] as $item}
+                    <div class="table-box-c" style="justify-content: flex-start">
+                        <div class="table-box-c-ImgText-box">
+                            <div class="table-box-c-Img">
+                                <img src="{:qiniu_domains().$item->product_sku_img}" alt="">
+                            </div>
+                            <div class="table-box-c-Text">
+                                <h2>{$item->product_name}</h2>
+                                <!--<em>ID: {$item->items_id}</em>-->
+                                <!--<em><i style="margin-right:40px">规格：{$item->property_name}</i><i>单价：￥{$item->sell_price}</i></em>-->
+
+                            </div>
+                        </div>
+                        <div class="table-box-c-text-box" style="width:300px;">
+                            <p>单价</p>
+                            <span>￥{$item->sell_price}</span>
+                        </div>
+                        <div class="table-box-c-text-box"  style="width:300px;">
+                            <p>规格</p>
+                            <span>{$item->property_name}</span>
+                        </div>
+                        <!--<div class="table-box-c-text-box">-->
+                            <!--<p>积分</p>-->
+                            <!--<span>{$item->score}</span>-->
+                        <!--</div>-->
+                        <!--<div class="table-box-c-text-box">-->
+                            <!--<p>运费（元）</p>-->
+                            <!--<span>{$data['order']->freight_price}</span>-->
+                        <!--</div>-->
+                    </div>
+
+                    <!--<div class="table-box-b">-->
+                        <!--<div class="table-box-b-l">-->
+                            <!--<div class="table-box-b-l-list">-->
+                                <!--<span>购买数量 :</span>-->
+                                <!--<p>{$item->num}</p>-->
+                            <!--</div>-->
+                            <!--<div class="table-box-b-l-list">-->
+                                <!--<span>可获积分 :</span>-->
+                                <!--<p>{$item->score*$item->num}</p>-->
+                            <!--</div>-->
+                            <!--<div class="table-box-b-l-list">-->
+                                <!--<span>支付方式 :</span>-->
+                                <!--<p>{$data['order']->getPayTypeTextAttr()}</p>-->
+                            <!--</div>-->
+                        <!--</div>-->
+                        <!--<div class="table-box-b-r">-->
+                            <!--<span class="table-box-b-r-tit">支付金额（元）：</span>-->
+                            <!--<span class="table-box-b-r-mon">¥{$data['order']->pay_price}</span>-->
+                            <!--<span class="table-box-b-r-end">（含运费）</span>-->
+                        <!--</div>-->
+                    <!--</div>-->
+                    {/foreach}
+                </div>
+            </div>
+
+            <h1 class="new-product-box-tit">
+                <span></span> 分红详情
+            </h1>
+            <div class="table-b">
+                <div class="table">
+                    <div class="table-th">
+                        <div class="table-th-td">
+                            分红金额
+                        </div>
+                        <div class="table-th-td">
+                            分红时间
+                        </div>
+                    </div>
+
+                    {foreach $data['order']['order_profit'] as $item}
+                    <div class="table-tr">
+                        <div class="table-td td">
+                            {$item->share_price}
+                        </div>
+                        <div class="table-td">
+                            {$item->pay_time}
+                        </div>
+                    </div>
+                    {/foreach}
+                </div>
+            </div>
+
+        </div>
+        <div class="tpl-btn">
+            <a href="javascript:history.back()" class="btn btn-o btn-lg">关闭</a>
+        </div>
+    </div>
+</div>
+{/block}
+
+{block name='js'}
+<script>
+    (function userphone(obj) {
+        var phoneNum = obj.text();
+        obj.html(phoneNum.replace(/(?=(\d{4})+$)/g, " "));
+    })($(".userphone"));
+
+    $(".back").click(function () {
+        window.history.go(-1);
+    });
+</script>
+{/block}

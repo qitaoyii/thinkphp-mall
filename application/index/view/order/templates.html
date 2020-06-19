@@ -1,0 +1,104 @@
+{extend name="layout/base" /}
+
+{block name="seo"}
+    <title>{$title|default="画版商户后台管理系统"}</title>
+    <meta name="keywords" content="{$keywords|default='网站关键字'}">
+    <meta name="description" content="{$desc|default='网站描述'}">
+{/block}
+
+{block name="style"}
+    <link rel="stylesheet" href="__STATIC__/style/freight.css?{:config('huaban.css_version.version')}">
+{/block}
+
+{block name="title"}
+<span>订单管理</span> /
+<span class="colorTit">运费模板</span>
+{/block}
+
+{block name="content"}
+    <!-- 平台功能区 -->
+    <div class="ShopFrontPage-r-bot">
+        <div class="cards">
+            <div class="freight-box">
+                {haspermission:close key="add-delivery-template"}
+                <div class="btn-group" style="justify-content: flex-start;"><a href="/order/template-save" class="btn btn-fill" style="margin:0;">新建运费模板</a></div>
+                {/haspermission:close}
+                <div class="freight-table">
+                    <table class="freight-tb">
+                        <thead>
+                        <tr class="tr-th">
+                            <td>序号</td>
+                            <td>模板名称</td>
+                            <td>计费方式</td>
+                            <td>最后编辑时间</td>
+                            <td>操作</td>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {foreach name='templates' item='template'}
+                        <tr>
+                            <td>{$templates->num++}</td>
+                            <td>{$template->template_name}</td>
+                            <td>{$template->status_text}</td>
+                            <td>{$template->update_time}</td>
+                            <td>
+                                <div class="operate">
+                                    <div class="operate-item">
+                                        <a href="/order/template-detail?id={$template->id}"><i class="icon icon-yulan"></i>查看</a>
+                                    </div>
+                                    {haspermission:close key="edit-delivery-template"}
+                                    {if condition="$template->is_default neq 1"}
+                                    <div class="operate-item"><a href="/order/template-save?id={$template->id}"><i class="icon icon-edit"></i>修改</a></div>
+                                    {/if}
+                                    {/haspermission:close}
+                                    {haspermission:close key="delete-delivery-template"}
+                                    {if condition="$template->is_default neq 1"}
+                                    <div class="operate-item"><a href="javascript:;" class="template_del" template_id="{$template->id}"><i class="icon icon-detel"></i>删除</a></div>
+                                    {/if}
+                                    {/haspermission:close}
+                                </div>
+                            </td>
+                        </tr>
+                       {/foreach}
+                        </tbody>
+
+                    </table>
+                </div>
+            </div>
+            <!--分页-->
+            {$templates->render()|raw}
+        </div>
+    </div>
+{/block}
+
+{block name='js'}
+    <script>
+        // 模板删除
+        $(".template_del").click(function () {
+            var template_id = $(this).attr("template_id");
+            layer.confirm('是否要删除该运费模板？', {
+                btn: ['立即删除', '取消']
+            }, function (index, layero) {
+                $.ajax({
+                    url: "template-delete",
+                    type: 'POST',
+                    dataType: 'json',
+                    data: {'template_id': template_id},
+                    success: function (result) {
+                        console.log(result);
+                        layer.msg(result.msg, {
+                            icon: 6,
+                            time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                        }, function () {
+                            location.reload();
+                        });
+                    }, error: function (data) {
+                        layer.msg(data.responseJSON.msg, {icon: 2});
+                    }
+                });
+            }, function (index) {
+                layer.close(index);
+            });
+        });
+    </script>
+{/block}

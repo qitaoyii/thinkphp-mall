@@ -1,0 +1,124 @@
+@import url(basic.less);
+select {
+    border: none;
+    background: none;
+    color: #54667a;
+    flex: 1;
+    padding-left: 5px;
+    // /*Chrome同Firefox与IE里面的右侧三角显示的样式不同*/
+    // border: solid 1px #54667a;
+    // /*将默认的select选择框样式清除*/
+    // appearance:none;
+    // -moz-appearance:none;
+    // -webkit-appearance:none;
+    // padding-right: 14px;
+}
+/*清除iIE的默认选择框样式*/
+// select::-ms-expand { display: none; }
+.agent-item {
+    margin-top: 34px;
+}
+label {
+    font-family: MicrosoftYaHei;
+    font-size: 14px;
+    color: #54667A;
+    line-height: 19px;
+}
+.input-a {
+    width: 232px;
+    height: 34px;
+    text-align: justify;
+    border: 1px solid #E8E8E8;
+    border-radius: 3px;
+    margin: 0 20px;
+    padding-left: 12px;
+}
+.input-a::-webkit-input-placeholder {
+    font-family: MicrosoftYaHei;
+    font-size: 12px;
+    color: #C7C8C9;
+}
+.input-a::-moz-placeholder {
+    font-family: MicrosoftYaHei;
+    font-size: 12px;
+    color: #C7C8C9;
+}
+.input-a::-ms-input-placeholder {
+    font-family: MicrosoftYaHei;
+    font-size: 12px;
+    color: #C7C8C9;
+}
+.mt57 {
+    margin-top: 57px;
+    .explain {
+        margin-left: 27px;
+        font-family: MicrosoftYaHei;
+        font-size: 12px;
+        color: #898E93;
+        letter-spacing: 0.8px;
+    }
+}
+.current1,.current2,.current3 {
+    .ratio {
+        margin: 40px 0 14px 45px;
+        position: relative;
+        .common {
+            font-family: MicrosoftYaHei;
+            font-size: 12px;
+            color: #2F323E;
+        }
+        .sort {
+            font-family: MicrosoftYaHei;
+            font-size: 14px;
+            color: #54667A;
+            line-height: 19px;
+        }
+        .yi {
+            position: absolute;
+            left: 2.9rem;
+            top: -20px;
+        }
+        .er {
+            position: absolute;
+            left: 4.3rem;
+            top: -20px;
+        }
+    }
+    i {
+        background: url(../imgs/hint_icon.png) no-repeat left;
+        background-size: 16px 16px;
+        font-size: 12px;
+        color: #898E93;
+        text-align: center;
+        padding-left: 2em;
+        margin-left: 63px;
+    }
+}
+
+.adduser-box1,.adduser-box2,.adduser-box3 {
+    margin-top: 50px;
+    .adduser-item {
+        border-top: 1px dashed #ccc;
+        display: flex;
+        justify-content: space-around;
+        padding: 50px 0 70px;
+        align-items: center;
+        .item-hint {
+            position: relative;
+            i {
+                background: url(../imgs/hint_icon.png) no-repeat left;
+                background-size: 16px 16px;
+                font-size: 12px;
+                color: #898E93;
+                text-align: center;
+                padding-left: 2em;
+                position: absolute;
+                left: -1em;
+                top: 45px;
+            }
+        }
+    }
+}
+.tpl-btn {
+    margin-top: 154px;
+}

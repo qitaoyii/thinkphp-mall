@@ -1,0 +1,27 @@
+{if !get_moderator_id()}
+<div class="news-icon">
+    <img class="news-icon-img-btn" src="{:qiniu_domains()}/upload/71/fb63ac1036fe91dcabebe7bf804aa5f3026364936448cfb38a12f948b6eb4b.png?origin=消息@2x.png" alt="">
+    <em class="news-icon-tit-btn" id="totalnum"></em>
+    <div class="info-tit-box" id="messageHtml" style="display:none;opacity: 0;"></div>
+</div>
+{/if}
+<script>
+    $.ajax({
+        url:'/shop-info/message',
+        type: 'get',
+        dataType: 'json',
+        success(data){
+            $('#totalnum').text(data.data.totalNum);
+            messages = data.data;
+            if (data.data.totalNum > 0) {
+                $('#messageHtml').html(data.data.html);
+                $('#totalnum').show();
+            } else {
+                $('#messageHtml').html('<p>暂无消息！</p>');
+                $('#totalnum').hide();
+            }
+        },error(err){
+
+        }
+    });
+</script>

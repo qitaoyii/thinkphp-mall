@@ -1,0 +1,809 @@
+{extend name="layout/base" /}
+
+{block name="seo"}
+<title>{$title|default="品牌厂家直供平台"}</title>
+{/block}
+
+{block name="style"}
+<link rel="stylesheet" href="__STATIC__/style/sale.min.css?{:config('huaban.css_version.version')}">
+<link rel="stylesheet" href="__STATIC__/style/index.css?{:config('huaban.css_version.version')}">
+<style>
+   input::-webkit-input-placeholder {
+        /* placeholder颜色  */
+        color: #898E93;
+        /* placeholder字体大小  */
+        font-size: 6px;
+    }
+
+    .input-width{
+        width:130px !important;
+    }
+    .sale-goods-time input:not(:last-of-type){
+        width: 120px;
+    }
+</style>
+{/block}
+
+{block name="title"}
+<span>销售管理</span> /
+<span class="colorTit">上架配置</span>
+{/block}
+
+{block name="content"}
+    <div class="ShopFrontPage-r-bot">
+        <div class="order-box cards">
+            <form action="/sale/save" id='subform' method="post">
+                <input type="hidden" id="product_status">
+                <input type="hidden" name="is_object" value="1" id="is-object">
+                <div class="table-special">
+                    <div class="tpl-title">商品销售信息配置</div>
+                    <div class="sale-goods-item">
+                        <div class="sale-goods-box">
+                            <div class="sale-goods">
+                                <i class="icon icon-open"></i>
+                                <div class="sale-goods-img">
+                                    <img src="" width="30px" height="30px">
+                                </div>
+                                <div class="sale-goods-info">
+                                    <p class="product-name"></p>
+                                    <p class="text-gray productId"></p>
+                                </div>
+                            </div>
+                            <div class="sale-goods-time" style="margin-left:10%;width:auto">
+                                <input type="text" oninput="clearNoNum(this)" class="input-s supply-price-all" placeholder="结算价">&nbsp;&nbsp;
+                                <input type="text" class="input-s group-procurement-price-all" oninput="clearNoNum(this)" placeholder="版谷价">&nbsp;&nbsp;
+                                <input style="display: none;" type="text" oninput="clearNoNum(this)" class="input-s sell-price-all" placeholder="亲民价">&nbsp;&nbsp;
+                                <input type="text" class="input-s market-price-all" oninput="clearNoNum(this)" placeholder="市场价">&nbsp;&nbsp;
+                                <!--<input type="text" class="input-s score-all" onkeyup = "value=value.replace(/[^\d]/g,'')" placeholder="可获积分">&nbsp;&nbsp;-->
+                                <input type="text" class="input-s stock-all" onkeyup = "value=value.replace(/[^\d]/g,'')" placeholder="库存">&nbsp;&nbsp;
+                                <input type="button" value="批量设置" class="btn btn-fill setAll" style="cursor: pointer">
+                            </div>
+                            <!--<div class="sale-goods-time">-->
+                                <!--<p class="text-gray">发布时间</p>-->
+                                <!--<p class="create-time"></p>-->
+                            <!--</div>-->
+                            <div class="sale-goods-btn"></div>
+                        </div>
+                        <table class="sale-goods-table">
+                            <thead>
+                                <tr class="text-gray">
+                                    <th>规格</th>
+                                    <th>生产日期</th>
+                                    <th>生产量</th>
+                                    <th>认证版谷</th>
+                                    <th>结算价</th>
+                                    <th>版谷价</th>
+                                    <!--<th>亲民价</th>-->
+                                    <th>市场价</th>
+                                    <!--<th>可获积分</th>-->
+                                    <th>库存</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tbody"></tbody>
+                        </table>
+                    </div>
+                    <div class="tpl-box" style="display:none;">
+                        <div class="tpl-title">限购配置</div>
+                        <div class="tpl-content">
+                            <div class="tpl-content-item text-gray">
+                                <span>限购方式</span>
+                                <div class="content-item ckecked-style-box">
+                                    <input type="hidden" name="limit_purchase_type" value="0" id="limit-purchase-type">
+                                    <input type="checkbox" class="item-check" id="limit-purchase">
+                                    <span>
+                                        <img id="ckecked-style-imgs" src="{:qiniu_domains()}/upload/18/415d970f0e106b142710b19dcd865ff745d824e9568d165705493e0a51b8df.png?origin=check.png" alt="">
+                                    </span>
+                                    限账号
+                                </div>
+                            </div>
+                            <div class="tpl-content-item align-center limit-num" style="display:none;">
+                                <span class="text-gray">限购数量</span>
+                                <div class="content-item">
+                                    每个sku最多
+                                    <input type="text" style="display:none;" onkeyup = "value=value.replace(/[^\d]/g,'')" class="input-s limit-min-num" name="limit_min_num" placeholder="" value="1">
+                                    <input type="text" onkeyup = "value=value.replace(/[^\d]/g,'')" class="input-s limit-max-num" name="limit_max_num" placeholder=""> 个
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tpl-box">
+                        <input id="product_id" type="hidden" name="product_id" value="">
+                        <div class="tpl-title">商品物流信息配置</div>
+                        <div class="tpl-content">
+                            <div class="tpl-content-item template">
+                                <span class="text-gray">运费模板</span>
+                                <div class="content-item">
+                                    <select name="shop_delivery_template_id" id="template_id"></select>
+                                    <a href="/order/template-save" class="btn btn-o" style="margin-left: 10px;cursor: pointer;" target="_blank">新建运费模板</a>
+                                    <button type="button" class="btn btn-o flush-template" style="margin-left:10px;">刷新模板数据</button>
+                                    <!-- 选择部分包邮模板显示 -->
+                                    <div class="freight-info" style="display: none;">
+                                        <p class="info-item">
+                                            <i>包邮配送地区</i><span>北京、安徽、福建、广东、广西、贵州、河北、河南、黑龙江、湖北、湖南、吉林、江苏、江西、辽宁、内蒙古、宁夏、青海、山东、</span>
+                                        </p>
+                                        <p class="info-item"><i>不包邮配送地区</i><span>西藏、云南、浙江、重庆<br>首件：10元；续件：1元<br>指定条件包邮：满3件包邮</span>
+                                        </p>
+                                        <p class="info-item"><i>不配送地区</i><span>甘肃、海南</span></p>
+                                    </div>
+
+                                    <div class="form-checkbox text-gray" style="display:block;margin-top:10px;">
+                                        <label>
+                                            <input type="checkbox" class="item-check" name="deliveTime" value="0" checked disabled>
+                                            <span></span>服务承诺：该类商品，必须支持【七天退货】服务
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tpl-content-item align-center" style="display: none;">
+                                <span class="text-gray">预售</span>
+                                <div class="content-item ckecked-style-box">
+                                    <input type="hidden" name="select_status" id="select-status" value="">
+                                    <input type="hidden" name="advance_sale_time" id="advance-sale-time" value="">
+                                    <input type="checkbox" class="item-check" id="advance_sale">
+                                    <span>
+                                        <img id="ckecked-style-img" src="{:qiniu_domains()}/upload/18/415d970f0e106b142710b19dcd865ff745d824e9568d165705493e0a51b8df.png?origin=check.png" alt="">
+                                    </span>
+                                    无现货，下单需过段时间才能发货
+                                </div>
+                            </div>
+
+                            <div class="tpl-content-item align-center delivery-type" style="display:none;">
+                                <span class="text-gray">发货方式</span>
+                                <div class="content-item">
+                                    <select name="delivery_type" id="delivery_type">
+                                        <option value="1">自动发货</option>
+                                        <option value="2">手动发货</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="open-to-booking presell-box" style="display:none;">
+                                <div class="open-to-booking-t">
+                                    <div class="presell-box-radio">
+                                        <div class="radio-box">
+                                            <input type="radio" name="advance_sale" class="advance-sale" value="1" checked>
+                                            <em><img src="{:qiniu_domains()}/upload/6f/7ee904fbe881ffbca002e17d18bbab2ae0676a456805af89e9ace7dd8f49b3.png?origin=check (2).png" alt=""></em>
+                                            <span>全款预售</span>
+                                        </div>
+                                        <div class="radio-box" style="margin-left:15px;">
+                                            <input type="radio" name="advance_sale" class="advance-sale" value="2" style="">
+                                            <em><img src="{:qiniu_domains()}/upload/c3/48cf7011831100dad5d8aad98a312cc33d9fd11d9ecdd72c01ce9dc0224162.png?origin=n-check.png" alt=""></em>
+                                            <span>付款成功</span>
+                                        </div>
+
+                                    </div>
+                                    <div class="advance-sale-one">
+                                        <input type="text" autocomplete="off" placeholder="请选择日期" id="get_date" readonly>
+                                        <span>开始发货</span>
+                                    </div>
+                                    <div class="advance-sale-two" style="display:none;">
+                                        <input type="number" οninput="value=value.replace(/[^\d]/g,'')" id="get_date_two">
+                                        <span>天后发货</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="tpl-content-item align-center">
+                                <span class="text-gray">承诺发货时间</span>
+                                <div class="content-item flex">
+                                    <div class="form-radio">
+                                        <label>
+                                            <input type="radio" class="item-check promise_delivery_type" name="promise_delivery_type" value="1">
+                                            <span></span>当日发货
+                                        </label>
+                                    </div>
+                                    <div class="form-radio">
+                                        <label>
+                                            <input type="radio" class="item-check promise_delivery_type" name="promise_delivery_type" value="2">
+                                            <span></span>24小时
+                                        </label>
+                                    </div>
+                                    <div class="form-radio">
+                                        <label>
+                                            <input type="radio" class="item-check promise_delivery_type" name="promise_delivery_type" value="3" checked>
+                                            <span></span>48小时
+                                        </label>
+                                    </div>
+                                    <div class="form-radio">
+                                        <label>
+                                            <input type="radio" class="item-check promise_delivery_type" name="promise_delivery_type" value="4">
+                                            <span></span>72小时
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tpl-content-item sale-time">
+                                <span class="text-gray">上架方式 </span>
+                                <div class="content-item">
+                                    <!--<p class="text-gray" style="margin-bottom: 20px;font-size: 12px">（定时上架的商品在上架前请到“待发布商品”里编辑商品）</p>-->
+                                    <div class="form-radio">
+                                        <label>
+                                            <input type="radio" class="item-check is_sale_type" name="is_sale_type" value="0" checked>
+                                            <span></span>自动上架<i  class="text-gray text-sm" >完成审核后，系统自动上架商品</i>
+                                        </label>
+                                    </div>
+                                    <div class="form-radio">
+                                        <label>
+                                            <input type="radio" class="item-check is_sale_type" name="is_sale_type" value="1">
+                                            <span></span>手动上架<i  class="text-gray text-sm">完成审核后，需手动触发商品上架</i>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <input type="hidden" name="skuItems" id="sku-items">
+                    <!-- 提交取消按钮 -->
+                    <div class="new-product-btn-box">
+                        <!--<a href="javascript:;" onclick="window.history.back(-1);" class="new-product-btn-back">取消</a>-->
+                        <a href="javascript:history.back()" class="btn btn-o" data-type="7" style="margin-right: 50px;cursor: pointer;">取消</a>
+                        <a class="btn btn-fill" style="cursor: pointer;" type="button" id='subclick' data-type="1">提交商品信息</a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+{/block}
+
+{block name='js'}
+<script src="{:qiniu_domains()}/upload/67/1d2d0ecc6ad56a71cece7cda0231343a469f2ab75b54529407c4293896a914.js?origin=template.js"></script>
+
+<script id="sku-list" type="text/html">
+    <%for (var i = 0; i < skuList.length; i++) {%>
+        <tr class="skuData">
+            <td>
+                <div class="sku-info">
+                    <img src="<%:=skuList[i].image_url%>" width="30" height="30">
+                    <div class="works-info">
+                        <p><%:=skuList[i].property_name%></p>
+                        <p class="text-gray">条码：<%:=skuList[i].qrcode_number%></p>
+                    </div>
+                </div>
+            </td>
+            <td><%:=skuList[i].production_date%></td>
+            <td><%:=skuList[i].production_count%></td>
+            <td>
+                <div class="sku-info">
+                    <img src="<%:=skuList[i].works_cover%>" width="30" height="30">
+                    <div class="works-info">
+                        <p><%:=skuList[i].real_name%></p>
+                        <p>《<%:=skuList[i].works_name%>》</p>
+                    </div>
+                </div>
+            </td>
+            <td>
+                <input type="text" data-skuId="<%:=skuList[i].id%>" oninput="clearNoNum(this)" class="input-s supply_price input-width" value="<%:=skuList[i].supply_price%>">
+            </td>
+            <td>
+                <input type="text" class="input-s group_procurement_price input-width" oninput="clearNoNum(this)" value="<%:=skuList[i].group_procurement_price%>">
+            </td>
+            <td style="display: none;">
+                <input type="text" class="input-s sell_price input-width" oninput="clearNoNum(this)" value="<%:=skuList[i].sell_price%>" placeholder="等于市场价时可不填">
+            </td>
+            <td>
+                <input type="text" class="input-s market_price input-width" oninput="clearNoNum(this)" value="<%:=skuList[i].market_price%>">
+            </td>
+
+            <!--<td>-->
+                <!--<input type="text" class="input-s score input-width" oninput="clearNoNumTwo(this)" value="<%:=skuList[i].score%>">-->
+            <!--</td>-->
+            <td>
+                <input type="text" class="input-s stock input-width" oninput="clearNoNumTwo(this)" value="<%:=skuList[i].stock%>">
+            </td>
+        </tr>
+    <%}%>
+</script>
+
+<script id="template-list" type="text/html">
+    <option value="">请选择运费模板</option>
+    <%for (var i = 0; i < templateList.length; i++) {%>
+    <option value="<%:=templateList[i].id%>"><%:=templateList[i].template_name%></option>
+    <%}%>
+</script>
+
+<script id="template-data" type="text/html">
+    <%if (templateObj.is_default == 1){%>
+        <p class="info-item">
+            <i>包邮配送地区</i>
+            <span>
+                <%for (var j = 0; j < templateObj.free_area.length; j++) {%>
+                    <%:=templateObj.free_area[j].short_name%>
+                <%}%>
+            </span>
+        </p>
+        <p class="info-item">
+            <i>不包邮配送地区</i>
+            <span></span>
+        </p>
+        <p class="info-item">
+            <i>不配送地区</i>
+            <span></span>
+        </p>
+    <%}else{%>
+        <p class="info-item">
+            <i>包邮配送地区</i>
+            <span>
+                <%for (var j = 0; j < templateObj.free_area.length; j++) {%>
+                    <%if (templateObj.free_area[j].type == 1){%>
+                        <%:=templateObj.free_area[j].short_name%>
+                    <%}%>
+                <%}%>
+            </span>
+        </p>
+        <p class="info-item">
+            <i>不包邮配送地区</i>
+            <%for (var i = 0; i < templateObj.detail.length; i++) {%>
+            <span>
+                    <%for (var k = 0; k < templateObj.detail[i].area_name.length; k++) {%>
+                        <%:=templateObj.detail[i].area_name[k].short_name%>
+                    <%}%>
+                    <br>
+                    <%if (templateObj.charge_flag == 0){%>
+                        首件：<%:=templateObj.detail[i].first_weight%> 件；首费：<%:=templateObj.detail[i].first_price%> 元；
+                        续件：<%:=templateObj.detail[i].continue_weight%> 件；续费：<%:=templateObj.detail[i].continue_price%> 元；
+                    <%}else{%>
+                        首重：<%:=templateObj.detail[i].first_weight%> 克（g）；首费：<%:=templateObj.detail[i].first_price%> 元；
+                        续重：<%:=templateObj.detail[i].continue_weight%> 克（g）；续费：<%:=templateObj.detail[i].continue_price%> 元；
+                    <%}%>
+                    <br>
+                    指定条件包邮：
+                    <%if (templateObj.detail[i].condition_postage != 0){%>
+                        <%if (templateObj.detail[i].condition_postage == 1){%>
+                            <%if (templateObj.charge_flag == 0){%>
+                                满 <%:=templateObj.detail[i].full_num%> 件包邮
+                            <%}else{%>
+                                满 <%:=templateObj.detail[i].full_num%> 千克（kg）包邮
+                            <%}%>
+                        <%}else{%>
+                            满 <%:=templateObj.detail[i].full_num%> 元包邮
+                        <%}%>
+                    <%}%>
+                </span>
+            <%}%>
+        </p>
+        <p class="info-item">
+            <i>不配送地区</i>
+            <span>
+                <%for (var j = 0; j < templateObj.free_area.length; j++) {%>
+                    <%if (templateObj.free_area[j].type == 3){%>
+                        <%:=templateObj.free_area[j].short_name%>
+                    <%}%>
+                <%}%>
+            </span>
+        </p>
+    <%}%>
+</script>
+    <script>
+        // 日期
+        laydate.render({
+            elem: '#get_date',
+            type: 'date',
+            // range:true,
+            btns: ['clear', 'confirm'],
+        });
+        // 选择自定义
+        $("input[name='promise_delivery_type']").change(function(){
+            if($(this).val()==4){
+                $(".cus").show();
+            }else{
+                $(".cus").hide();
+            }
+        });
+
+        // 选择预售信息
+        $("#advance_sale").on('click', function(){
+            if ($(this).is(':checked')) {
+                $(".open-to-booking").show();
+                $('#ckecked-style-img').attr('src','{:qiniu_domains()}/upload/a3/99c94ac1e7fb932c734f8f70a8784aa762b148d7df8209da4929a92b9c4985.png?origin=checked.png');
+            } else {
+                $(".open-to-booking").hide();
+                $('#ckecked-style-img').attr('src','{:qiniu_domains()}/upload/18/415d970f0e106b142710b19dcd865ff745d824e9568d165705493e0a51b8df.png?origin=check.png');
+            }
+        });
+
+        // 选择限购信息
+        $("#limit-purchase").on('click', function(){
+            if ($(this).is(':checked')) {
+                $(".limit-num").show();
+                $('#ckecked-style-imgs').attr('src','{:qiniu_domains()}/upload/a3/99c94ac1e7fb932c734f8f70a8784aa762b148d7df8209da4929a92b9c4985.png?origin=checked.png');
+            } else {
+                $(".limit-num").hide();
+                $('#ckecked-style-imgs').attr('src','{:qiniu_domains()}/upload/18/415d970f0e106b142710b19dcd865ff745d824e9568d165705493e0a51b8df.png?origin=check.png');
+            }
+        });
+
+        // 切换预售方式
+        $(".advance-sale").on('click', function () {
+            var select = $(this).val();
+            if (select == 1) {
+               $(".advance-sale-one").show();
+               $(".advance-sale-two").hide();
+            } else {
+                $(".advance-sale-two").show();
+                $(".advance-sale-one").hide();
+            }
+            $(this).parents('.radio-box').find('img')
+                .attr('src','{:qiniu_domains()}/upload/6f/7ee904fbe881ffbca002e17d18bbab2ae0676a456805af89e9ace7dd8f49b3.png?origin=check (2).png');
+
+            $(this).parents('.radio-box').siblings().find('img')
+                .attr('src','{:qiniu_domains()}/upload/c3/48cf7011831100dad5d8aad98a312cc33d9fd11d9ecdd72c01ce9dc0224162.png?origin=n-check.png');
+        });
+    </script>
+    <script>
+        // 渲染数据
+        var skuObj = {$product_data|raw};
+
+        // 虚拟商品
+        $("#is-object").val(skuObj.is_object);
+        if (skuObj.is_object == 0) {
+            $(".template").hide();
+            $(".delivery-type").show();
+        }
+        // 商品id
+        if (skuObj.product_id) {
+            $("#product_id").val(skuObj.product_id);
+            $(".productId").html("ID:"+skuObj.product_id);
+        }
+        // 商品名称
+        if (skuObj.product_name) {
+            $(".product-name").html(skuObj.product_name)
+        }
+        // 商品图片
+        if (skuObj.thumb_image) {
+            $(".sale-goods-img").find('img').attr('src', skuObj.thumb_image);
+        }
+        // 商品状态
+        if (skuObj.product_status) {
+            $("#product_status").val(skuObj.product_status);
+        }
+
+        // 渲染sku 列表
+        getSkuList();
+        function getSkuList(){
+            let html = template(document.getElementById('sku-list').innerHTML, {skuList:skuObj.product_property_details});
+            $('#tbody').html(html);
+        }
+
+        // 渲染运费模板列表
+        getTemplateList();
+        function getTemplateList(){
+            let template_html = template(document.getElementById('template-list').innerHTML, {templateList:skuObj.shop_delivery_templates});
+            $('#template_id').html(template_html);
+        }
+
+        // // 运费模板选中
+        if (skuObj.shop_delivery_template_id) {
+            $('#template_id').val(skuObj.shop_delivery_template_id).select2({minimumResultsForSearch: -1});
+        }
+
+        // 限购
+        if (skuObj.limit_purchase_type) {
+            $("#limit-purchase").attr('checked', true);
+            if ($("#limit-purchase").is(':checked')) {
+                $(".limit-min-num").val(skuObj.limit_min_num);
+                $(".limit-max-num").val(skuObj.limit_max_num);
+                $(".limit-num").show();
+                $('#ckecked-style-imgs').attr('src','{:qiniu_domains()}/upload/a3/99c94ac1e7fb932c734f8f70a8784aa762b148d7df8209da4929a92b9c4985.png?origin=checked.png');
+            }
+        }
+
+        // 预售 赋值
+        if (skuObj.advance_sale > 0) {
+            $("#advance_sale").attr('checked', true);
+            if ($("#advance_sale").is(':checked')) {
+                $(".open-to-booking").show();
+                $('#ckecked-style-img').attr('src','{:qiniu_domains()}/upload/a3/99c94ac1e7fb932c734f8f70a8784aa762b148d7df8209da4929a92b9c4985.png?origin=checked.png');
+
+            }
+
+            $(".advance-sale").each(function(){
+                if($(this).val() == skuObj.advance_sale){
+                    $(this).attr('checked',true);
+                    $(this).parents('.radio-box').find('img').attr('src','{:qiniu_domains()}/upload/6f/7ee904fbe881ffbca002e17d18bbab2ae0676a456805af89e9ace7dd8f49b3.png?origin=check (2).png');
+                    $(this).parents('.radio-box').siblings().find('img').attr('src','{:qiniu_domains()}/upload/c3/48cf7011831100dad5d8aad98a312cc33d9fd11d9ecdd72c01ce9dc0224162.png?origin=n-check.png');
+                }
+            });
+            if (skuObj.advance_sale == 1) {
+                $("#get_date").val(skuObj.advance_sale_time);
+                $(".advance-sale-one").show();
+                $(".advance-sale-two").hide();
+            } else {
+                $("#get_date_two").val(skuObj.advance_sale_time);
+                $(".advance-sale-one").hide();
+                $(".advance-sale-two").show();
+            }
+        }
+
+        // 承诺发货时间
+        $(".promise_delivery_type").each(function(){
+            if($(this).val() == skuObj.promise_delivery_type){
+                $(this).attr('checked',true);
+            }
+        });
+
+        // 上架方式
+        $(".is_sale_type").each(function(){
+            if($(this).val() == skuObj.is_sale_type){
+                $(this).attr('checked',true);
+            }
+        });
+
+        // 提交信息
+        $("#subclick").click(function () {
+            // 验证结算价和建议零售价
+            for (var n = 0; n < $(".supply_price").length; n++) {
+                if ($(".supply_price").eq(n).val() == "" || $(".supply_price").eq(n).val() == '0.00' || $(".supply_price").eq(n).val() == '0') {
+                    msg = "亲，请填写结算价！";
+                    layer.msg(msg, {time:1000,icon:2},function(){
+                        $(".supply_price").eq(n).trigger('focus');
+                    });
+                    return false;
+                    break;
+                }
+            }
+
+            // 处理sku 信息
+            var sku_datas = [];
+            $(".skuData").each(function(index, item){
+                sku_datas.push({
+                    'id': $(this).find('.supply_price').attr('data-skuId'),
+                    'supply_price': $(this).find('.supply_price').val(),
+                    'market_price': $(this).find('.market_price').val(),
+                    'group_procurement_price': $(this).find('.group_procurement_price').val(),
+                    // 'score': $(this).find('.score').val(),
+                    'stock': $(this).find('.stock').val(),
+                    'sell_price': $(this).find('.sell_price').val(),
+                });
+            });
+
+            // 价格限制  结算价<居民价<=亲民价<=市场价
+            for (var i = 0; i < sku_datas.length; i++) {
+                // 居民价做比较
+                if (sku_datas[i].group_procurement_price*1 && sku_datas[i].group_procurement_price*1 <= sku_datas[i].supply_price*1) {
+                    msg = "亲，第 "+(i+1)+" 行的结算价不能大于等于版谷价！";
+                    layer.msg(msg, {time:3000,icon:2},function(){
+                    });
+                    return false;
+                    break;
+                }
+                // if (sku_datas[i].sell_price*1 && sku_datas[i].sell_price*1 <= sku_datas[i].supply_price*1) {
+                //     msg = "亲，第 "+(i+1)+" 行的结算价不能大于等于亲民价！";
+                //     layer.msg(msg, {time:3000,icon:2},function(){
+                //     });
+                //     return false;
+                //     break;
+                // }
+                if (sku_datas[i].market_price*1 && sku_datas[i].market_price*1 <= sku_datas[i].supply_price*1) {
+                    msg = "亲，第 "+(i+1)+" 行的结算价不能大于等于市场价！";
+                    layer.msg(msg, {time:3000,icon:2},function(){
+                    });
+                    return false;
+                    break;
+                }
+
+                // // 居民价做比较
+                // if (sku_datas[i].group_procurement_price*1 && sku_datas[i].sell_price*1 && sku_datas[i].group_procurement_price*1 > sku_datas[i].sell_price*1) {
+                //     msg = "亲，第 "+(i+1)+" 行的版谷价不能大于亲民价！";
+                //     layer.msg(msg, {time:3000,icon:2},function(){
+                //     });
+                //     return false;
+                //     break;
+                // }
+                if (sku_datas[i].group_procurement_price*1 && sku_datas[i].market_price*1 && sku_datas[i].group_procurement_price*1 > sku_datas[i].market_price*1) {
+                    msg = "亲，第 "+(i+1)+" 行的版谷价不能大于市场价！";
+                    layer.msg(msg, {time:3000,icon:2},function(){
+                    });
+                    return false;
+                    break;
+                }
+
+                // // 亲民价做比较
+                // if (sku_datas[i].sell_price*1 && sku_datas[i].market_price*1 && sku_datas[i].sell_price*1 > sku_datas[i].market_price*1) {
+                //     msg = "亲，第 "+(i+1)+" 行的亲民价不能大于市场价！";
+                //     layer.msg(msg, {time:3000,icon:2},function(){
+                //     });
+                //     return false;
+                //     break;
+                // }
+            }
+
+
+            $("#sku-items").val(JSON.stringify(sku_datas));
+
+            if ($("#advance_sale").is(':checked')) {
+                $("#select-status").val(1);
+            } else {
+                $("#select-status").val(0);
+            }
+            var advance_sale = '';
+            $(".advance-sale").each(function () {
+                if ($(this).is(':checked')) {
+                    advance_sale = $(this).val();
+                }
+            });
+            if (advance_sale == 1) {
+                advance_sale_time = $("#get_date").val();
+            } else {
+                advance_sale_time = $("#get_date_two").val();
+            }
+            $("#advance-sale-time").val(advance_sale_time);
+
+            // 限购方式
+            if ($("#limit-purchase").is(':checked')) {
+
+                if (!$(".limit-min-num").val()) {
+                    layer.msg("亲，限购最少数量不能为空或大于0！", {time:3000,icon:2},function(){
+                        $(".limit-min-num").trigger('focus');
+                    });
+                    return false;
+                }
+                if (!$(".limit-max-num").val()) {
+                    layer.msg("亲，限购最多数量不能为空或大于0！", {time:3000,icon:2},function(){
+                        $(".limit-min-num").trigger('focus');
+                    });
+                    return false;
+                }
+
+                if ($(".limit-min-num").val() > $(".limit-max-num").val()) {
+                    layer.msg("限购最少数量不能大于限购最多数量！", {time:3000,icon:2},function(){
+                        $(".limit-max-num").trigger('focus');
+                    });
+                    return false;
+                }
+                $("#limit-purchase-type").val(1);
+            } else {
+                $("#limit-purchase-type").val(0);
+            }
+
+            if ($("#product_status").val() == 3) {
+                layer.confirm('提交后，将重新审核商品上架，是否继续？', {
+                    btn: ['确定', '取消'],
+                }, function () {
+                    addAjax();
+                });
+            } else {
+                addAjax();
+            }
+        });
+
+        // 提交ajax
+        function addAjax()
+        {
+
+            // 增加加载层
+            layer.load(0, {
+                shade: [0.1,'black'] //0.1透明度的白色背景
+            });
+            $.ajax({
+                url: '/sale/save',
+                type: 'POST',
+                data:  $("#subform").serialize(),
+                dataType: 'json',
+                success: function (data) {
+                    // console.log(data)
+                    layer.msg(data.msg, {
+                        icon: 6,
+                        time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                    }, function () {
+                        layer.closeAll();
+                        // location.reload();
+                        window.location.href = '/sale/index';
+                    });
+                },
+                error: function (data) {
+                    layer.msg(data.responseJSON.msg, {icon: 2}, function () {
+                        layer.closeAll();
+                    });
+                }
+            });
+        }
+        // 获取运费模板信息
+        $("#template_id").change(function () {
+            var id = $(this).val();
+
+            if (id) {
+                $.ajax({
+                    url: '/sale/template-data',
+                    type: 'get',
+                    data:  {id:id},
+                    dataType: 'json',
+                    success: function (msg) {
+                        getTemplateData(msg.data);
+                    },
+                    error: function (data) {
+                        layer.msg(data.responseJSON.msg, {icon: 2}, function () {
+                            layer.closeAll();
+                        });
+                    }
+                });
+            }
+        });
+
+        // 渲染运费模板列表
+        function getTemplateData(data){
+            let template_html = template(document.getElementById('template-data').innerHTML, {templateObj:data});
+            $('.freight-info').html(template_html).show();
+            $('.freight-info').show();
+        }
+
+        // 验证规则
+        function clearNoNum(obj) {
+            obj.value = obj.value.replace(/[^\d.]/g, ""); //清除“数字”和“.”以外的字符
+            obj.value = obj.value.replace(/\.{2,}/g, "."); //只保留第一个. 清除多余的
+            obj.value = obj.value.replace(".", "$#$").replace(/\./g, "").replace("$#$", ".");
+            obj.value = obj.value.replace(/^(\-)*(\d+)\.(\d\d).*$/, '$1$2.$3'); //只能输入两个小数
+            if (obj.value.indexOf(".") < 0 && obj.value != "") {
+                obj.value = parseFloat(obj.value);
+            }
+        }
+
+        // 验证规则
+        function clearNoNumTwo(obj) {
+            obj.value = obj.value.replace(/[^\d]/g, ""); //清除“数字”和“.”以外的字符
+            obj.value = obj.value.replace(/\.{2,}/g, "."); //只保留第一个. 清除多余的
+            obj.value = obj.value.replace(".", "$#$").replace(/\./g, "").replace("$#$", ".");
+            obj.value = obj.value.replace(/^(\-)*(\d+)\.(\d\d).*$/, '$1$2.$3'); //只能输入两个小数
+            if (obj.value.indexOf(".") < 0 && obj.value != "") {
+                obj.value = parseFloat(obj.value);
+            }
+        }
+
+        // 批量设置
+        $(".setAll").on('click', function () {
+            var supply_price = $(".supply-price-all").val().trim();
+            var market_price = $(".market-price-all").val().trim();
+            var group_procurement_price = $(".group-procurement-price-all").val().trim();
+            // var score = $(".score-all").val().trim();
+            var stock = $(".stock-all").val().trim();
+            var sell_price = $(".sell-price-all").val().trim();
+
+            if (supply_price) {
+                $("#tbody").find('.supply_price').val(supply_price);
+            }
+            if (market_price) {
+                $("#tbody").find('.market_price').val(market_price);
+            }
+            // if (score) {
+            //     $("#tbody").find('.score').val(score);
+            // }
+            if (stock) {
+                $("#tbody").find('.stock').val(stock);
+            }
+            if (sell_price) {
+                $("#tbody").find('.sell_price').val(sell_price);
+            }
+            if (group_procurement_price) {
+                $("#tbody").find('.group_procurement_price').val(group_procurement_price);
+            }
+        });
+
+        // 新建运费模板
+        $(".flush-template").click(function () {
+            // 增加加载层
+            layer.load(0, {
+                shade: [0.1,'black'] //0.1透明度的白色背景
+            });
+            $.ajax({
+                url: '/sale/get-template-list',
+                type: 'get',
+                dataType: 'json',
+                success: function (data) {
+                    // console.log(data)
+                    layer.msg('刷新成功！', {
+                        icon: 6,
+                        time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                    }, function () {
+                        layer.closeAll();
+                        let template_html = template(document.getElementById('template-list').innerHTML, {templateList:data.data});
+                        $('#template_id').html(template_html);
+                    });
+                },
+                error: function (data) {
+                    layer.msg(data.responseJSON.msg, {icon: 2}, function () {
+                        layer.closeAll();
+                    });
+                }
+            });
+        });
+
+    </script>
+{/block}

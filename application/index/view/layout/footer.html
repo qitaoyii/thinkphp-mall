@@ -1,0 +1,30 @@
+<script src="__STATIC__/lib/layer/layer.js?{:config('huaban.css_version.version')}"></script>
+<script src="__STATIC__/lib/order.js?{:config('huaban.css_version.version')}"></script>
+<script src="__STATIC__/lib/aside.js?{:config('huaban.css_version.version')}"></script>
+<script>
+    $('.icon-list').on('mouseleave', 'li', function () {
+        $(this).find('h3').css("color", "#2f3a3e");
+        $(this).removeClass('list-box2');
+    })
+
+    $('.news-list').on('mouseenter', function () {
+        $('.personal-list').addClass('personal-list2');
+        $(this).css('box-shadow', '0 3px 4px 0 rgba(0,0,0,0.10)')
+    })
+
+    $('.news-list').on('mouseleave', function () {
+        $('.personal-list').removeClass('personal-list2');
+        $(this).css('box-shadow', 'none')
+    })
+
+    $('.personal-list').on('mouseenter', 'li', function () {
+        $(this).css('color', '#FF8544');
+    })
+
+    $('.personal-list').on('mouseleave', 'li', function () {
+        $(this).css('color', '#9699A4');
+    });
+    $(document).find('select').select2({
+        minimumResultsForSearch: -1
+    });
+</script>

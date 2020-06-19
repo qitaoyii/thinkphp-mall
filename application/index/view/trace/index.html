@@ -1,0 +1,2004 @@
+{extend name="layout/base" /}
+
+{block name="seo"}
+<title>{$title|default="品牌厂家直供平台"}</title>
+{/block}
+
+{block name="style"}
+<link rel="stylesheet" href="__STATIC__/style/tracing.min.css?{:config('huaban.css_version.version')}">
+<link rel="stylesheet" href="__STATIC__/style/newProduct.css?{:config('huaban.css_version.version')}">
+
+<style>
+    #layer-more ol li{list-style-type: decimal;margin: 10px 0;max-width: 460px}
+    #layer-more ol{padding:0;}
+    #layer-more ol{padding-left: 20px}
+    .flex-layer{
+        display:flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top:10px;
+    }
+    .flex-layer p{
+        padding-left: 15px;
+        flex: 1;
+        display:flex;
+        flex-direction: column;
+        line-height: 1.5;
+    }
+</style>
+{/block}
+
+{block name="title"}
+<span>商品管理</span> /
+<span class="colorTit">溯源管理</span>
+{/block}
+
+{block name="content"}
+<div class="ShopFrontPage-r-bot">
+    <div class="card">
+        <div class="step">
+            <div class="step_item active" data-step="1">
+                <p class="serial">1</p>
+                <p>防伪标使用场景</p>
+            </div>
+            <div class="step_item" data-step="2">
+                <p class="serial">2</p>
+                <p>防伪标的样式</p>
+            </div>
+            <div class="step_item" data-step=3>
+                <p class="serial">3</p>
+                <p>确认</p>
+            </div>
+            <div class="step_item" data-step="4">
+                <p class="serial">4</p>
+                <p>配置获客图</p>
+            </div>
+            <div class="step_item" data-step="5">
+                <p class="serial">5</p>
+                <p>配置溯源详情页</p>
+            </div>
+            <div class="step_item" data-step="6">
+                <p class="serial">6</p>
+                <p>完成配置</p>
+            </div>
+        </div>
+        <div class="step-content">
+            <div class="content-box" data-step="1">
+                <div class="step1-box">
+                    <div class="step1-item form-checkbox">
+                        <label>
+                            <div class="item-choose">
+                                <input type="checkbox" name="scene_type" value="1">
+                                <span></span>
+                                <i>01场景一</i>
+                                <img src="{:qiniu_domains()}/upload/9a/80c4c7276a00f61d5c50eaa67cf47703769075c7273cba13c1bae62e466780.png?origin=icon01.png"
+                                    width="50px">
+                            </div>
+                            <div class="item-text">
+                                <h3>“防伪标”包装</h3>
+                                <p class="text-gray">印制在商品的包装上</p>
+                            </div>
+                        </label>
+                    </div>
+                    <div class="step1-item form-checkbox">
+                        <label>
+                            <div class="item-choose">
+                                <input type="checkbox" name="scene_type" value="2">
+                                <span></span>
+                                <i>02场景二</i>
+                                <img src="{:qiniu_domains()}/upload/46/678fb8c4d563f78c2df5e70a1d21465d9b7640c719719818231649a3daf0bc.png?origin=icon02.png"
+                                    width="50px">
+                            </div>
+                            <div class="item-text">
+                                <h3>“防伪标”标签</h3>
+                                <p class="text-gray">贴在商品实体上</p>
+                            </div>
+                        </label>
+                    </div>
+                    <div class="step1-item form-checkbox">
+                        <label>
+                            <div class="item-choose">
+                                <input type="checkbox" name="scene_type" value="3">
+                                <span></span>
+                                <i>03场景三</i>
+                                <img src="{:qiniu_domains()}/upload/20/be51d8863985a4788e60c5fcd206dc8f4cca42fdf9e792275c9a937381f40e.png?origin=icon03.png"
+                                    width="50px">
+                            </div>
+                            <div class="item-text">
+                                <h3>“防伪标”卡片</h3>
+                                <p class="text-gray">实体卡片</p>
+                            </div>
+                        </label>
+                    </div>
+                    <div class="step1-item form-checkbox">
+                        <label>
+                            <div class="item-choose">
+                                <input type="checkbox" name="scene_type" value="4">
+                                <span></span>
+                                <i>04场景四</i>
+                                <img src="{:qiniu_domains()}/upload/7f/88afaa8bf800a918c1f44b2a86c6e08d4f1053204fbe8dfbf4f4cba21ecad2.png?origin=icon04.png"
+                                    width="50px">
+                            </div>
+                            <div class="item-text">
+                                <h3>“防伪标”证书</h3>
+                                <p class="text-gray">物权资产登记证书</p>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="content-box" data-step="2">
+
+                <div class="step2-box">
+                    <div class="label_title">请选择防伪标的样式<span class="text-red">（注:以下样式仅做示例参考）</span></div>
+                    <div class="label-type">
+
+                        <div id="tagType-one">
+                            <p class="label-type-title">仅二维码</p>
+                            <div class="label-type-item" data-label_type="1">
+                                <div class="label-flag" data-label_flag="1">
+                                    <div class="form-radio">
+                                        <label>
+                                            <input type="radio" name="label_flag" value="1">
+                                            <span></span>
+                                            <img src="{:qiniu_domains()}/upload/a0/e72ccce12c979998481c43614c8cb29e081dfc1673c19b8dbe67d4c07aaf82.png?origin=label1.png"
+                                                 width="100px">
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="label-flag" data-label_flag="2">
+                                    <div class="form-radio">
+                                        <label>
+                                            <input type="radio" name="label_flag" value="2">
+                                            <span></span>
+                                            <img src="{:qiniu_domains()}/upload/56/d6d47fb19755d5b3ee654977a73cab9b581c7d9f017eae60ca3ed616c9de05.png?origin=label2.png"
+                                                 width="100px">
+                                        </label>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <p class="label-type-title">二维码+获客图</p>
+                            <div class="label-type-item" data-label_type="2">
+                                <div class="label-flag" data-label_flag="3">
+                                    <div class="form-radio">
+                                        <label>
+                                            <input type="radio" name="label_flag" value="3">
+                                            <span></span>
+                                            <img src="{:qiniu_domains()}/upload/01/cdaa675ab9334e20e45da04e37c728d8ad18f56208c2ce5689f5d899587a93.png?origin=label3.png"
+                                                 width="100px">
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="label-flag" data-label_flag="4">
+                                    <div class="form-radio">
+                                        <label>
+                                            <input type="radio" name="label_flag" value="4">
+                                            <span></span>
+                                            <img src="{:qiniu_domains()}/upload/48/f9b9a77e7b4c60f33d0078ab0d0a890a0760f4eb29e940064e5ddae8db5092.png?origin=label4.png"
+                                                 width="100px">
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div id="tagType-two">
+                            <p class="label-type-title">二维码+获客图+密码刮层</p>
+                            <div class="label-type-item" data-label_type="3">
+                                <div class="label-flag" data-label_flag="5">
+                                    <div class="form-radio">
+                                        <label>
+                                            <input type="radio" name="label_flag" value="5">
+                                            <span></span>
+                                            <img src="{:qiniu_domains()}/upload/45/18da7b2eeef879b3018da82a580dfdfed7258c36ed12f853775baa5b326ee0.png?origin=label5.png"
+                                                 width="106px">
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="label-flag" data-label_flag="6">
+                                    <div class="form-radio">
+                                        <label>
+                                            <input type="radio" name="label_flag" value="6">
+                                            <span></span>
+                                            <img src="{:qiniu_domains()}/upload/b4/200643e39e4b8a62b646e6d8b2ba9b5b1406b6f74108616b8b63dd411562e8.png?origin=label6.png"
+                                                 width="106px">
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <div class="content-box" data-step="3" style="display: block">
+                <div class="step3-box">
+                    <div class="box-top">
+                        <div class="content content1">
+                            <p class="label_title">防伪标使用场景</p>
+                            <div id="content-list"></div>
+
+                        </div>
+                        <!-- 渲染选择的防伪标样式 -->
+                        <div class="content content2" id="card-box1">
+                        </div>
+                    </div>
+                    <div class="box-bottom">
+                        <div class="content">
+                            <p class="label_title">溯源防伪标渠道防窜货配置</p>
+
+                            <div id="agent-box">
+
+                            </div>
+                            <input type="button" class="btn btn-fill" value="选择经销商" id="addagent">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="content-box" data-step="4">
+                <div class="step4-box">
+                    <div class="box-top">
+                        <div class="left">
+                            <!-- 渲染选择的防伪标样式 -->
+                            <div class="label_type" id="card-box2">
+                            </div>
+                            <div class="choose-img">
+                                <p class="label_title">配置防伪标的获客图</p>
+                                <div class="choose-works" data-type="all">
+                                    <img src="{:qiniu_domains()}/upload/09/771632e9b6f1bcccea299fa1cdbf68d3fc48002b00eff00ccb30e575772f39.png?origin=选择获客图.png" alt="" class="choose-works-img">
+                                    <div class="flex">
+                                        <p class="p-one"></p>
+                                        <p class="p-two"></p>
+                                        <button type="button" class="choose-works btn btn-icon btn-primary" style="color:blue;">修改</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="trace-reload"></div>
+                </div>
+                <!-- 手机预览框架 -->
+
+                <div class="iframe-box">
+                        <p class="text-o" style="text-align: center;font-size: 18px;line-height: 2;">效果预览</p>
+                    <div class="trace-see">
+                        <div class="trace-see-box">
+                            <div class="see-box-fix">
+                                <div class="goods-details" style="width:300px;height:502px;overflow-y:auto" id="goods-detail">
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="content-box" data-step="5">
+                <div class="step5-box">
+                    <div class="tracing-info">
+                        <div class="info-top">
+                            <div class="label_title">
+                                防伪标溯源详情页信息
+                            </div>
+                            <div class="info-list">
+                                <div class="info-item trace-item">
+                                    <span>商品名称</span>：
+                                    <p id="product-name">南方大麦若叶青汁</p>
+                                </div>
+                                <div class="info-item trace-item">
+                                    <span>商品条码</span>：
+                                    <p id="qrcode-number">2654456</p>
+                                </div>
+                                <div class="info-item trace-item">
+                                    <span>生产日期</span>：
+                                    <p id="production-date">2018-02-26</p>
+                                </div>
+                                <div class="info-item trace-item">
+                                    <span style="letter-spacing: 12px">生产量</span>：
+                                    <p id="production-count">1000</p>
+                                </div>
+                                <div class="info-item">
+                                    <span style="letter-spacing: 12px">版谷</span>：
+                                    <p class="works-flex" id="works-info">
+
+                                    </p>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="info-bottom">
+                            <div class="label_title">自定义溯源</div>
+                            <input type="button" class="btn btn-fill custom-con" data-type="1" value="添加自定义溯源">
+                            <div class="custom-addbox" style="display:none;">
+                                <div class="label-type-title">自定义文字溯源信息</div>
+                                <br>
+                                <div class="addbox-list">
+                                    <input type="button" class="addtrace" value="＋">
+                                </div>
+                                <div id="add-trace">
+
+                                </div>
+                                <br>
+                                <div class="label-type-title">自定义图片溯源信息</div>
+                                <div class="addimg-list">
+                                    <input class="file" type="file" style="opacity: 0" multiple name="" id=""
+                                        accept="image/jpeg, image/jpg, image/png">
+                                    <div class="addimg">
+                                        <img class="long-file-img"
+                                            src="{:qiniu_domains()}/upload/7f/1afb3c68fcbb0d68421b558c8fb28ba88e7e93f2837996e67f581dabe3b393.png?origin=add.png">
+                                    </div>
+                                    <ul class="ul1">
+
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- 手机预览框架 -->
+                <div class="iframe-box">
+                        <p class="text-o" style="cursor: pointer; text-align: center;font-size: 18px;line-height: 2;" onclick="getTraceDetail()">刷新预览</p>
+                    <div class="trace-see">
+                        <div class="trace-see-box">
+                            <div class="see-box-fix">
+                                <div style="width: 280px;height: 502px;overflow-y: scroll;" id="Demo">
+
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="content-box" data-step="6">
+                <div class="trace_detail">
+                    <div class="trace-status">
+                        <!--  -->
+                    </div>
+                    <div class="box-top">
+                        <div class="content content1">
+                            <p class="label_title">防伪标使用场景</p>
+                            <!-- 渲染数据框架 -->
+                            <div id="content-list1"></div>
+                        </div>
+                        <div class="content content2" id="card-box3">
+                            <p class="label_title">防伪标样式<span class="text-red">（注:以下样式仅做示例参考）</span></p>
+                            <div class="content">
+                                <img src=" {:qiniu_domains()}/upload/b4/200643e39e4b8a62b646e6d8b2ba9b5b1406b6f74108616b8b63dd411562e8.png?origin=label6.png"
+                                    width="100px">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="layer-trace-detail"></div>
+
+                    <div class="box-bottom">
+                        <div class="label_title">防伪标配置信息</div>
+                       <div id="tag-reload"></div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <div class="step-btn">
+            <input type="button" value="上一步" class="btn btn-o btn-lg" id="prev_step">
+            <input type="button" value="下一步" class="btn btn-fill btn-lg" id="next_step">
+        </div>
+    </div>
+</div>
+<div class="mask-works-wrap mask-works-wrap-none">
+    <div class="mask-works-box">
+        <ul class="mask-works-box-t">
+        </ul>
+        <div class="mask-works-box-b">
+            <button class="mask-works-box-b-back">取消</button>
+            <button class="mask-works-box-b-next">提交</button>
+        </div>
+    </div>
+</div>
+<div id="layer-more" style="display:none">
+</div>
+{/block}
+
+{block name='js'}
+<script src="{:qiniu_domains()}/upload/67/1d2d0ecc6ad56a71cece7cda0231343a469f2ab75b54529407c4293896a914.js?origin=template.js">
+</script>
+<script id="scence_html" type="text/html">
+    <div class="content-list">
+        <%if (scene.indexOf("1")!=-1||scene.indexOf(1)!=-1)  {%>
+        <div class="content-item _1">
+            <div class="item-choose">
+                <i>01场景一</i>
+                <img src="{:qiniu_domains()}/upload/9a/80c4c7276a00f61d5c50eaa67cf47703769075c7273cba13c1bae62e466780.png?origin=icon01.png"
+                    width="36px">
+            </div>
+            <div class="item-text">
+                <h3>“防伪标”包装</h3>
+                <p class="text-gray">印制在商品的包装上</p>
+            </div>
+        </div>
+        <%}%>
+              <%if (scene.indexOf("2")!=-1||scene.indexOf(2)!=-1)  {%>
+        <div class="content-item _2">
+            <div class="item-choose">
+                <i>02场景二</i>
+                <img src="{:qiniu_domains()}/upload/46/678fb8c4d563f78c2df5e70a1d21465d9b7640c719719818231649a3daf0bc.png?origin=icon02.png"
+                    width="36px">
+            </div>
+            <div class="item-text">
+                <h3>“防伪标”标签</h3>
+                <p class="text-gray">贴在商品实体上</p>
+            </div>
+        </div>
+        <%}%>
+              <%if (scene.indexOf("3")!=-1||scene.indexOf(3)!=-1)  {%>
+        <div class="content-item _3">
+            <div class="item-choose">
+                <i>03场景三</i>
+                <img src="{:qiniu_domains()}/upload/20/be51d8863985a4788e60c5fcd206dc8f4cca42fdf9e792275c9a937381f40e.png?origin=icon03.png"
+                    width="36px">
+            </div>
+            <div class="item-text">
+                <h3>“防伪标”卡片</h3>
+                <p class="text-gray">实体卡片</p>
+            </div>
+        </div>
+        <%}%>
+              <%if (scene.indexOf("4")!=-1||scene.indexOf(4)!=-1) {%>
+        <div class="content-item _4">
+            <div class="item-choose">
+                <i>04场景四</i>
+                <img src="{:qiniu_domains()}/upload/7f/88afaa8bf800a918c1f44b2a86c6e08d4f1053204fbe8dfbf4f4cba21ecad2.png?origin=icon04.png"
+                    width="36px">
+            </div>
+            <div class="item-text">
+                <h3>“防伪标”证书</h3>
+                <p class="text-gray">物权资产登记证书</p>
+            </div>
+        </div>
+        <%}%>
+        </div>
+</script>
+<script id="card_html" type="text/html">
+    <p class="label_title">防伪标样式
+        <%if (card.tag_type=="1") {%>
+        （仅二维码）
+        <%}%>
+            <%if (card.tag_type=="2") {%>
+        （二维码+获客图）
+        <%}%>
+            <%if (card.tag_type=="3") {%>
+        （二维码+获客图+密码刮层）
+        <%}%>
+        <br>
+        <span class="text-red">（注:以下样式仅做示例参考）</span>
+    </p>
+    <div class="content" style="padding-top:20px">
+       <img src="<%:=card.tag_url%>" width="100px">
+        </div>
+</script>
+<script id="agent_html" type="text/html">
+    <div class="content-box agentCon">
+        <p>经销商</p>
+        <div class="agency-choose-box">
+            <div class="agency-choose-inp-box">
+                <input class="agency-choose-inp distributors-type-title" style="width:245px" type="text" placeholder="" data-val="" data-id="">
+                <ul class="goods-spec-list-box none"  style="width:245px;">
+                </ul>
+            </div>
+        </div>
+        <p>防伪标分配数量</p>
+        <div class="sku-allot-list">
+            <div class="allot-list">
+                <div class="allot-item">
+                    <span>商品规格</span>
+                    <div class="proct-inp-box">
+                            <input class="proct-inp" type="text" placeholder="请选择规格" value="" data-name="" data-id="" data-code="" data-num="">
+                            <ul class="proct-box none">
+
+                            </ul>
+
+                        </div>
+                        <span>防伪标分配数量</span> <input type="text" maxlength="6" onkeyup="clearNoNum(this)"  placeholder="请输入防伪标分配数量" class="sku-num" >
+            </div>
+        </div>
+        <input type="button" class="addsku" value="＋" onclick=" addsku_($(this))" style="align-self: baseline">
+        <div class="del-box"><img src="{:qiniu_domains()}/upload/00/42dd6b62a6b259c35308168e041c371a364cf408bdcb69105ddbc0ca0d3c74.png?origin=删除.png" alt="" width="32px"></div>
+    </div>
+</div>
+</script>
+
+<script id="tag_html" type="text/html">
+    <%for (var i = 0; i < traceData.length; i++) {%>
+    <div class="trace-card-box">
+        <div class="trace-card-item">
+            <span class="label-type-title">经销商:</span>
+            <p class="text-o"><%:=traceData[i].distributor_name%></p>
+        </div>
+        <div class="trace-card-item">
+            <span class="label-type-title">获客图:</span>
+            <div class="works-item">
+                <img src="<%:=traceData[i].works_img_url%>" alt="" width="80px" height="80px" style="border: 1px solid #e8e8e8">
+                <p><%:=traceData[i].artist_real_name%></p>
+                <p><%:=traceData[i].works_name%></p>
+            </div>
+        </div>
+        <div class="label-type-title">
+            防伪标
+        </div>
+        <table class="trace-table">
+            <thead>
+            <tr class="tr-th">
+                <th>二维码</th>
+                <th>商品规格</th>
+                <th>防伪标分配数量</th>
+            </tr>
+            </thead>
+            <tbody>
+            <%for (var j = 0; j < traceData[i].property_details.length; j++) {%>
+            <tr>
+                <td>
+                    <img src="{:qiniu_domains()}/upload/29/e696a9999d7d7fef151edf339672720bf1ac27aa6e0de545c250a6df39ba84.png?origin=二维码.png" alt="" width="20px" height="20px">
+                </td>
+                <td>
+                    <%:=traceData[i].property_details[j].sku_property_name%>
+                </td>
+                <td>
+                    <%:=traceData[i].property_details[j].num%>
+                </td>
+            </tr>
+            <%}%>
+            </tbody>
+        </table>
+    </div>
+    <%}%>
+</script>
+<script id="trace_html" type="text/html">
+    <%for (var i = 0; i < traceData.length; i++) {%>
+    <div class="box-bottom">
+        <div class="label-type-list">
+            <div class="label-type-item">
+                <p style="margin-bottom:10px;">经销商：<span class="text-o"><%:=traceData[i].distributor_name%></span></p>
+
+                <div class="choose-works works_item" data-type="item" data-works_id="<%:=traceData[i].works_id%>" data-name="<%:=traceData[i].works_name%>" data-artistname="<%:=traceData[i].artist_real_name%>">
+
+                    <img src="<%:=traceData[i].works_img_url%>" alt="" class="choose-works-img">
+
+                    <div class="flex">
+                        <p class="p-one"><%:=traceData[i].artist_real_name%></p>
+                        <p class="p-two"><%:=traceData[i].works_name%></p>
+                        <button type="button" class="choose-works btn btn-icon btn-primary" style="color:blue;">修改</button>
+                    </div>
+
+                </div>
+                <div class="table-box">
+                    <p>防伪标分配数量</p>
+                    <table class="trace-table">
+                        <thead>
+                        <tr class="tr-th">
+                            <th>二维码</th>
+                            <th>商品规格</th>
+                            <th>防伪标分配数量</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+
+                        <%for (var j = 0; j < traceData[i].property_details.length; j++) {%>
+                        <tr>
+                            <td>
+                                <img src="{:qiniu_domains()}/upload/29/e696a9999d7d7fef151edf339672720bf1ac27aa6e0de545c250a6df39ba84.png?origin=二维码.png"
+                                     alt="" width="20px" height="20px">
+                            </td>
+                            <td>
+                                <%:=traceData[i].property_details[j].sku_property_name%>
+                            </td>
+                            <td>
+                                <%:=traceData[i].property_details[j].num%>
+                            </td>
+                        </tr>
+                        <%}%>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <%}%>
+</script>
+<script id="demo_html" type="text/html">
+    <div class="trace_info-top">
+            <div class="info-title">您查验的商品信息如下</div>
+            <%if (traceDetail.source_data.items.length > 0) {%>
+            <%for (var i = 0; i < traceDetail.source_data.items.length; i++) {%>
+                <div class="info-item">
+                    <span class="item-label"><%:=traceDetail.source_data.items[i].key%></span>
+                    <p class="item-value"><%:=traceDetail.source_data.items[i].val%></p>
+                </div>
+                <%}%>
+                <%}%>
+
+                <%if (traceDetail.source_data.custom_items.length > 0) {%>
+
+                        <%for (var j = 0; j < traceDetail.source_data.custom_items.length; j++) {%>
+                            <div class="info-item" >
+                                    <span class="item-label"><%:=traceDetail.source_data.custom_items[j].key%>:</span>
+                                    <p class="item-value" ><%:=traceDetail.source_data.custom_items[j].val%></p>
+                                </div>
+                        <%}%>
+                <%}%>
+
+
+            <div class="trace-works">
+                <span class="works-label">本批商品验证版谷</span>
+                <div class="works-info">
+                    <img src="{:qiniu_domains()}<%:=traceDetail.works_img%>" alt="" width="50" height="50">
+                    <p>
+                        <span>《<%:=traceDetail.works_name%>》</span><br>
+                        <span style="font-size: 12px;padding-left:6px;" v-cloak><%:=traceDetail.works_artist_name%></span>
+                    </p>
+                </div>
+            </div>
+            <p>提示：购买商品后登记物权，可获得该防伪溯源版谷。可在物权资产详情页查看并核对版谷，辨别商品真伪</p>
+        </div>
+
+</script>
+<script id="trace_detail_html" type="text/html">
+    <div class="label_title">
+        防伪标溯源详情页信息
+    </div>
+    <div class="info-list">
+        <%for (var i = 0; i < traceDetail.source_data.items.length; i++) {%>
+        <%if (traceDetail.source_data.items[i].val) {%>
+        <div class="info-item">
+            <span><%:=traceDetail.source_data.items[i].key%></span>：
+            <p><%:=traceDetail.source_data.items[i].val%></p>
+        </div>
+        <%}%>
+        <%}%>
+        <div class="info-item">
+            <span style="letter-spacing: 12px">版谷</span>：
+            <p class="works-flex" data-works-id="">
+                <img src="{:qiniu_domains()}<%:=traceDetail.works_img%>" alt="" width="100px" height="100px" style="background: #ccc">
+                <span><%:=traceDetail.works_artist_name%></span>
+                <span style="font-size:16px">《<%:=traceDetail.works_name%>》</span>
+            </p>
+        </div>
+    </div>
+    <%if (traceDetail.source_data.custom_items.length > 0) {%>
+        <div class="label_title">自定义文字溯源信息</div>
+        <div class="info-list">
+            <%for (var j = 0; j < traceDetail.source_data.custom_items.length; j++) {%>
+                <div class="info-item">
+                    <span style="letter-spacing: 12px"><%:=traceDetail.source_data.custom_items[j].key%></span>：
+                    <p><%:=traceDetail.source_data.custom_items[j].val%></p>
+                </div>
+            <%}%>
+        </div>
+    <%}%>
+    <%if (traceDetail.source_data.imgs.length > 0) {%>
+        <div class="label_title">自定义图片溯源信息</div>
+        <div class="img-list">
+            <%for (var k = 0; k < traceDetail.source_data.imgs.length; k++) {%>
+            <img src="<%:=traceDetail.source_data.imgs[k].img_url%>" width="150px">
+            <%}%>
+        </div>
+    <%}%>
+</script>
+<script id="product_detail_html" type="text/html">
+
+    <div class="goods-box">
+            <div class="goods-name">
+                <h2><%:=productDetail.product_name%></h2>
+                <div class="goods-img">
+                    <img src="{:qiniu_domains()}<%:=productDetail.image%>" width="200px" height="200px" style="background:#ccc">
+                </div>
+                <h1>
+                   验真品得艺术好礼
+                </h1>
+            </div>
+            <div class="form">
+                <div class="form-input">
+                        <select class="select" name="select2" id="phone-fix" disabled="disabled">
+                            <option value="86" >+86</option>
+                        </select>
+                        <div class="change"></div>
+                    <input type="tel" placeholder="请输入手机号查验" v-model="mobile">
+                </div>
+                <div class="form-input input_btn"><input type="button" value="立即查验" @click="checkTrace($event)"></div>
+            </div>
+        </div>
+        <!-- <div class="goods-detail">
+            <div class="goods-detail-title">——商品详情——</div>
+            <div class="goods-detail-content">
+                <img :src="item" width="100%" height="auto" v-for="(index,item) in trace.image_details">
+            </div>
+        </div> -->
+</script>
+<!-- 缓存数据 -->
+<script id="agent1_html" type="text/html">
+    <%for (var i = 0; i < agent.length; i++) {%>
+    <div class="content-box agentCon">
+        <p>经销商</p>
+        <div class="agency-choose-box">
+            <div class="agency-choose-inp-box">
+                <input class="agency-choose-inp distributors-type-title" type="text" placeholder="<%:=agent[i].distributor_name%>" data-val="<%:=agent[i].distributor_name%>" data-id="<%:=agent[i].distributor_id%>" value="<%:=agent[i].distributor_name%>">
+                <ul class="goods-spec-list-box none" style="width:245px;">
+                </ul>
+            </div>
+        </div>
+        <p>防伪标分配数量</p>
+        <div class="sku-allot-list">
+            <div class="allot-list">
+                <%for (var j = 0;j < agent[i].property_details.length;j++) {%>
+                <div class="allot-item">
+                    <span>商品规格</span>
+                    <div class="proct-inp-box">
+                            <input class="proct-inp" type="text" placeholder="请选择规格" value="<%:=agent[i].property_details[j].sku_property_name%>" data-name="<%:=agent[i].property_details[j].sku_property_name%>" data-id="<%:=agent[i].property_details[j].sku_id%>" data-code="" data-num="<%:=agent[i].property_details[j].sku_number%>">
+                            <ul class="proct-box none">
+
+                            </ul>
+
+                        </div>
+                        <span>防伪标分配数量</span> <input type="text" maxlength="6" onkeyup="clearNoNum(this)"  placeholder="请输入防伪标分配数量" class="sku-num" value="<%:=agent[i].property_details[j].num%>" >
+            </div>
+            <%}%>
+        </div>
+        <input type="button" class="addsku" value="＋" onclick=" addsku_($(this))" style="align-self: baseline">
+        <div class="del-box">
+            <img src="{:qiniu_domains()}/upload/00/42dd6b62a6b259c35308168e041c371a364cf408bdcb69105ddbc0ca0d3c74.png?origin=删除.png" alt="" width="32px">
+        </div>
+    </div>
+</div>
+<%}%>
+</script>
+
+<script id="layer-more-html" type="text/html">
+    <ol>
+        <%for (var i = 0; i < list.arr.length; i++) {%>
+        <%if (list.arr[i].use_type == 1){%>
+        <li>
+            <p style="font-size: 16px;">该版谷作品已被使用为商品<span class="text-blue" style="font-size: 16px;">认证版谷</span> </p>
+            <div class="flex-layer">
+                <img src="<%:=list.arr[i].thumb_image%>" width="60">
+                <p>
+                    <span><%:=list.arr[i].product_name%>&<%:=list.arr[i].property_name%></span>
+                    <span>ID:<%:=list.arr[i].product_id%></span>
+                </p>
+            </div>
+        </li>
+        <%}%>
+        <%if (list.arr[i].use_type == 2){%>
+        <li>
+            <p style="font-size: 16px;">该版谷作品已被使用为商品<span class="text-blue" style="font-size: 16px;">营销版谷</span> </p>
+            <p class="text-gray">（连接了版主红包）   </p>
+        </li>
+        <%}%>
+        <%if (list.arr[i].use_type == 3){%>
+        <li>
+            <p style="font-size: 16px;">该版谷作品已被使用为商品<span class="text-blue" style="font-size: 16px;">营销版谷</span> </p>
+            <div class="flex-layer">
+                <img src="<%:=list.arr[i].thumb_image%>" width="60">
+                <p>
+                    <span><%:=list.arr[i].product_name%>&<%:=list.arr[i].property_name%></span>
+                    <span>ID:<%:=list.arr[i].product_id%></span>
+                </p>
+            </div>
+        </li>
+        <%}%>
+        <%}%>
+    </ol>
+</script>
+
+<script>
+    var dataArr = {$dataArr|raw};
+var data;
+// 第四步骤  渲染防伪标配置获客图
+function getTraceReload(){
+        let trace_html = template(document.getElementById('trace_html').innerHTML, {
+            traceData: data.distributors
+        });
+        $("#trace-reload").html(trace_html);
+    }
+    // 第六步骤 渲染防伪标配置信息
+    function getTagReload(){
+        let tag_html = template(document.getElementById('tag_html').innerHTML, {
+            traceData: data.distributors
+        });
+        $("#tag-reload").html(tag_html);
+    }
+// 缓存存在
+if(sessionStorage.getItem("data"+dataArr.productData.product_id)){
+    data=JSON.parse(sessionStorage.getItem("data"+dataArr.productData.product_id));
+         // 场景选择样式
+    if (data.scene_type.length==0) {
+            $("#next_step").prop('disabled', true);
+        } else {
+            $("#next_step").prop('disabled', false);
+        }
+    $('input[name="scene_type"]').each(function (i,v) {
+        if(data.scene_type.indexOf($(v).val())!=-1){
+            $(v).prop("checked",true);
+            $(v).parents(".step1-item").css({
+                "border-bottom": "4px solid #0091FF",
+                "box-shadow": "1px 1px 10px #e8e8e8",
+            });
+        }
+    });
+    if(data.step>=2){
+        $('input[name="label_flag"]').each(function (i,v) {
+            if(data.tag_flag==$(v).val()){
+                $(v).prop("checked",true);
+            }
+        });
+    }
+    if(data.distributors[0].distributor_id!=0){
+        agent1Html(data.distributors);
+    }
+    if(data.distributors[0].works_id){
+        getTraceReload();
+    }
+}else{
+    data = {
+        "product_id": "",
+        "shop_id": "",
+        "scene_type": [],
+        "tag_type": "",
+        "tag_flag": "",
+        "tag_url": "",
+        "step": 1,
+        "total_num": 0,
+        "distributors": [{
+            "distributor_id": 0,
+            "distributor_name": "",
+            "works_id": "",
+            "works_img_url": "{:qiniu_domains()}/upload/09/771632e9b6f1bcccea299fa1cdbf68d3fc48002b00eff00ccb30e575772f39.png?origin=选择获客图.png",
+            "works_name": "",
+            "artist_real_name": "",
+            "property_details": [{
+                "sku_id": "",
+                "num": "",
+                "sku_propery_name": "",
+                "sku_number": "",
+                "works_id": "",
+                "works_img_url": "",
+                "works_name": "",
+                "artist_real_name": ""
+            }]
+        }],
+
+        "trace_content": [
+            {
+                "sku_id": "",
+                "works_id": "",
+                "source_data": {
+                    "imgs": [],
+                    "items": [],
+                    "custom_items": []
+                }
+            }
+        ]
+
+    };
+};
+
+    // 场景选择样式
+    if ($('input[name="scene_type"]:checked').length==0) {
+        $("#next_step").prop('disabled', true);
+    }
+    $('input[name="scene_type"]').change(function () {
+        if ($(this).is(":checked")) {
+            $(this).parents(".step1-item").css({
+                "border-bottom": "4px solid #0091FF",
+                "box-shadow": "1px 1px 10px #e8e8e8",
+            });
+        } else {
+            $(this).parents(".step1-item").css({
+                "border-bottom": "",
+                "box-shadow": "",
+            });
+        }
+        // 下一步默认给禁用，选择后给恢复
+        if ($('input[name="scene_type"]:checked').length!=0) {
+            $("#next_step").prop('disabled', false);
+        } else {
+            $("#next_step").prop('disabled', true);
+        }
+    });
+
+    // 下一步操作
+    $("#next_step").on("click", function () {
+        data.product_id = dataArr.productData.product_id;
+        data.shop_id = dataArr.productData.shop_id;
+
+        if (data.step == 1) {
+            if ($('input[name="scene_type"]:checked').length == 0) {
+                layer.msg("请至少选择一个使用场景！", {
+                    "icon": 2
+                });
+                return false;
+            } else {
+                data.scene_type = [];
+                $('input[name="scene_type"]:checked').each(function () {
+                    data.scene_type.push($(this).val())
+                });
+                data.step = 2;
+                showStep(data.step, "next");
+            }
+        } else if (data.step == 2) {
+            if ($('input[name="label_flag"]:checked').length != 1) {
+                layer.msg("请选择防伪标样式！", {
+                    "icon": 2
+                });
+                return false;
+            } else {
+                var tag_flag = $('input[name="label_flag"]:checked').val();
+                var tag_url = $('input[name="label_flag"]:checked').siblings("img").attr("src");
+                data.tag_flag = tag_flag;
+                data.tag_url = tag_url;
+                if (tag_flag <= 2) {
+                    data.tag_type = 1;
+                    $(".content-box[data-step='5'],.step_item[data-step='5']").show();
+                    $(".step_item[data-step='6']").find("p.serial").html("6");
+                } else if (tag_flag <= 4 && tag_flag > 2) {
+                    data.tag_type = 2;
+                    $(".content-box[data-step='5'],.step_item[data-step='5']").show();
+                    $(".step_item[data-step='6']").find("p.serial").html("6");
+                } else if (tag_flag <= 6 && tag_flag > 4) {
+                    data.tag_type = 3;
+                    $(".content-box[data-step='5'],.step_item[data-step='5']").hide();
+                    $(".step_item[data-step='6']").find("p.serial").html("5").attr("data-step",'5');
+                }
+                data.step = 3;
+                showStep(data.step, "next");
+            }
+        } else if (data.step == 3) {
+            // 渠道商配置时的 验证
+            var code = 1;
+            if ($(".distributors-type-title").length > 0) {
+                // 验证经销商是否选择
+                $(".distributors-type-title").each(function (index, item) {
+                    if (!$(item).attr('data-id')) {
+                        layer.msg("亲，请选择经销商！", {
+                            icon: 2
+                        });
+                        code = 0;
+                        return false;
+                    }
+                });
+                if (!code) {
+                    return false;
+                }
+            }else{
+                layer.msg("亲，请先配置经销商信息！", {
+                    icon: 2
+                });
+                code = 0;
+                return false;
+            }
+
+            // 验证sku 是否选择
+            if ($(".allot-item").length > 0) {
+                $(".allot-item").each(function (index, item) {
+                    var sku_id = $(item).find('input').eq(0).attr('data-id');
+                    var sku_count = $(item).find('input').eq(1).val()*1;
+
+                    if (!sku_id) {
+                        layer.msg("亲，请选择商品规格！", {
+                            icon: 2
+                        });
+                        code = 0;
+                        return false;
+                    }
+
+                    if (!sku_count) {
+                        layer.msg("亲，请填写防伪标分配数量！", {
+                            icon: 2
+                        });
+                        code = 0;
+                        return false;
+                    }
+                });
+            }else{
+                layer.msg("亲，请先配置防伪标分配数量！", {
+                    icon: 2
+                });
+                code = 0;
+                return false;
+            }
+
+            if (code) {
+                // 获取 总数量
+                var total_num = 0;
+                $(".allot-item").each(function (index, item) {
+                    var sku_count = $(item).find('input').eq(1).val()*1;
+                    total_num += sku_count;
+                });
+                data.total_num = total_num;
+                getAgentInfo();
+                getTraceReload();
+                setSkuData(); // 存放变量
+                if (data.tag_flag <= 6 && data.tag_flag > 4) {
+                    data.step = 5;
+                    showStep(4, "next");
+                } else {
+                    data.step = 4;
+                    showStep(data.step, "next");
+                }
+            }
+            return;
+        } else if (data.step == 4) {
+            // 验证获客图并放入变量
+            var code = 1;
+            $('.works_item').each(function(index, item){
+                if (!$(item).attr('data-works_id')) {
+                    layer.msg('亲，请配置获客图！', {
+                        icon: 2
+                    });
+                    code = 0;
+                    return false;
+                }
+                // 给变量赋值
+                data.distributors[index].works_id=$(item).attr("data-works_id");
+                data.distributors[index].works_img_url=$(item).find("img").attr("src");
+                data.distributors[index].works_name=$(item).attr("data-name");
+                data.distributors[index].artist_real_name=$(item).attr("data-artistname");
+            });
+
+            if (code) {
+                if (data.tag_type == 3 && data.step == 4) {
+                    data.step = 6;
+                } else {
+                    data.step = 5;
+                }
+                showStep(data.step, "next");
+            }
+            return;
+        } else if (data.step == 5) {
+            var code = 1;
+            if (data.tag_type == 3) {
+                $('.works_item').each(function(index, item){
+                    if (!$(item).attr('data-works_id')) {
+                        layer.msg('亲，请配置获客图！', {
+                            icon: 2
+                        });
+                        code = 0;
+                        return false;
+                    }
+                    // 给变量赋值
+                    data.distributors[index].works_id=$(item).attr("data-works_id");
+                    data.distributors[index].works_img_url=$(item).find("img").attr("src");
+                    data.distributors[index].works_name=$(item).attr("data-name");
+                    data.distributors[index].artist_real_name=$(item).attr("data-artistname");
+                });
+            } else {
+                // 验证溯源自定义信息 并放入变量
+                var custom_items = [];
+                if ($(".addbox-item").length > 0) {
+                    $(".addbox-item").each(function (index, item) {
+                        var name = $(item).find('.input-s').val();
+                        var value = $(item).find('.input-sm').val();
+                        if (name == "") {
+                            layer.msg("自定义第"+(index+1)+"行的名称不能为空", {icon: 2});
+                            code = 0;
+                            return false;
+                        }
+
+                        if (value == "") {
+                            layer.msg("自定义第"+(index+1)+"行的值不能为空", {icon: 2});
+                            code = 0;
+                            return false;
+                        }
+                        custom_items.push({'key':name,'val':value});
+                    });
+                }
+                // 获取溯源图片信息
+                var images = [];
+                if ($(".trace-imgs").length > 0) {
+                    $(".trace-imgs").each(function (index, item) {
+                        var value = $(item).find('img').attr('src');
+                        images.push({'img_url':value});
+                    });
+                }
+                // 给数据结构赋值
+                for (var i=0; i < data.trace_content.length; i++) {
+                    data.trace_content[i].source_data.imgs = images;
+                    data.trace_content[i].source_data.custom_items = custom_items;
+                }
+            }
+
+            if (code) {
+                if (data.tag_type != 3) {
+                    getTraceDetail();
+                }
+                data.step = 6;
+                showStep(data.step, "next");
+            }
+            return;
+        }
+        if (data.step == 6) {
+            // 获取所配置的sku 个数
+            var skuIds = [];
+            $(".allot-item").each(function (index, con) {
+                var skuId = $(con).find('.proct-inp').attr('data-id');
+                if (skuIds.indexOf(skuId) == -1) {
+                    skuIds.push(skuId);
+                }
+            });
+            data.skuIds = skuIds;
+            // 获取商品名称
+            data.product_name = dataArr.productData.product_name;
+
+            getTraceReload();
+            layer.confirm("确认提交后，防伪标信息不再支持修改<br>是否提交该防伪标配置信息？", {
+                btn: ["确定", "取消"]
+            },function(index){
+                // 提示超量
+                $max_count = {:config('huaban.trace_count.max_num')};
+                if (data.total_num > $max_count) {
+                    layer.msg('亲，防伪标分配数量不能超过'+$max_count+'！', {
+                        icon: 2
+                    });
+                    return false;
+                }
+
+                layer.closeAll();
+                // 增加加载层
+                layer.load(0, {
+                    shade: [0.1,'black'] //0.1透明度的白色背景
+                });
+
+                $.ajax({
+                    url: '/trace/save',
+                    type: 'POST',
+                    data:  data,
+                    dataType: 'json',
+                    success: function (result) {
+
+                        if (data.tag_type != 3) {
+                            $msg = "亲，溯源配置成功！";
+                        } else {
+                            $msg = "亲，申请成功，请耐心等待！";
+                        }
+
+                        if (result.data.code == 200) {
+                            layer.msg($msg, {
+                                icon: 6,
+                                time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                            }, function () {
+                                layer.closeAll();
+                                window.location.href = '/trace/list?product_id='+result.data.product_id;
+                                //溯源信息配置完成清除缓存
+                                sessionStorage.removeItem("data"+result.data.product_id);
+                            });
+                        }else{
+                            layer.msg(result.data.message, {icon: 2}, function () {
+                                layer.closeAll();
+                            });
+                        }
+                    },
+                    error: function (result) {
+                        layer.msg(result.responseJSON.msg, {icon: 2}, function () {
+                            layer.closeAll();
+                        });
+                    }
+                });
+            });
+        }
+        if (data.step == 3) {
+            var scene = data.scene_type;
+            scenceHtml(scene);
+            cardHtml(data);
+        }
+
+    });
+    // 上一步操作
+    $("#prev_step").on("click", function () {
+
+        if (data.step == 4) {
+            $('.works_item').each(function(index, item){
+                // 给变量赋值
+                data.distributors[index].works_id=$(item).attr("data-works_id");
+                data.distributors[index].works_img_url=$(item).find("img").attr("src");
+                data.distributors[index].works_name=$(item).attr("data-name");
+                data.distributors[index].artist_real_name=$(item).attr("data-artistname");
+            });
+        }
+        if (data.tag_type == 3 && data.step == 6) {
+            data.step = 4;
+
+        } else {
+             data.step--;
+        }
+        var step = data.step;
+        showStep(step, "prev");
+    });
+
+    if (data.step == 1) {
+        $("#prev_step").hide();
+    }
+
+    // 操作到第几步显示隐藏
+    function showStep(step, o) {
+        sessionStorage.setItem("data"+dataArr.productData.product_id,JSON.stringify(data));
+        if (step != 1) {
+            $("#prev_step").show();
+            $(".content-box[data-step='1']").show();
+        } else {
+            $("#prev_step").hide();
+        }
+        if (step == 6) {
+            getTagReload();
+            if (data.tag_type == 3) {
+                $("#prev_step").attr("value", "上一步");
+            } else {
+                  $("#prev_step").attr("value", "返回修改");
+            }
+            $("#next_step").attr("value", "提交溯源配置信息");
+        } else {
+            $("#prev_step").attr("value", "上一步");
+            $("#next_step").attr("value", "下一步");
+        }
+
+        if (o == "next") {
+            $(".step_item[data-step=" + step + "]").addClass('active');
+        } else {
+            var step1 = '';
+            if (data.tag_type == 3 && data.step == 4) {
+                step1 = step + 2;
+            } else {
+                step1 = step + 1;
+            }
+
+            $(".step_item[data-step=" + step1 + "]").removeClass('active');
+        }
+        $(".content-box[data-step=" + step + "]").show().siblings(".content-box").hide();
+        for (var i = 0; i <= step; i++) {
+            $(".step_item[data-step=" + i + "]").addClass('active');
+        }
+    }
+    showStep(data.step);
+    // 使用场景
+    function scenceHtml(scene) {
+        let scence_html = template(document.getElementById('scence_html').innerHTML, {
+            scene: scene
+        });
+        $("#content-list").html(scence_html);
+        $("#content-list1").html(scence_html);
+    }
+    // 防伪标选择样式
+    function cardHtml(card) {
+        let card_html = template(document.getElementById('card_html').innerHTML, {
+            card: card
+        });
+        $("#card-box1,#card-box2,#card-box3").html(card_html);
+    }
+    // 经销商，sku渲染
+    function agentHtml(dataArr) {
+        let agent_html = template(document.getElementById('agent_html').innerHTML, {
+            agent: dataArr
+        });
+      $("#agent-box").append(agent_html);
+    }
+    function agent1Html(dataArr) {
+        let agent_html = template(document.getElementById('agent1_html').innerHTML, {
+            agent: dataArr
+        });
+      $("#agent-box").append(agent_html);
+    }
+
+    scenceHtml(data.scene_type);
+    cardHtml(data);
+    var length = 0; //经销商数量；
+    var skuLength = dataArr.productData.product_property_details.length; //sku数量
+    // 添加经销商；
+    $("#addagent").on("click", function () {
+        skuLength = dataArr.productData.product_property_details.length;
+
+        if ($(".content-box.agentCon").length==dataArr.distributors.length) {
+            layer.msg("没有更多经销商可供选择", {
+                icon: 2
+            });
+            return false;
+        }
+        agentHtml(dataArr);
+
+    });
+
+    // 获取渠道商所获取的sku 信息 进行处理
+    function setSkuData(){
+        // 获取所选的skuid
+        var skuArr = [];
+        $(".proct-inp").each(function () {
+            var skuId = $(this).attr('data-id')*1;
+            if (skuId) {
+                skuArr.push(skuId)
+            }
+        });
+
+        // 循环遍历 商品sku 的信息获取商品名称、商品序列号、生产日期、生产数量、版谷等信息
+        var skuDetails = dataArr.productData.product_property_details;
+        var trace_content = [];
+
+        for (var i=0; i<skuDetails.length; i++) {
+            if (skuArr.indexOf(skuDetails[i].id) != -1) {
+                var items = [];
+                items.push({
+                    "key": "商品名称",
+                    "val": dataArr.productData.product_name
+                });
+
+                if (skuDetails[i].production_date) {
+                    items.push({
+                        "key": "生产日期",
+                        "val": skuDetails[i].qrcode_number
+                    });
+                }
+                if (skuDetails[i].qrcode_number) {
+                    items.push({
+                        "key": "商品条码",
+                        "val": skuDetails[i].qrcode_number
+                    });
+                }
+                if (skuDetails[i].production_count) {
+                    items.push({
+                        "key": "生产量",
+                        "val": skuDetails[i].production_count
+                    });
+                }
+
+                trace_content.push({
+                    "sku_id": skuDetails[i].id,
+                    "works_id": skuDetails[i].works_id,
+                    "source_data": {
+                        "items": items
+                    }
+                });
+            }
+        }
+        // 放入全局变量中
+        data.trace_content = trace_content;
+    }
+
+    //添加sku
+    function addsku_(obj) {
+        var sku_html;
+        var sku_item="";
+        var skuLength=obj.siblings(".allot-list").find(".allot-item").length;
+        $.each(dataArr.productData.product_property_details, function (index, item) {
+            sku_item += '<li data-num=' + item.production_count + ' data-id="'+item.id+'" data-code="'+item.qrcode_number+'" data-name="'+item.property_name+'">' +
+                item.property_name+'</li>';
+        });
+        if (skuLength == dataArr.productData.product_property_details.length) {
+            layer.msg("没有更多sku可添加", {
+                icon: 2
+            });
+            return false;
+        } else {
+            sku_html = '<div class="allot-item">' +
+                '<span>商品规格</span>' +
+                '<div class="proct-inp-box">' +
+                '<input class="proct-inp" type="text" placeholder="请选择规格" value="" data-val="">' +
+                '<ul class="proct-box none">'+sku_item+' </ul>' +
+                '</div><span>防伪标分配数量</span>' +
+                '<input type="text" placeholder="请输入防伪标分配数量" maxlength="6" onkeyup="clearNoNum(this)" class="sku-num">' +
+                '<input type="button" class="del-btn">' +
+                '</div>';
+            obj.siblings(".allot-list").append(sku_html);
+        }
+    }
+
+    //经销商获取焦点展开列表
+    $('#agent-box').on('focus','.agency-choose-inp',function(){
+        var _this = $(this);
+        if(_this.val()){
+            _this.attr('placeholder',$(this).val());
+        }
+        _this.val('');
+        _this.next('.goods-spec-list-box').removeClass('none');
+        var agentli = '';
+        var arr=[];
+        _this.parents('.agentCon').siblings('.content-box').each(function () {
+            var that=$(this);
+                arr.push(that.find('.agency-choose-inp').val());
+        });
+        $.each(dataArr.distributors,function(index,item){
+            if(arr.indexOf(item.distributor_name) == -1) {
+                agentli += '<li class="list-item" data-id="' + item.id + '">' + item.distributor_name + '</li>';
+            }else{
+                agentli += '<li class="list-item" data-id="' + item.id + '" style="cursor: not-allowed;background:#ccc;color:#fff" disabled>' + item.distributor_name + '</li>'
+            }
+        });
+
+        $(this).next('.goods-spec-list-box').html(agentli);
+        arr=[];
+    });
+      //商品规格获取焦点展开列表
+    $('#agent-box').on('focus','.proct-inp',function(){
+        var _this = $(this);
+        if(_this.val()){
+            _this.attr('placeholder',$(this).val());
+        }
+        _this.val('');
+        _this.next('.proct-box').removeClass('none');
+        var agentli = '';
+        var arr=[];
+        _this.parents('.allot-item').siblings().each(function () {
+            var that=$(this);
+                arr.push(that.find('.proct-inp').attr("data-id")*1);
+
+        });
+        $.each(dataArr.productData.product_property_details,function(index,item){
+            if(arr.indexOf(item.id) == -1) {
+                agentli += '<li class="proct-item" data-id="' + item.id + '" data-num="'+item.production_count+'" data-name="'+item.property_name+'" data-code="'+item.qrcode_number+'">' + item.property_name +'</li>';
+            }else{
+                agentli += '<li class="proct-item disabled" data-id="' + item.id + '" data-num="'+item.production_count+'" data-name="'+item.property_name+'" data-code="'+item.qrcode_number+' style="color:#fff;background:#ccc;" disabled>' + item.property_name  + '</li>'
+            }
+        });
+
+        $(this).next('.proct-box').html(agentli);
+        arr=[];
+    });
+       //点击列表显示添加栏（经销商）
+    $('#agent-box').on('click','.list-item',function(){
+        addTobox($(this),'.goods-spec-list-box','.agency-choose-inp');
+    });
+        //点击列表显示添加栏（规格）
+    $('#agent-box').on('click','.proct-item',function(){
+        addTobox($(this),'.proct-box','.proct-inp');
+    });
+
+    //失去焦点关闭列表(经销商)
+    $('#agent-box').on('blur','.agency-choose-inp',function(){
+        closeList($(this),'.goods-spec-list-box');
+    });
+    // //失去焦点关闭列表(商品条码)
+    $('#agent-box').on('blur','.proct-inp',function(){
+        closeList($(this),'.proct-box');
+    });
+    // 关闭下拉框列表
+    function closeList(obj,next){
+        var sss = obj;
+        setTimeout(function(){
+            sss.next(next).addClass('none').empty();
+        },200);
+        obj.val(obj.attr('placeholder'));
+    }
+    // 列表内容点击添加入input；
+    function addTobox(o,pro,prev){
+        if(o.attr("disabled")){
+               return false;
+           }
+        var val_text = o.text().trim();
+        var id=o.attr("data-id");
+        // o.parents('.goods-spec-list-box').prev('.agency-choose-inp').val(val_text);
+        o.parents(pro).prev(prev).val(val_text);
+        if(prev==".agency-choose-inp"){
+            o.parents(pro).prev(prev).attr({'data-val':val_text,'data-id':id});
+        }else{
+            o.parents(pro).prev(prev).attr({'data-val':val_text,'data-id':id,'data-name':o.attr("data-name"),'data-code':o.attr("data-code")});
+        }
+        o.parents(pro).addClass('none').empty();
+        var index = o.parents('.agentCon').index();
+    }
+    // 鼠标滑过显示删除节点按钮
+    $("#agent-box").on("mouseover",".agentCon",function(){
+        $(this).css({
+            "cursor":"pointer"
+        });
+        $(this).find(".del-box").show();
+    });
+    $('#agent-box').on('mouseout','.agentCon',function () {
+        $(this).find('.del-box').hide();
+    });
+    // 删除经销商
+    $('#agent-box').on('click','.del-box',function(){
+        var len=$('.agentCon').length;
+        var $this=$(this);
+        if(len==1){
+            layer.msg("至少要保留一个经销商配置",function(){
+                return false;
+            })
+        }else{
+            layer.confirm("确定要删除吗？",
+                {icon:3,btn:["确定","取消"],yes:function(index){
+                    $this.parents('.agentCon').remove();
+                    layer.msg("删除成功",{icon:1})
+                    layer.close(index);
+                }
+            });
+        }
+    });
+    // 删除sku
+    $('#agent-box').on('click','.del-btn',function(){
+        var $this=$(this);
+            layer.confirm("确定要删除吗？",
+                {icon:3,btn:["确定","取消"],yes:function(index){
+                    $this.parents('.allot-item').remove();
+                    layer.msg("删除成功",{icon:1})
+                    layer.close(index);
+                }
+            });
+    });
+
+    // 获取第三步 渠道防窜货配置信息
+    function getAgentInfo(){
+
+             var distributor= [];
+             $("#agent-box").find(".agentCon").each(function(index){
+                 var items={};
+                 var distributor_id=$(this).find('.agency-choose-inp').attr("data-id");
+                 var _name=$('.distributors-type-title').eq(index).val();
+                 items.distributor_id=distributor_id*1;
+                 items.distributor_name=_name;
+
+                 if ($("#agent-box").find(".agentCon").length == data.distributors.length) {
+                     if (!data.distributors[index].works_id) {
+                         items.works_id='';
+                         items.works_img_url='{:qiniu_domains()}/upload/09/771632e9b6f1bcccea299fa1cdbf68d3fc48002b00eff00ccb30e575772f39.png?origin=选择获客图.png';
+                         items.works_name='';
+                         items.artist_real_name='';
+                     } else {
+                         items.works_id=data.distributors[index].works_id;
+                         items.works_img_url=data.distributors[index].works_img_url;
+                         items.works_name=data.distributors[index].works_name;
+                         items.artist_real_name=data.distributors[index].artist_real_name;
+                     }
+                 } else {
+                     items.works_id=data.distributors[0].works_id;
+                     items.works_img_url=data.distributors[0].works_img_url;
+                     items.works_name=data.distributors[0].works_name;
+                     items.artist_real_name=data.distributors[0].artist_real_name;
+                 }
+                 var details=[];
+                 $(this).find(".allot-item").each(function(index){
+                     var _this=$(this).find(".proct-inp");
+                     var item={};
+                     item.sku_id=_this.attr("data-id")*1;
+                     item.sku_property_name=_this.attr("data-name");
+                     item.sku_number=_this.attr("data-code");
+                     item.num=_this.parents('.proct-inp-box').siblings('.sku-num').val()*1;
+                     details.push(item);
+                 });
+                 items.property_details=details;
+                 distributor.push(items);
+             });
+             data.distributors=distributor;
+    }
+</script>
+<script>
+    var worksID = {
+        type: "",
+    };
+    var worksThat;
+    $('.step4-box').on('click', '.choose-works', function () {
+        // 清空选择的
+        worksID.works_id = '';
+        worksID.id = '';
+        worksID.type = $(this).attr("data-type");
+        if (worksID.type == "all") {
+            worksThat = $(".choose-works");
+        } else {
+            worksThat = $(this);
+        }
+
+        getWorksList();
+    });
+    $('.mask-works-box').on('click', function (e) {
+        e.stopPropagation();
+    });
+    $('.mask-works-wrap').on('click', function (e) {
+        $(this).addClass('mask-works-wrap-none');
+    });
+
+    //点击选择版权内容
+    $('.mask-works-box-t').on('click', '.mask-works-box-list', function (e) {
+        e.stopPropagation();
+        $(this).find('.mask-works-box-list-r').addClass('mask-works-box-list-r-true').parents(
+            '.mask-works-box-list').siblings().find('.mask-works-box-list-r').removeClass(
+            'mask-works-box-list-r-true');
+        $(this).find('.mask-works-box-list-radio').show().parents('.mask-works-box-list').siblings().find(
+            '.mask-works-box-list-radio').hide();
+        if ($(this).attr('works-id') && $(this).attr('data-id')) {
+            worksID.works_id = $(this).attr('works-id');
+            worksID.id = $(this).attr('data-id');
+            worksID.name = $(this).find('.mask-works-box-list-tit').children('h2').eq(0).text();
+            worksID.artistname = $(this).find('.mask-works-box-list-tit').children('h2').eq(1).text();
+            worksID.img = $(this).find('.mask-works-box-list-img').children('img').attr('src');
+            worksID.stock_num = $(this).attr('stock-num');
+        }
+    });
+
+    //点击取消选择版权
+    $('.mask-works-box-b-back').on('click', function () {
+        $('.mask-works-wrap').addClass('mask-works-wrap-none');
+    });
+
+    //点击提交版权
+    $('.mask-works-box-b-next').on('click', function () {
+        if (worksID.works_id && worksID.id) {
+            stockNum = worksID.stock_num;
+            $('.mask-works-wrap').addClass('mask-works-wrap-none');
+            worksThat.find('img').attr({'src':worksID.img});
+            worksThat.attr({'data-works_id':worksID.works_id,'data-name':worksID.name,'data-artistname':worksID.artistname});
+            if (worksID.type == 'item') {
+                worksThat.find('p').eq(0).html(worksID.name);
+                worksThat.find('p').eq(1).html(worksID.artistname);
+            }
+            if (worksID.type == 'all') {
+                worksThat.find('.p-one').html(worksID.name);
+                worksThat.find('.p-two').html(worksID.artistname);
+            }
+            worksID.works_id = '';
+            worksID.id = '';
+        } else {
+            layer.msg('您还没有选择版谷', {
+                icon: 2
+            });
+            return false;
+        }
+    });
+
+</script>
+<script>
+    // 溯源上传图片
+    $(".long-file-img").click(function () {
+        $(this).parents('.addimg-list').find('input').trigger('click');
+    });
+    //上传图片功能
+    $('.addimg-list').on('change', '.file', function () {
+        var file_len = $('.file')[0].files.length;
+        if (file_len == 0) {
+            return false;
+        }
+        if (file_len > 10) {
+            layer.msg('一次最多上传10张图片！', {
+                icon: 2,
+                time: 1000
+            }, function () {
+                layer.closeAll();
+            });
+            return false;
+        }
+        var formData = new FormData();
+        var count = 0;
+        for (var i = 0; i < $(".file")[0].files.length; i++) {
+            count++;
+            formData.append('file' + i, $('.file')[0].files[i]);
+        }
+        layer.load(3, {
+            shade: [0.1, '#393D49']
+        });
+        $.ajax({
+            url: '/api/trace-multi-image',
+            type: 'POST',
+            cache: false,
+            data: formData,
+            dataType: 'json',
+            processData: false,
+            contentType: false,
+            // async: false,
+            success: function (data) {
+                layer.closeAll();
+                var failMsg = '';
+                if (count > data.data.succNum) {
+                    errNum = count - data.data.succNum;
+                    failMsg = " 失败 " + errNum + " 张,失败原因如下：<br>" + data.data.errmsg;
+                }
+                layer.confirm('图片上传成功 ' + data.data.succNum + ' 张 ' + failMsg, {
+                    btn: ['取消', '确定'] //可以无限个按钮
+                }, function (index, layero) {
+                    //按钮【按钮一】的回调
+                    layer.closeAll();
+                    $(".file").val('');
+                }, function (index) {
+                    //按钮【按钮二】的回调
+                    // 修改当前分类的数量
+                    $(".file").val('');
+                    layer.closeAll();
+                    var img_html = '';
+                    for (var i = 0; i < data.data.urlArr.length; i++) {
+                        img_html += '<li class="trace-imgs">' +
+                            '<img style="width:120px;" src="' + data.data.urlArr[i] + '">' +
+                            '<span class="img-del" style="cursor: pointer;color:red;"><img src="{:qiniu_domains()}/upload/00/42dd6b62a6b259c35308168e041c371a364cf408bdcb69105ddbc0ca0d3c74.png?origin=删除.png"></span>' +
+                            '</li>';
+
+                    }
+                    $(".ul1").append(img_html);
+                });
+            }
+        });
+    });
+    // 删除图片
+    $(".ul1").on('click', '.img-del', function () {
+        $(this).parent('li').remove();
+    });
+</script>
+<script>
+    // 添加溯源自定义信息
+    $(".custom-con").click(function () {
+        if ($(this).attr('data-type') == 1) {
+            $(this).next().show();
+            $(this).attr('data-type', 2);
+        } else {
+            $(this).next().hide();
+            $(this).attr('data-type', 1);
+        }
+    });
+
+    // 添加自定义溯源信息
+    $(".addtrace").click(function () {
+        var add_trace = '';
+        add_trace += '<div class="addbox-list" style="margin-top:20px;">' +
+            '<div class="addbox-item">名称：' +
+            '<input type="text" class="input-s" maxlength="8" placeholder="如：产地">' +
+            '<input type="text" class="input-sm" maxlength="25" placeholder="如：鄂尔多斯">' +
+            '</div>'+
+            '<input type="button" class="del-trace" value="-">'+
+            '</div>';
+        $("#add-trace").append(add_trace);
+    });
+
+    // 删除自定义节点
+    $("#add-trace").on('click', '.del-trace', function () {
+        $(this).parent('.addbox-list').remove();
+    });
+
+
+    // 给已有的溯源信息赋值
+    $("#product-name").html(dataArr.productData.product_name);
+    var productDate = dataArr.productData.product_property_details[0].production_date;
+    if (productDate) {
+        $("#production-date").html(productDate);
+    } else {
+        $("#production-date").parent('div').hide();
+    }
+    var productCount = dataArr.productData.product_property_details[0].production_count;
+    if (productCount) {
+        $("#production-count").html();
+    } else {
+        $("#production-count").parent('div').hide();
+    }
+    var qrcodeNumber = dataArr.productData.product_property_details[0].qrcode_number;
+    if (qrcodeNumber) {
+        $("#qrcode-number").html(qrcodeNumber);
+    } else {
+        $("#qrcode-number").parent('div').hide();
+    }
+
+    // 版谷 渲染方式待定
+    var works_id = dataArr.productData.product_property_details[0].work.works_id;
+    var works_name = dataArr.productData.product_property_details[0].work.works_name;
+    var works_img =  dataArr.productData.product_property_details[0].work.works_cover;
+    var works_artist_name = dataArr.productData.product_property_details[0].work.artister.real_name;
+    var works_html = '';
+    works_html += '<img src="{:qiniu_domains()}' + works_img + '" alt="" width="100px" height="100px"' +
+        'style="background: #ccc"><span>' + works_artist_name + '</span><span' +
+        'style="font-size:16px">《' + works_name + '》</span>';
+     $("#works-info").html(works_html);
+     $("#works-info").attr('data-works-id', works_id);
+
+</script>
+<script>
+
+
+
+
+    // 验证规则
+    function clearNoNum(obj) {
+        obj.value = obj.value.replace(/[^\d]/g, ""); //清除“数字”和“.”以外的字符
+    }
+
+    // 显示隐藏 防伪标样式
+    var tagType = {$tagType|raw};
+
+    if (tagType && tagType != 3) {
+        $("#tagType-one").show();
+        $("#tagType-two").hide();
+    }else if (tagType == 3){
+        $("#tagType-one").hide();
+        $("#tagType-two").show();
+    }
+
+    getTraceDetail();
+    // 溯源信息渲染
+    function getTraceDetail(){
+        var sku_id = dataArr.productData.product_property_details[0].id;
+        var works_id = dataArr.productData.product_property_details[0].work.works_id;
+        var works_name = dataArr.productData.product_property_details[0].work.works_name;
+        var works_img =  dataArr.productData.product_property_details[0].work.works_cover;
+        var works_artist_name = dataArr.productData.product_property_details[0].work.artister.real_name;
+
+        var product_name =  dataArr.productData.product_name;
+        var production_date =  dataArr.productData.product_property_details[0].production_date;
+        var production_count =  dataArr.productData.product_property_details[0].production_count;
+        var qrcode_number =  dataArr.productData.product_property_details[0].qrcode_number;
+
+        var data_items = [];
+        data_items.push({
+            "key": "商品名称",
+            "val": product_name
+        });
+        if (qrcode_number) {
+            data_items.push({
+                "key": "商品条码",
+                "val": qrcode_number
+            });
+        }
+        if (production_date) {
+            data_items.push({
+                "key": "生产日期",
+                "val": production_date
+            });
+        }
+        if (production_count) {
+            data_items.push({
+                "key": "生产量",
+                "val": production_count
+            });
+        }
+
+
+        var trace_content = [];
+        trace_content.push({
+            "sku_id": sku_id,
+            "works_id": works_id,
+            "works_name": works_name,
+            "works_img": works_img,
+            "works_artist_name": works_artist_name,
+            "source_data": {
+                "items": data_items,
+                "imgs": [],
+                "custom_items":[],
+            }
+        });
+
+        data.trace_content = trace_content;
+
+        var custom_items = [];
+        if ($(".addbox-item").length > 0) {
+            $(".addbox-item").each(function (index, item) {
+                var name = $(item).find('.input-s').val();
+                var value = $(item).find('.input-sm').val();
+                // if (name == "") {
+                //     layer.msg("自定义第"+(index+1)+"行的名称不能为空", {icon: 2});
+                //     code = 0;
+                //     return false;
+                // }
+                //
+                // if (value == "") {
+                //     layer.msg("自定义第"+(index+1)+"行的值不能为空", {icon: 2});
+                //     code = 0;
+                //     return false;
+                // }
+                custom_items.push({'key':name,'val':value});
+            });
+        }
+        // 获取溯源图片信息
+        var images = [];
+        if ($(".trace-imgs").length > 0) {
+            $(".trace-imgs").each(function (index, item) {
+                var value = $(item).find('img').attr('src');
+                images.push({'img_url':value});
+            });
+        }
+        // 给数据结构赋值
+        for (var i=0; i < data.trace_content.length; i++) {
+            data.trace_content[i].source_data.imgs = images;
+            data.trace_content[i].source_data.custom_items = custom_items;
+        }
+
+
+
+        let trace_detail_html = template(document.getElementById('trace_detail_html').innerHTML, {
+            traceDetail: data.trace_content[0]
+        });
+        let demo_html = template(document.getElementById('demo_html').innerHTML, {
+            traceDetail: data.trace_content[0]
+        });
+        $("#layer-trace-detail").html(trace_detail_html);
+        $("#Demo").html(demo_html);
+    }
+    function productDetail(){
+        let product_detail_html = template(document.getElementById('product_detail_html').innerHTML, {
+            productDetail: dataArr.productData
+        });
+        $("#goods-detail").html(product_detail_html);
+    }
+    productDetail();
+
+</script>
+
+<script>
+    // 查看版谷使用详情
+    function moreCodeUse(id){
+        var load=layer.load();
+        $.ajax({
+            url: "/copyright/get-more-use-two",
+            type: 'GET',
+            dataType: 'json',
+            data: {
+                'works_id': id
+            },
+            success: function(data) {
+
+                let html = template(document.getElementById('layer-more-html').innerHTML, {list:data.data});
+                $('#layer-more').html(html);
+                layer.close(load);
+
+                layer.open({
+                    type: 1,
+                    content: $('#layer-more'),
+                    title: "《"+data.data.workData.works_name+"》用途",
+                    btn: ['知道了'],
+                    btnAlign: 'cc',
+                    shadeClose: true, //开启遮罩关闭
+                    area: ['auto','400px'],
+                });
+            },
+        });
+    }
+
+    // 获取版谷列表信息
+    function getWorksList()
+    {
+        var load = layer.load(3, {shade: [0.1, '#393D49']});
+        $.ajax({
+            url: '/api/business-inventory', //请求地址
+            type: "get", //请求方式
+            dataType: "json", //返回数据格式为json
+            header: "Access-Control-Allow-Origin:*", //设置请求头
+            success: function(data) { //请求成功完成后要执行的方法
+                layer.close(load);
+                if (data.data.list.length) {
+                    $('.mask-works-wrap').removeClass('mask-works-wrap-none');
+                    var list = '';
+                    $.each(data.data.list, function(index, item) {
+                        var used='';
+                        switch (item.new_type) {
+                            case 0:used="";break;
+                            case 1:used="<p><i class='text-o'>已被使用，为“认证版谷”</i><a href='javascript:;'  class='text-blue type_detail' onclick='moreCodeUse("+item.works_id+")'>查看使用详情 >></a></p>";break;
+                            case 2:used="<p><i class='text-o'>已被使用，为“营销版谷”</i><a href='javascript:;'  class='text-blue type_detail' onclick='moreCodeUse("+item.works_id+")'>查看使用详情 >></a></p>";break;
+                            case 3:used="<p><i class='text-o'> 已被使用，为“营销版谷”</i><a href='javascript:;'  class='text-blue type_detail' onclick='moreCodeUse("+item.works_id+")'>查看使用详情 >></a></p>";break;
+                        }
+                        if (item.stock_num != 0) {
+                            list += '<li class="mask-works-box-list" stock-num="'+item.stock_num+'" data-id="' + item.id + '" works-id="' + item.works_id + '" data-artist="' + item.artist_name + '">' +
+                                '<div class="mask-works-box-list-l">' +
+                                '<div class="mask-works-box-list-img">' +
+                                '<img src="{:qiniu_domains()}' + item.works_cover + '" alt="">' +
+                                '</div>' +
+                                '<div class="mask-works-box-list-tit">' +
+                                '<h2>《' + item.works_name + '》</h2>' +
+                                '<span>剩余' + item.stock_num + '份</span>' +
+                                used+'</div>' +
+                                '</div>' +
+                                '<div class="mask-works-box-list-r">' +
+                                '<div class="mask-works-box-list-radio"> </div>' +
+                                '</div>' +
+                                '</li>';
+                        } else {
+                            list += '<li class="mask-works-box-list">' +
+                                '<div class="mask-works-box-list-l">' +
+                                '<div class="mask-works-box-list-img">' +
+                                '<img src="{:qiniu_domains()}' + item.works_cover + '" alt="">' +
+                                '</div>' +
+                                '<div class="mask-works-box-list-tit">' +
+                                '<h2>《' + item.works_name + '》</h2>' +
+                                '<span>剩余' + item.stock_num + '份</span>' +used+
+                                '</div>' +
+                                '</div>' +
+                                '<div class="mask-works-box-list-title">' +
+                                '数量不可用' +
+                                '</div>' +
+                                '</li>';
+                        }
+                    });
+                    $('.mask-works-box-t').html(list);
+                } else {
+                    layer.msg('您没有可用的版权', {icon: 2});
+                }
+            }
+        });
+    }
+</script>
+{/block}

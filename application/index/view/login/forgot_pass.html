@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <link rel="stylesheet" href="__STATIC__/style/login-pass.css?{:config('huaban.css_version.version')}">
+        <title>品牌厂家直供平台</title>
+    </head>
+    <body>
+        <div class="login-pass-wrap">
+            <!-- 头部 -->
+            <div class="login-pass-top">
+                <div class="login-pass-top-l">
+                    <div class="login-pass-top-logo">
+                        <img src="{:qiniu_domains()}/upload/aa/f8b72d529506ff5ad4bbc900de978303590afe2e8592306bac42cd8e4f2edb.png?origin=logos.png" alt="">
+                    </div>
+                    <em>|</em>
+                    <h2>品牌厂家直供平台</h2>
+                    <h1>找回密码</h1>
+                </div>
+                <div class="login-pass-top-r">
+                    <a href="/login">
+                        返回登录
+                    </a>
+                </div>
+            </div>
+
+            <!-- 修改内容 验证手机号 -->
+            <div class="login-pass-cont" id="pass-cont_one">
+                <div class="login-pass-cont-box">
+                    <div class="login-pass-cont-num">
+                        <span>登录手机号&nbsp;&nbsp;:</span>
+                        <input type="text" id="phone" name="phone" onkeyup="value=value.replace(/[^\d]/g,'')" maxlength=11 placeholder="请输入登录手机号">
+                    </div>
+                    <div class="login-pass-cont-yzm">
+                        <span>手机验证码&nbsp;&nbsp;:</span>
+                        <input type="text" id="code" readonly onfocus="this.removeAttribute('readonly');" autocomplete="off" name="code" onkeyup="value=value.replace(/[^\d]/g,'')" placeholder="请输入验证码">
+                        <div class="login-pass-change-yzm">获取验证码</div>
+                    </div>
+                </div>
+                <div class="login-pass-btn-box">
+                    <button class="ogin-pass-btn-back">取消</button>
+                    <button class="ogin-pass-btn-next" id="btn-next">下一步</button>
+                </div>
+            </div>
+
+            <!-- 修改内容 -->
+            <div class="login-pass-cont"  id="pass-cont_two" style="display:none;">
+                <div class="login-pass-cont-box">
+                    <div class="login-pass-cont-num" style="padding-left: 14px;">
+                        <span>新密码&nbsp;&nbsp;:</span>
+                        <input type="password" id="newpass" placeholder="请设置新密码">
+                    </div>
+                    <div class="login-pass-cont-num">
+                        <span>确认密码&nbsp;&nbsp;:</span>
+                        <input type="password" id="repass" placeholder="请再次输入密码">
+                    </div>
+                </div>
+                <div class="login-pass-btn-box">
+                    <button class="ogin-pass-btn-next" id="pass-update">提交</button>
+                </div>
+            </div>
+
+        </div>
+
+        <script src="{:qiniu_domains()}/upload/4f/e68fa216176e6d1f4580e924bafecc9f519984ecc06b1a840a08b0d88c95de.js?origin=jquery-3.3.1.min.js"></script>
+        <script src="__STATIC__/lib/layer/layer.js?{:config('huaban.css_version.version')}"></script>
+        <script>
+            // 验证手机号是否存在
+            function check_phone(phone){
+                if (phone == '') {
+                    layer.msg("请填写手机号码！", {
+                        icon: 2,
+                        time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                    });
+                    return false;
+                }
+                if (!(/^1[2-9]\d{9}$/.test(phone))) {
+                    layer.msg("手机号码格式有误，请重填", {
+                        icon: 2,
+                        time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                    });
+                    return false;
+                }
+                return true;
+            }
+
+            //防止多次点击获取验证码
+            var click = true;
+            var timer;
+
+            //点击倒计时
+            $('.login-pass-change-yzm').on('click', function() {
+                var time = {:config('huaban.login.sms_seconds')};
+                var that = $(this);
+
+                if (click) {
+                    var phone = $("#phone").val();
+                    if (true == check_phone(phone)) {
+                        // 发送手机短信验证
+                        $.ajax({
+                            url: "/phone-code",
+                            type: 'post',
+                            dataType: 'json',
+                            data: {'phone':phone, 'type': 1},
+                            success: function (result) {
+                                that.attr('disabled', 'disabled');
+                                that.text(time + 's');
+                                that.css('background-color', '#DFDFDF');
+                                timer = setInterval(function() {
+                                    if (time <= 0) {
+                                        click = true;
+                                        clearInterval(timer);
+                                        that.text('获取验证码');
+                                        that.css('background-color', '#FF8544');
+                                        that.removeAttr("disabled");
+                                    } else {
+                                        click = false;
+                                        that.text(time + 's');
+                                        that.css('background-color', '#DFDFDF');
+                                    }
+                                    time--;
+                                }, 1000);
+                                layer.msg(result.msg, {
+                                    icon: 6,
+                                    time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                                }, function(){
+
+                                });
+                            },error: function (data) {
+                                layer.msg(data.responseJSON.msg,{icon: 2});
+                            }
+                        });
+                    }
+                }
+            });
+        </script>
+        <script>
+            // 取消操作
+            $(".ogin-pass-btn-back").click(function () {
+                window.history.back(-1);
+            });
+
+            // 点击下一步
+            $("#btn-next").click(function () {
+                var phone = $("#phone").val();
+                var code = $("#code").val();
+                if (code == '') {
+                    layer.msg('请填写手机验证码！',{icon: 2});
+                    return false;
+                }
+                if (true == check_phone(phone)) {
+                    $.ajax({
+                        url: "/check-phone-code",
+                        type: 'post',
+                        dataType: 'json',
+                        data: {'phone':phone, 'code':code},
+                        success: function (result) {
+                            $("#pass-cont_one").hide();
+                            $("#pass-cont_two").show();
+                        },error: function (data) {
+                            layer.msg(data.responseJSON.msg,{icon: 2});
+                        }
+                    });
+                }
+            });
+
+            // 点击提交按钮
+            $("#pass-update").click(function () {
+                var phone = $("#phone").val();
+                var newpass = $("#newpass").val();
+                var repass = $("#repass").val();
+
+                if (newpass == '') {
+                    layer.msg('请填写新密码！',{icon: 2});
+                    return false;
+                }
+                if (repass == '') {
+                    layer.msg('请填写确认密码！',{icon: 2});
+                    return false;
+                }
+                if (newpass !== repass) {
+                    layer.msg('两次密码不一致！',{icon: 2});
+                    return false;
+                }
+                
+                $.ajax({
+                    url: "/new-pass",
+                    type: 'post',
+                    dataType: 'json',
+                    data: {'phone':phone, 'new_password':newpass, 'confirm_password':repass, 'type':1},
+                    success: function (result) {
+                        layer.msg(result.msg, {
+                            icon: 6,
+                            time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                        }, function(){
+                            window.location.href='/login';
+                        });
+                    },error: function (data) {
+                        layer.msg(data.responseJSON.msg,{icon: 2});
+                    }
+                });
+            });
+        </script>
+    </body>
+</html>

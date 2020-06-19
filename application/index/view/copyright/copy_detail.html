@@ -1,0 +1,53 @@
+{extend name="layout/base" /}
+
+{block name="seo"}
+<title>{$title|default="画版商户后台管理系统"}</title>
+{/block}
+
+{block name="style"}
+<style></style>
+{/block}
+
+{block name="title"}
+<span>版谷管理</span> /
+<span class="colorTit">版谷中心</span>
+{/block}
+
+<!-- 平台功能区 -->
+{block name="content"}
+
+<div class="ShopFrontPage-r-bot">
+    <div class="order-box cards">
+        <div class="cr-info">
+            <div class="info-img"><img src="{:qiniu_domains().$works->works_cover}" width="90px" height="90px"></div>
+            <div class="info-text">
+                <h5>《{$works->works_name}》</h5>
+                <p>{$works->artister->real_name}</p>
+            </div>
+            <div class="info-text">
+                <h5>{:number_format($works->goods_nums)}个</h5>
+                <p class="text-gray">数量</p>
+            </div>
+            <div class="info-text">
+                <h5>{:number_format($works->stock_nums)}个</h5>
+                <p class="text-gray">剩余可用</p>
+            </div>
+            <div class="info-text">
+                <h5>{:number_format($works->goods_nums-$works->stock_nums)}个</h5>
+                <p class="text-gray">已使用</p>
+            </div>
+        </div>
+
+        <h2>版谷详情</h2>
+        <div class="text-link w-100">
+            <?php echo html_entity_decode($works->info); ?>
+        </div>
+    </div>
+</div>
+{/block}
+
+{block name='js'}
+<script>
+$(".text-link").find("img").eq(0).css("width","200px").parents("p").css("text-align","center")
+</script>
+{/block}

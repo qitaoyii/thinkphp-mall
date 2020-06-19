@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>403</title>
+</head>
+<body>
+<div style="width: 100vw;margin-top:30px;">
+    <img src="https://qiniu1.ac.vip/upload/0a/664c6b9c5a86f09090f659a4dd65e35d621d1666fafc96f7495d61e80c12a7.png?origin=403.png" width="50%" height="auto" style="display: block;margin: 0 auto;">
+</div>
+<div class="" style="font-size: 36px;margin: 0 auto;text-align: center;color: #323232;">
+    呜呜呜，没有权限，访问被拒了！还有
+    <span id="dd" style="color:darkorange;font-weight: bold;">3</span>
+    秒，页面将自动跳转上一页...
+</div>
+<!--倒计时-->
+<script type="text/javascript">
+    function run(){
+        var s = document.getElementById("dd");
+        if(s.innerHTML == 0){
+            // window.location.href='/';
+            window.history.go(-1);
+            return false;
+        }
+        s.innerHTML = s.innerHTML * 1 - 1;
+    }
+    window.setInterval("run();", 1000);
+</script>
+</body>
+</html>

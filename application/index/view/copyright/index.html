@@ -1,0 +1,440 @@
+{extend name="layout/base" /}
+
+{block name="seo"}
+<title>{$title|default="品牌厂家直供平台"}</title>
+{/block}
+
+{block name="style"}
+<style>
+    .copyright-top {
+        width:25px;
+        height:20px;
+        cursor: pointer;
+    }
+    .cr-item{position:relative}
+    .cr-item .set-top{position:absolute;top:10px;right:10px;}
+    .use_info{
+        background: #FAFAFB;
+        color:#999;
+        margin:-15px;
+        margin-top: 0;
+        padding: 15px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    .use_info .text-blue{
+        float:right;
+    }
+    .cr-item-info{
+        padding: 12px;
+        padding-right:0;
+    }
+    .cr-item-info *{
+        font-size: 12px;
+        text-align: justify;
+    }
+    .cr-use{
+        font-size: 12px;
+        color: #666;line-height: 1.5;
+    }
+    .cr-use .text-o{
+        float: right;
+        cursor: pointer;
+    }
+    .cr-world{
+        clear: both;
+        height:40px;
+        display:flex;align-items: center;
+        justify-content: space-between;
+        color:#666
+    }
+    .cr-world .text-o{
+        cursor: pointer;
+    }
+    #layer-set{
+        width:570px;
+        height:300px;
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+    }
+    #layer-more{
+        width: 577px;
+        height:421px;
+        overflow: auto;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding-top: 30px;
+    }
+    #layer-more p:last-child{
+        margin-top:3px;
+        text-indent: -6px;
+    }
+    .layer-link{
+        width:158px;
+        height:110px;border:1px solid #e8e8e8;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        font-size: 16px;
+        color:#222;
+    }
+    .layer-link:nth-child(1){
+        background: url('../static/imgs/copyRight/renzhengyongtu.png') no-repeat right bottom;
+        background-size:50px ;
+    }
+    .layer-link:nth-child(2){
+        background: url('../static/imgs/copyRight/hongbao.png') no-repeat right bottom;
+        background-size:50px ;
+    }
+    .layer-link:nth-child(3){
+        background: url('../static/imgs/copyRight/yingxiaoyongtu.png') no-repeat right bottom;
+        background-size:50px ;
+    }
+    .layer-link:hover{
+        border-color:#0091FF;
+        cursor: pointer;
+    }
+    .layer-link h2{font-size: 16px;}
+    .layer-link p{
+        color:#666;font-size: 12px;
+
+    }
+    #layer-more ol li{list-style-type: decimal;margin: 10px 0;max-width: 460px}
+    .more-code-info{margin-bottom: 20px}
+</style>
+{/block}
+
+{block name="title"}
+<span>版谷资产</span> /
+<span class="colorTit">版谷中心</span>
+{/block}
+
+<!-- 平台功能区 -->
+{block name="content"}
+<div class="ShopFrontPage-r-bot">
+    <div class="order-box cards" data-show="{$show}">
+        <!-- 顶部弹框提示 -->
+        {if $show > 0}
+        <div class="information warn" style="overflow: hidden;height:30px;">
+                <i class="icon">温馨提示：</i>
+                <div class="information-con">
+                {foreach name='list' item='value'}
+                    {if condition="$value.stockNum elt 500"}
+                        <p> 您好，您账户中的“《{$value.works_name}》| {$value.artist_name}
+                            ”版权作品的版谷数量已不足500个，将影响关联业务进行，请联系客户经理及时补充！</p>
+                    {/if}
+                {/foreach}
+            </div>
+            <i class="lookmore">查看更多</i>
+            <i class="hidden">隐藏</i>
+            </div>
+        {else /}
+        <div class="information warn" >
+            <i class="icon">温馨提示：</i>
+            <div class="information-con">
+                <p> 一图一世界，版谷图的核心用途是用来区分管理用户画像.</p>
+                    <p>（如:配置不同的版谷图区分“准粉丝、粉丝、铁粉”；配置不同的版谷图区分粉丝的不同爱好）</p>
+            </div>
+        </div>
+        {/if}
+
+        <!-- 顶部弹框提示 -->
+
+        <form action="/copyright/index" method="get">
+            <div class="order-search">
+                <div class="form-group justify-l">
+                    <div class="form-item">
+                        <label>作品名称</label>
+                        <input type="text" placeholder="请输入版谷作品名称" name="works_name" value="{$works_name}"
+                               id="works_name">
+                        <i></i>
+                    </div>
+                    <div class="form-item-btn" style="text-align: left;margin-left:20px;">
+                        <input type="submit" value="查询" class="btn btn-fill">
+                        <i></i>
+                    </div>
+                    <div class="form-item" style="visibility: hidden"> </div>
+                    <div class="form-item" style="visibility: hidden"></div>
+                    <div class="form-item" style="visibility: hidden"></div>
+                </div>
+            </div>
+        </form>
+
+        <div class="cr-list">
+            {foreach $list as $key=>$value}
+                <div class="critem">
+                    <div class="cr-item">
+                            <div class="cr-item-img">
+                                <img src="{:qiniu_domains().$value.works_cover}" alt="" width="100%">
+                            </div>
+                            <div class="cr-item-info">
+                                <div style="width: 220px;"><b>《{$value.works_name}》  <i>{$value.artist_name}</i></b></div>
+                                <div class="info-count">
+                                    <p><i>{:number_format($value.goodsNum)}个</i><span>版谷总量</span></p>
+                                    <p><i>{:number_format($value.stockNum)}个</i><span>剩余可用</span></p>
+                                    <p><i>{:number_format($value.surplus)}个</i><span>已使用</span></p>
+                                </div>
+
+                                <div class="cr-use">
+                                    版谷用途：
+                                    {if $value.new_type > 0}
+                                        {if $value.new_type == 1}
+                                            <a href="/copyright/statistics?works_id={$value.works_id}&type=1" class="text-blue">认证用途</a>
+                                            <br>
+                                        （{:cut_str("认证连接了".$value.new_use.product_name." | ".$value.new_use.property_name,17)}）
+                                        {/if}
+                                        {if $value.new_type == 2}
+                                            <a href="javascript:;" class="text-blue">营销用途</a>
+                                            <br>（连接了版主红包）
+                                        {/if}
+                                        {if $value.new_type == 3}
+                                            <a href="javascript:;" class="text-blue">营销用途</a>
+                                            <br>（连接防伪标万能二维码）
+                                        {/if}
+                                        <span class="text-o" onclick="moreCodeUse('{$value.works_id}')">更多用途</span>
+                                    {else /}
+                                        <a href="javascript:;" class="text-blue" onclick="setCodeUse()">配置</a>
+                                    {/if}
+                                </div>
+
+                                <!--<div class="cr-world">-->
+                                    <!--版主世界名称：<span class="text-link">{$value.world_name}的世界</span>-->
+                                    <!--<span class="text-o" onclick="editWorld('{$value.world_name}','{$value.copyright_world_id}','{$value.works_id}')">编辑</span>-->
+                                <!--</div>-->
+                            </div>
+                        {if $value.show}
+                        <div class="set-top"  data-works-id="{$value.works_id}">
+                            <img class="copyright-top" src="{:qiniu_domains()}/upload/9a/17ccc62f58365cae4d8a747f567f7bbcf0c1be47fa22b9974abed554280129.png?origin=top.png" title="置顶">
+                        </div>
+                        {/if}
+                    </div>
+                    <div class="info-count operate">
+                        {haspermission:close key="view-copyright-detail"}
+                        <div class="operate-item">
+                            <a href="/copyright/copy-detail?works_id={$value.works_id}&type=1">
+                                <i class="icon icon-yulan"></i>
+                                版谷详情
+                            </a>
+                        </div>
+                        {/haspermission:close}
+                        {haspermission:close key="view-distribution-statistics"}
+                        <div class="operate-item">
+                            <a href="/copyright/statistics?works_id={$value.works_id}&type=1">
+                                <i class="icon icon-tongji"></i>
+                                <p>使用统计</p>
+                            </a>
+                        </div>
+                        {/haspermission:close}
+                        {haspermission:close key="view-menu-copyright-receive"}
+                        <p class="operate-item">
+                            <a href="/copyright/receive-list?works_name={$value.works_name}"><i
+                                    class="icon icon-search"></i>领取查询</a>
+                        </p>
+                        {/haspermission:close}
+                    </div>
+
+                </div>
+            {/foreach}
+        </div>
+        <!--分页-->
+        <div class="pragination-group" id="pageToolbar">
+            {$list->render()|raw}
+        </div>
+
+    </div>
+</div>
+<div id="layer-set" style="display:none">
+    <a class="layer-link" href="/product/linkage">
+        <h2>认证用途</h2>
+        <p>用于认证连接商品</p>
+    </a>
+    <a class="layer-link" href="/promotion/create">
+        <h2>营销用途</h2><p>用于连接版主红包</p>
+    </a>
+    <a class="layer-link" href="/product/index">
+        <h2>营销用途</h2><p>用于连接防伪标万能码</p>
+    </a>
+</div>
+<div id="layer-more" style="display:none">
+
+    </div>
+{/block}
+
+{block name='js'}
+<script src="{:qiniu_domains()}/upload/67/1d2d0ecc6ad56a71cece7cda0231343a469f2ab75b54529407c4293896a914.js?origin=template.js"></script>
+<script id="layer-more-html" type="text/html">
+        <div class="more-pic">
+            <img src="<%:=list.workData.works_cover%>" alt="" width="100px">
+        </div>
+        <div class="more-code-info">
+            <span style="font-size: 16px;font-weight: 600;">《<%:=list.workData.works_name%>》</span>
+            <span class="text-gray"><%:=list.workData.artist_name%></span>
+        </div>
+
+        <ol>
+            <%for (var i = 0; i < list.arr.length; i++) {%>
+                <%if (list.arr[i].use_type == 1){%>
+                    <li>
+                        <p style="font-size: 16px;">版权用途：<span class="text-blue" style="font-size: 16px;">认证用途</span> </p>
+                        <p class="text-gray">（认证连接了“<%:=list.arr[i].product_name%> | <%:=list.arr[i].property_name%>”）   </p>
+                    </li>
+
+                <%}%>
+                <%if (list.arr[i].use_type == 2){%>
+                    <li>
+                        <p style="font-size: 16px;">版权用途：<span class="text-blue" style="font-size: 16px;">营销用途</span> </p>
+                        <p class="text-gray">（连接了版主红包）   </p>
+                    </li>
+                <%}%>
+                <%if (list.arr[i].use_type == 3){%>
+                    <li>
+                        <p style="font-size: 16px;">版权用途：<span class="text-blue" style="font-size: 16px;">营销用途</span> </p>
+                        <!--<p class="text-gray">（认证连接了“<%:=list.arr[i].product_name%> | <%:=list.arr[i].property_name%>”）   </p>-->
+                        <p class="text-gray">（连接了防伪标万能二维码）   </p>
+                    </li>
+                <%}%>
+            <%}%>
+        </ol>
+</script>
+<script>
+$(".hidden").click(function(){
+    $(this).parents(".information").fadeOut();
+});
+if ($(".cards").attr('data-show') > 0) {
+    if($(".information-con")[0].scrollHeight>=31){
+        $(".lookmore").show().click(function(){
+            $(this).parents(".information").css({"overflow":"","height":"auto"});
+        });
+    };
+}
+
+// 置顶操作
+$(".set-top").on('click', function () {
+    var works_id = $(this).attr('data-works-id');
+    // 增加加载层
+    layer.load(0, {
+        shade: [0.1,'black'] //0.1透明度的白色背景
+    });
+    // 执行修改操作
+    $.ajax({
+        url: '/copyright/set-top',
+        type: 'POST',
+        data:  {works_id: works_id},
+        dataType: 'json',
+        success: function (data) {
+            // console.log(data)
+            layer.msg(data.msg, {
+                icon: 6,
+                time: 2000 //2秒关闭（如果不配置，默认是3秒）
+            }, function () {
+                layer.closeAll();
+                // location.reload();
+                window.location.href = '/copyright/index';
+            });
+        },
+        error: function (data) {
+            layer.msg(data.responseJSON.msg, {icon: 2}, function () {
+                layer.closeAll();
+            });
+        }
+    });
+});
+
+//编辑版主世界名称
+    function editWorld(name, id, works_id) {
+
+        layer.open({
+            type: 1,
+            content: '<div class="add-layer"><input id="new_name" style="margin-left:5px;" class="input-sm" value="'+name+'" type="text" maxlength="10">的世界</div>',
+            title: '编辑',
+            btn: ['确定', '取消'],
+            btnAlign: 'cc',
+            shadowClose: true,
+            area: ["350px","250px"],
+            yes: function(){
+                var new_name = $("#new_name").val();
+                if (!new_name.trim()){
+                    layer.msg("名称不能为空！", {icon: 2}, function () {});
+                    return false;
+                }
+                // 增加加载层
+                layer.load(0, {
+                    shade: [0.1,'black'] //0.1透明度的白色背景
+                });
+                $.ajax({
+                    url: "/copyright/save-world-name",
+                    type: 'POST',
+                    dataType: 'json',
+                    data: {
+                        'name': new_name,
+                        'id': id,
+                        'works_id': works_id
+                    },
+                    success: function(data) {
+                        // console.log(data);
+                        layer.msg(data.msg, {
+                            icon: 6,
+                            time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                        }, function () {
+                            layer.closeAll();
+                            location.reload();
+                        });
+                    },
+                    error: function (data) {
+                        layer.msg(data.responseJSON.msg, {icon: 2}, function () {
+                            layer.closeAll();
+                        });
+                    }
+                });
+
+            }
+        });
+
+    }
+    // 配置版谷用途
+    function setCodeUse(){
+        layer.open({
+                    type: 1,
+                    content: $('#layer-set'),
+                    title: '版谷用途配置',
+                    btn: 0,
+                    btnAlign: 'cc',
+                    shadeClose: true, //开启遮罩关闭
+                    area: ['auto'],
+                });
+    }
+    function moreCodeUse(id){
+        var load=layer.load();
+        $.ajax({
+            url: "/copyright/get-more-use",
+            type: 'GET',
+            dataType: 'json',
+            data: {
+                'works_id': id
+            },
+            success: function(data) {
+
+                let html = template(document.getElementById('layer-more-html').innerHTML, {list:data.data});
+                $('#layer-more').html(html);
+                layer.close(load);
+
+                layer.open({
+                    type: 1,
+                    content: $('#layer-more'),
+                    title: '更多用途',
+                    btn: ['知道了'],
+                    btnAlign: 'cc',
+                    shadeClose: true, //开启遮罩关闭
+                    area: ['auto'],
+                });
+            },
+
+        });
+
+    }
+
+</script>
+{/block}

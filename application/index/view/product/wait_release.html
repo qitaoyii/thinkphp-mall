@@ -1,0 +1,106 @@
+{extend name="layout/base" /}
+
+{block name="seo"}
+<title>{$title|default="品牌厂家直供平台"}</title>
+{/block}
+
+{block name="style"}
+
+{/block}
+
+{block name="title"}
+    <span>商品管理</span> /
+    <span class="colorTit">待发布</span>
+{/block}
+
+{block name="content"}
+    <!-- 平台功能区 -->
+    <div class="ShopFrontPage-r-bot">
+        <div class="goods-box cards">
+            <div class="order-search">
+                <form action="/product/wait-release" method="get" id="myform">
+                    <div class="form-group" style="justify-content: flex-start;align-items: center">
+                        <div class="form-item">
+                            <label for="create_time">编辑时间：</label>
+                            <input type="text" autocomplete="off" placeholder="请选择日期" name="update_time" value="{$update_time}" id="date">
+                            <i></i>
+                        </div>
+                        <div class="form-item">
+                            <label for="order_sn">商品标题：</label>
+                            <input type="text" placeholder="请输入商品标题" name="product_name" value="{$product_name}">
+                            <i></i>
+                        </div>
+                        <div>
+                            <input type="submit" value="查询" class="btn btn-fill">
+                            <i></i>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="order-table">
+                <table class="order-tb">
+                    <thead>
+                    <tr class='tr-th'>
+                        <th>商品名称</th>
+                        <th>编辑时间</th>
+                        <th>操作项</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {foreach name='productList' item='val'}
+                    <tr>
+                        <td>{$val->product_name}</td>
+                        <td>{$val->update_time}</td>
+                        <td>
+                            <div class="operate">
+                                <p class="operate-item">
+                                    <a href="/product/save?product_id={$val->product_id}&type=3"><i class="icon icon-edit"></i>编辑</a>
+                                </p>
+                                <p class="operate-item">
+                                    <a href="javascript:void(0);" class="product_del" productid="{$val->product_id}"><i class="icon icon-detel"></i>删除</a>
+                                </p>
+                            </div>
+                        </td>
+
+                    </tr>
+                    {/foreach}
+                    </tbody>
+                </table>
+            </div>
+            <!--分页-->
+            {$productList->render()|raw}
+        </div>
+    </div>
+{/block}
+    
+{block name='js'}
+    <script>
+    // 商品删除
+    $(".product_del").click(function () {
+        var product_id = $(this).attr("productid");
+        layer.confirm('是否要删除该商品？', {
+            btn: ['立即删除', '取消']
+        }, function (index, layero) {
+            $.ajax({
+                url: "delete",
+                type: 'POST',
+                dataType: 'json',
+                data: {'product_id': product_id},
+                success: function (result) {
+                    console.log(result);
+                    layer.msg(result.msg, {
+                        icon: 6,
+                        time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                    }, function () {
+                        location.reload();
+                    });
+                }, error: function (data) {
+                    layer.msg(data.responseJSON.msg, {icon: 2});
+                }
+            });
+        }, function (index) {
+            layer.close(index);
+        });
+    });
+</script>
+{/block}

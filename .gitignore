@@ -1,0 +1,6 @@
+.idea
+*.log
+/thinkphp
+/.env
+/vendor
+public/消息.svg

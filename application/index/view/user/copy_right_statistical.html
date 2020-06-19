@@ -1,0 +1,136 @@
+{extend name="layout/base" /}
+
+{block name="seo"}
+<title>{$title|default="画版商户后台管理系统"}</title>
+{/block}
+
+{block name="style"}
+<style></style>
+{/block}
+
+{block name="title"}
+<span>用户管理</span> /
+<span class="colorTit">用户中心</span>
+{/block}
+{block name="content"}
+<!-- 平台功能区 -->
+    <div class="ShopFrontPage-r-bot">
+        <div class="order-box cards">
+            <form action="/user/copy-right-statistical" method="get">
+                <div class="order-search">
+                    <div class="form-group">
+                        <div class="form-item">
+                            <label>版谷获取时间</label>
+                            <input type="text" autocomplete="off" placeholder="请选择日期" name="create_time" value="{$create_time}" id="date">
+                            <i></i>
+                        </div>
+                        <div class="form-item">
+                            <label>用户名</label>
+                            <input type="text" placeholder="请输入用户名" name="user_name" value="{$user_name}" id="user_name">
+                            <i></i>
+                        </div>
+                        <div class="form-item">
+                            <label>版谷作品</label>
+                            <input type="text" placeholder="请输入版谷作品" name="works_name" value="{$works_name}" id="copyright_name">
+                            <i></i>
+                        </div>
+                        <div class="form-item-btn"></div>
+                        <!--占位元素，不可删-->
+
+                    </div>
+                    <div class="form-group">
+                        <div class="form-item">
+                            <label>用户手机号</label>
+                            <input type="text" placeholder="请输入手机号" name="phone" value="{$phone}" id="user_phone">
+                            <i></i>
+                        </div>
+                        <div class="form-item">
+                            <label>版谷获取方式</label>
+                            <select name="send_type" id="get_method">
+                                <option value="0" selected>全部</option>
+                                {foreach $status as $k => $v}
+                                <option value="{$k}" <?= $k == $send_type ? 'selected' : '' ?>>{$v}</option>
+                                {/foreach}
+                            </select>
+                            <i></i>
+                        </div>
+                        <div class="form-item">
+                            <label>版谷</label>
+                            <input type="text" placeholder="请输入版谷" name="copy_code" value="{$copy_code}" id="copyright_number">
+                            <i></i>
+                        </div>
+                        <div class="form-item-btn">
+                            <input type="submit" value="查询" class="btn btn-fill">
+                            <i></i>
+                        </div>
+                    </div>
+                </div>
+            </form>
+
+            <div class="order-table">
+                <table class="order-tb">
+                    <thead>
+                        <tr class="tr-th">
+                            <th>序号</th>
+                            <th>用户名</th>
+                            <th>用户手机号</th>
+                            <th>版谷</th>
+                            <th>版谷作品</th>
+                            <th>版谷获取方式</th>
+                            <!--<th>操作</th>-->
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {foreach name='copyRightLists' item='copyRightList'}
+                        <tr class="tr-bd">
+                            <td>{$copyRightLists->num++}</td>
+                            <td>
+                                {:optional($copyRightList->user, '————')->username}
+                            </td>
+                            <td>
+                                <span class="userphone">{:optional($copyRightList->user, '————')->phone}</span>
+                            </td>
+                            <td>
+                                {$copyRightList->copy_code}
+                            </td>
+                            <td>
+                                《{:optional($copyRightList->works)->works_name}》
+                            </td>
+                            <td>
+                                {$copyRightList->send_type_text}
+                            </td>
+
+                            <!--<td>-->
+                                <!--{haspermission:close key="view-customer-copyright-profit-ratio"}-->
+                                <!--<a href="/user/dividend-ratio-look?send_id={$copyRightList->send_id}" class="text-o detail_link">查看分红比例</a>-->
+                                <!--{/haspermission:close}-->
+                                <!--{haspermission:close key="edit-customer-copyright-profit-ratio"}-->
+                                <!--<a href="/user/dividend-ratio-edit?send_id={$copyRightList->send_id}" class="text-o detail_link">修改分红比例</a>-->
+                                <!--{/haspermission:close}-->
+                            <!--</td>-->
+                        </tr>
+                    {/foreach}
+                    </tbody>
+                </table>
+            </div>
+
+            <!--分页-->
+            <div class="pragination-group" id="pageToolbar">
+                {$copyRightLists->render() | raw}
+            </div>
+
+        </div>
+    </div>
+{/block}
+
+{block name='js'}
+<script>
+    /*手机号分割显示*/
+    (function userphone(obj) {
+        obj.each(function () {
+            var phoneNum = $(this).text();
+            $(this).html(phoneNum.replace(/(?=(\d{4})+$)/g, " "));
+        })
+    })($(".userphone"));
+</script>
+{/block}
